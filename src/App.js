@@ -26,6 +26,11 @@ import Offer from "./pages/Offer/Offer";
 import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import Cart from "./pages/Cart/Cart";
 import Payment from "./pages/payment/Payment";
+import Subscription from "./pages/Subscription/subscription";
+import VNPayBasic from "./pages/Subscription/vnpay-basic"; 
+import VNPayPremium from "./pages/Subscription/vnpay-premium";
+import VNPayBasicQR from "./pages/Subscription/vnpay-basicqr";
+import VNPayPremiumQR from "./pages/Subscription/vnpay-premiumqr";
 
 // auth pages
 import SignIn from "./pages/Account/SignIn";
@@ -79,6 +84,11 @@ const router = createBrowserRouter(
         <Route path="product/:_id" element={<ProductDetails />} />
         <Route path="cart" element={<Cart />} />
         <Route path="paymentgateway" element={<Payment />} />
+        <Route path="subscription" element={<Subscription />} />
+        <Route path="vnpay-basic" element={<VNPayBasic />} />
+        <Route path="vnpay-premium" element={<VNPayPremium />} />
+        <Route path="vnpay-basicqr" element={<VNPayBasicQR />} />
+        <Route path="vnpay-premiumqr" element={<VNPayPremiumQR />} />
       </Route>
 
       {/* Auth (không show header/footer) */}
