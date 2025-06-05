@@ -37,6 +37,8 @@ import Subscription from "./pages/Subscription/subscription";
 import VNPayBasic from "./pages/Subscription/vnpay-basic";
 import VNPayPremium from "./pages/Subscription/vnpay-premium";
 import VNPayPremiumQR from "./pages/Subscription/vnpay-premiumqr";
+import SellerHome from "./pages/SellerDashboard/SellDashboard-Home";
+import SettingMyShop from "./pages/SellerDashboard/Setting-MyShop";
 
 // Auth pages
 import SignIn from "./pages/Account/SignIn";
@@ -109,7 +111,10 @@ const router = createBrowserRouter(
         <Route path="vnpay-premiumqr" element={<VNPayPremiumQR />} />
       </Route>
 
-      {/* ========= Các route Auth (không hiện Header/Footer) ========= */}
+      <Route path="sellerhome" element={<SellerHome />} />
+      <Route path="myshop" element={<SettingMyShop />} />
+      
+      {/* Auth (không show header/footer) */}
       <Route path="signin" element={<SignIn />} />
       <Route path="signup" element={<SignUp />} />
       <Route path="reset-password" element={<ResetPassword />} />
