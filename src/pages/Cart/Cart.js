@@ -17,6 +17,12 @@ const Cart = () => {
   const [discount, setDiscount] = useState(0);
   const [couponCode, setCouponCode] = useState("");
 
+  // Hàm format VND (nhân amount lên 1000, sau đó chèn dấu chấm hàng ngàn, thêm " VND")
+  const formatVND = (amount) => {
+    const realValue = amount * 1000;
+    return realValue.toLocaleString("vi-VN") + " VND";
+  };
+
   // Tính subtotal
   useEffect(() => {
     let sum = 0;
@@ -26,7 +32,7 @@ const Cart = () => {
     setTotalAmt(sum);
   }, [products]);
 
-  // Tính shipping
+  // Tính phí vận chuyển
   useEffect(() => {
     if (totalAmt <= 200) setShippingCharge(30);
     else if (totalAmt <= 400) setShippingCharge(25);
@@ -35,14 +41,14 @@ const Cart = () => {
 
   // Ví dụ hàm apply coupon
   const handleApplyCoupon = () => {
-    // TODO: thay bằng logic check couponCode
-    if (couponCode === "SAVE10") {
-      setDiscount(10);
+    if (couponCode.toUpperCase() === "SAVE10") {
+      setDiscount(10); // 10 = 10.000 VND
     } else {
       setDiscount(0);
     }
   };
 
+  // Tổng cuối = subtotal + shipping - discount
   const finalTotal = totalAmt + shippingCharge - discount;
 
   return (
@@ -54,15 +60,19 @@ const Cart = () => {
           {/* Header bảng */}
           <div className="w-full h-20 bg-[#F5F7F7] text-primeColor hidden lgl:grid grid-cols-5 place-content-center px-6 text-lg font-titleFont font-semibold">
             <h2 className="col-span-2">Product</h2>
-            <h2>Price</h2>
-            <h2>Quantity</h2>
-            <h2>Sub Total</h2>
+            <h2>Giá</h2>
+            <h2>Số lượng</h2>
+            <h2>Thành tiền</h2>
           </div>
 
           {/* Danh sách sản phẩm */}
           <div className="mt-5">
             {products.map((item) => (
-              <ItemCard key={item._id} item={item} />
+              <ItemCard
+                key={item._id}
+                item={item}
+                formatVND={formatVND}
+              />
             ))}
           </div>
 
@@ -88,10 +98,10 @@ const Cart = () => {
                 onClick={handleApplyCoupon}
                 className="text-sm mdl:text-base font-semibold text-primeColor hover:underline"
               >
-                Apply Coupon
+                Áp dụng
               </button>
             </div>
-            <p className="text-lg font-semibold cursor-pointer">Update Cart</p>
+            <p className="text-lg font-semibold cursor-pointer">Cập nhật giỏ</p>
           </div>
 
           {/* Cart totals */}
@@ -101,25 +111,32 @@ const Cart = () => {
               <div>
                 <p className="flex items-center justify-between border-[1px] border-gray-400 border-b-0 py-1.5 text-lg px-4 font-medium">
                   Subtotal
-                  <span className="font-semibold">${totalAmt}</span>
+                  <span className="font-semibold">{formatVND(totalAmt)}</span>
                 </p>
                 <p className="flex items-center justify-between border-[1px] border-gray-400 border-b-0 py-1.5 text-lg px-4 font-medium">
-                  Shipping Charge
-                  <span className="font-semibold">${shippingCharge}</span>
+                  Phí vận chuyển
+                  <span className="font-semibold">{formatVND(shippingCharge)}</span>
                 </p>
                 <p className="flex items-center justify-between border-[1px] border-gray-400 border-b-0 py-1.5 text-lg px-4 font-medium">
-                  Discount
-                  <span className="font-semibold">-${discount}</span>
+                  Giảm giá
+                  <span className="font-semibold">-{formatVND(discount)}</span>
                 </p>
                 <p className="flex items-center justify-between border-[1px] border-gray-400 py-1.5 text-lg px-4 font-bold">
-                  Total
-                  <span className="font-bold">${finalTotal}</span>
+                  Tổng cộng
+                  <span className="font-bold">{formatVND(finalTotal)}</span>
                 </p>
               </div>
-              <div className="flex justify-end">
-                <Link to="/paymentgateway">
-                  <button className="w-52 h-10 bg-primeColor text-white hover:bg-black duration-300">
-                    Proceed to Checkout
+              <div className="flex flex-col gap-2 items-center"> 
+                {/* Nút Tiến hành thanh toán */}
+                <Link to="/paymentgateway" className="w-full">
+                  <button className="w-full h-10 bg-primeColor text-white hover:bg-black duration-300">
+                    Tiến hành thanh toán
+                  </button>
+                </Link>
+                {/* --- Thêm nút Tiếp tục mua sắm bên dưới --- */}
+                <Link to="/shop" className="w-full">
+                  <button className="w-full h-10 bg-gray-800 text-white hover:bg-gray-600 duration-300">
+                    Tiếp tục mua sắm
                   </button>
                 </Link>
               </div>
@@ -143,15 +160,15 @@ const Cart = () => {
           </div>
           <div className="max-w-[500px] p-4 py-8 bg-white flex gap-4 flex-col items-center rounded-md shadow-lg">
             <h1 className="font-titleFont text-xl font-bold uppercase">
-              Your Cart feels lonely.
+              Giỏ hàng của bạn đang trống
             </h1>
             <p className="text-sm text-center px-10 -mt-2">
-              Your Shopping cart lives to serve. Give it purpose - fill it with
-              books, electronics, videos, etc. and make it happy.
+              Giỏ hàng của bạn còn trống. Hãy thêm sách, đồ điện tử, v.v… để làm
+              đầy và mang lại niềm vui cho giỏ hàng.
             </p>
             <Link to="/shop">
               <button className="bg-primeColor rounded-md cursor-pointer hover:bg-black active:bg-gray-900 px-8 py-2 font-titleFont font-semibold text-lg text-gray-200 hover:text-white duration-300">
-                Continue Shopping
+                Tiếp tục mua sắm
               </button>
             </Link>
           </div>

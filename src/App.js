@@ -1,3 +1,4 @@
+// src/App.js
 import React from "react";
 import {
   createBrowserRouter,
@@ -9,14 +10,14 @@ import {
   Navigate,
 } from "react-router-dom";
 
-// layouts
+// Layouts chung
 import Header from "./components/home/Header/Header";
 import HeaderBottom from "./components/home/Header/HeaderBottom";
 import SpecialCase from "./components/SpecialCase/SpecialCase";
 import Footer from "./components/home/Footer/Footer";
 import FooterBottom from "./components/home/Footer/FooterBottom";
 
-// public pages
+// Các trang public
 import Home from "./pages/Home/Home";
 import Shop from "./pages/Shop/Shop";
 import Blog from "./pages/Blog/Blog";
@@ -25,30 +26,36 @@ import Contact from "./pages/Contact/Contact";
 import Offer from "./pages/Offer/Offer";
 import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import Cart from "./pages/Cart/Cart";
+
+// Các trang thanh toán
 import Payment from "./pages/payment/Payment";
+import VNPayBasicQR from "./pages/payment/VNPayBasicQR";
+import PaymentSuccess from "./pages/payment/PaymentSuccess";
+
+// Trang subscription (nếu có)
 import Subscription from "./pages/Subscription/subscription";
-import VNPayBasic from "./pages/Subscription/vnpay-basic"; 
+import VNPayBasic from "./pages/Subscription/vnpay-basic";
 import VNPayPremium from "./pages/Subscription/vnpay-premium";
-import VNPayBasicQR from "./pages/Subscription/vnpay-basicqr";
 import VNPayPremiumQR from "./pages/Subscription/vnpay-premiumqr";
 
-// auth pages
+// Auth pages
 import SignIn from "./pages/Account/SignIn";
 import SignUp from "./pages/Account/SignUp";
 import ResetPassword from "./pages/Account/ResetPassword";
 import NewPassword from "./pages/Account/NewPassword";
 
-// profile pages
+// Profile pages
 import AccountInformation from "./pages/Profile/AccountInformation";
 import MyOrder from "./pages/Profile/MyOrder";
 import Voucher from "./pages/Profile/Voucher";
 import ChangePassword from "./pages/Profile/ChangePassword";
 
-// error + middleware
+// Error + middleware
 import Forbidden from "./pages/Forbidden/Forbidden";
 import RequireAuth from "./components/RequireAuth/RequireAuth";
 
-// Layout chung cho public
+
+// Layout chung cho các trang public (có Header + Footer)
 const PublicLayout = () => (
   <div className="font-bodyFont">
     <Header />
@@ -61,7 +68,7 @@ const PublicLayout = () => (
   </div>
 );
 
-// Layout cho profile (có sidebar)
+// Layout riêng cho phần Profile (có khung background và padding)
 const ProfileLayout = () => (
   <div className="bg-gray-50 min-h-screen py-10">
     <div className="max-w-container mx-auto px-4">
@@ -73,7 +80,7 @@ const ProfileLayout = () => (
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
-      {/* Public */}
+      {/* ========= Các route công khai (Public) ========= */}
       <Route path="/" element={<PublicLayout />}>
         <Route index element={<Home />} />
         <Route path="shop" element={<Shop />} />
@@ -83,24 +90,35 @@ const router = createBrowserRouter(
         <Route path="offer" element={<Offer />} />
         <Route path="product/:_id" element={<ProductDetails />} />
         <Route path="cart" element={<Cart />} />
-        <Route path="paymentgateway" element={<Payment />} />
+
+        {/* Thay vì đặt route “paymentgateway”, chúng ta dùng “payment” làm đầu mối */}
+        <Route path="payment" element={<Payment />} />
+        <Route path="vnpay-basicqr" element={<VNPayBasicQR />} />
+        <Route path="payment/success" element={<PaymentSuccess />} />
+
+        {/* Nếu vẫn muốn giữ “paymentgateway” để tương thích link cũ, có thể redirect về /payment */}
+        <Route
+          path="paymentgateway"
+          element={<Navigate to="/payment" replace />}
+        />
+
+        {/* Ví dụ thêm subscription (nếu bạn có) */}
         <Route path="subscription" element={<Subscription />} />
         <Route path="vnpay-basic" element={<VNPayBasic />} />
         <Route path="vnpay-premium" element={<VNPayPremium />} />
-        <Route path="vnpay-basicqr" element={<VNPayBasicQR />} />
         <Route path="vnpay-premiumqr" element={<VNPayPremiumQR />} />
       </Route>
 
-      {/* Auth (không show header/footer) */}
+      {/* ========= Các route Auth (không hiện Header/Footer) ========= */}
       <Route path="signin" element={<SignIn />} />
       <Route path="signup" element={<SignUp />} />
       <Route path="reset-password" element={<ResetPassword />} />
       <Route path="new-password" element={<NewPassword />} />
 
-      {/* 403 Forbidden */}
+      {/* ========= 403 Forbidden ========= */}
       <Route path="403" element={<Forbidden />} />
 
-      {/* Profile: chỉ cho user đã login và có role phù hợp */}
+      {/* ========= Các route cho profile (yêu cầu login + role) ========= */}
       <Route element={<RequireAuth allowedRoles={["user", "admin", "seller"]} />}>
         <Route path="profile" element={<PublicLayout />}>
           <Route element={<ProfileLayout />}>
@@ -113,7 +131,7 @@ const router = createBrowserRouter(
         </Route>
       </Route>
 
-      {/* Không tìm thấy route */}
+      {/* ========= Nếu không có route nào khớp, chuyển về trang chủ ========= */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Route>
   )
