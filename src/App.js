@@ -1,4 +1,3 @@
-// src/App.js
 import React from "react";
 import {
   createBrowserRouter,
@@ -56,7 +55,6 @@ import ChangePassword from "./pages/Profile/ChangePassword";
 import Forbidden from "./pages/Forbidden/Forbidden";
 import RequireAuth from "./components/RequireAuth/RequireAuth";
 
-
 // Layout chung cho các trang public (có Header + Footer)
 const PublicLayout = () => (
   <div className="font-bodyFont">
@@ -111,9 +109,12 @@ const router = createBrowserRouter(
         <Route path="vnpay-premiumqr" element={<VNPayPremiumQR />} />
       </Route>
 
-      <Route path="sellerhome" element={<SellerHome />} />
-      <Route path="myshop" element={<SettingMyShop />} />
-      
+      {/* Route cho Seller */}
+      <Route element={<RequireAuth allowedRoles={["seller"]} />}>
+        <Route path="sellerhome" element={<SellerHome />} />
+        <Route path="myshop" element={<SettingMyShop />} />
+      </Route>
+
       {/* Auth (không show header/footer) */}
       <Route path="signin" element={<SignIn />} />
       <Route path="signup" element={<SignUp />} />

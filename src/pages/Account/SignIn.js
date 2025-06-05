@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -7,6 +7,7 @@ const SignIn = () => {
   const [errEmail, setErrEmail] = useState("");
   const [errPassword, setErrPassword] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const navigate = useNavigate();
 
   const handleEmail = (e) => {
     setEmail(e.target.value);
@@ -29,10 +30,32 @@ const SignIn = () => {
       setErrPassword("Please input your password!");
     }
 
+    // Test for different roles
+    const users = {
+      admin: { email: "admin@example.com", password: "admin123", roles: ["admin"] },
+      seller: { email: "seller@example.com", password: "seller123", roles: ["seller"] },
+      user: { email: "user@example.com", password: "user123", roles: ["user"] },
+    };
+
     if (email && password) {
-      setSuccessMsg(`Hello, ${email}. We are processing your login.`);
-      setEmail("");
-      setPassword("");
+      if (
+        (email === users.admin.email && password === users.admin.password) ||
+        (email === users.seller.email && password === users.seller.password) ||
+        (email === users.user.email && password === users.user.password)
+      ) {
+        const user = {
+          email,
+          token: "fake-token", // Giả lập token
+          roles: users[email.split("@")[0]].roles, // Assign role based on email
+        };
+        localStorage.setItem("user", JSON.stringify(user)); // Lưu user vào localStorage
+        setSuccessMsg(`Hello, ${email}. We are processing your login.`);
+        navigate("/profile"); // Redirect to profile or main page
+        setEmail("");
+        setPassword("");
+      } else {
+        setErrEmail("Invalid credentials.");
+      }
     }
   };
 

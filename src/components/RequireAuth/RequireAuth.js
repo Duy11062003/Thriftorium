@@ -1,8 +1,6 @@
 import React from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-// Ví dụ lấy thông tin user từ localStorage.
-// Bạn có thể thay bằng useSelector để lấy từ Redux store nếu đã lưu auth ở đó.
 const getCurrentUser = () => {
   try {
     return JSON.parse(localStorage.getItem("user")) || null;
@@ -15,12 +13,12 @@ export default function RequireAuth({ allowedRoles }) {
   const location = useLocation();
   const user = getCurrentUser();
 
-  // Chưa đăng nhập
+  // Kiểm tra người dùng đã đăng nhập chưa
   if (!user?.token) {
     return <Navigate to="/signin" state={{ from: location }} replace />;
   }
 
-  // Đã đăng nhập nhưng không có role phù hợp
+  // Kiểm tra quyền của người dùng
   if (
     allowedRoles &&
     Array.isArray(allowedRoles) &&
@@ -29,6 +27,6 @@ export default function RequireAuth({ allowedRoles }) {
     return <Navigate to="/403" state={{ from: location }} replace />;
   }
 
-  // Hợp lệ
+  // Nếu hợp lệ, cho phép truy cập
   return <Outlet />;
 }
