@@ -110,9 +110,6 @@ const SellerHome = () => {
       case 'catalog/categories':
         showNotification('Opening Catalog...');
         break;
-      case 'analytics':
-        showNotification('Loading Analytics...');
-        break;
       case 'settings':
       case 'settings/plan':
         showNotification('Opening Plan Upgrade...');
@@ -124,7 +121,8 @@ const SellerHome = () => {
         showNotification('Opening Payment Settings...');
         break;
       case 'settings/account':
-        showNotification('Opening My Account...');
+        // Navigate to My Shop page
+        navigate('/myshop');
         break;
       default:
         setActiveNavItem('home');
@@ -169,9 +167,6 @@ const SellerHome = () => {
         break;
       case 'products':
         handleNavigation('catalog');
-        break;
-      case 'analytics':
-        handleNavigation('analytics');
         break;
       default:
         showNotification(`${action} clicked`);
@@ -232,11 +227,6 @@ const SellerHome = () => {
                 </ul>
               )}
             </li>
-            <li className={`nav-item ${activeNavItem === 'analytics' ? 'active' : ''}`}>
-              <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('analytics'); }}>
-                <span>📊</span> Analytics
-              </a>
-            </li>
             <li className={`nav-item ${activeNavItem === 'settings' ? 'active' : ''}`}>
               <a href="#" onClick={(e) => { e.preventDefault(); toggleSubmenu('settings'); }}>
                 <span>⚙️</span> Settings
@@ -261,7 +251,7 @@ const SellerHome = () => {
                   </li>
                   <li className="submenu-item">
                     <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('settings/account'); }}>
-                      My Account
+                      My Shop
                     </a>
                   </li>
                 </ul>
@@ -320,11 +310,6 @@ const SellerHome = () => {
               <span>🛍️</span>
               <h3>Manage Products</h3>
               <p>Add or edit your products</p>
-            </div>
-            <div className="action-card" onClick={() => handleButtonClick('analytics')}>
-              <span>📊</span>
-              <h3>View Analytics</h3>
-              <p>Track your store performance</p>
             </div>
           </div>
         </section>
@@ -568,6 +553,17 @@ const SellerHome = () => {
           margin: 0;
           color: #666;
           font-size: 0.9rem;
+        }
+
+        /* Active state for submenu items */
+        .submenu-item.active a {
+          background: #4a90e2;
+          color: white;
+        }
+
+        .submenu-item:hover a {
+          background: #3a7bd5;
+          color: white;
         }
 
         .setup-tasks {
