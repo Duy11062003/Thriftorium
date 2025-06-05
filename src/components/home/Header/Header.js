@@ -70,10 +70,10 @@ const Header = () => {
             {/* Post button on desktop */}
             {showMenu && (
               <Link
-                to="/post"
+                to="/subscription"
                 className="ml-6 px-6 py-2 bg-green-400 hover:bg-green-500 rounded-full text-black font-medium transition"
               >
-                Post +
+                Subscription
               </Link>
             )}
 
