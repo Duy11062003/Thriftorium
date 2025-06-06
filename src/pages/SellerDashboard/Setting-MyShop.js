@@ -84,7 +84,7 @@ const SettingMyShop = () => {
         showNotification('Opening Catalog...');
         break;
       case 'settings/plan':
-        showNotification('Opening Plan Upgrade...');
+        navigate('/plan');
         break;
       case 'settings/delivery':
         showNotification('Opening Delivery Settings...');
@@ -389,9 +389,6 @@ const SettingMyShop = () => {
           background: #1a1a2e;
           color: white;
           padding: 0;
-          position: fixed;
-          height: 100vh;
-          overflow-y: auto;
         }
 
         .sidebar-header {
@@ -457,10 +454,12 @@ const SettingMyShop = () => {
 
         .nav-item span:first-child {
           margin-right: 10px;
+          font-size: 0.9rem;
         }
 
         .expand-arrow {
           transition: transform 0.3s ease;
+          font-size: 0.8rem;
         }
 
         .expand-arrow.expanded {
@@ -469,14 +468,14 @@ const SettingMyShop = () => {
 
         .submenu {
           background: #0f0f23;
-          padding-left: 0;S
+          padding-left: 0;
         }
 
         .submenu-item a {
           padding: 10px 20px 10px 50px;
-          font-size: 0.9rem;
-          text-decoration: none;
+          font-size: 0.85rem;
         }
+
 
         /* Active state for submenu items */
         .submenu-item.active a {

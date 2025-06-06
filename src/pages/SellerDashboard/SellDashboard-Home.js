@@ -114,7 +114,7 @@ const SellerHome = () => {
         break;
       case 'settings':
       case 'settings/plan':
-        showNotification('Opening Plan Upgrade...');
+        navigate('/plan');
         break;
       case 'settings/delivery':
         showNotification('Opening Delivery Settings...');
