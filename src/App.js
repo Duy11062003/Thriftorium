@@ -36,8 +36,11 @@ import Subscription from "./pages/Subscription/subscription";
 import VNPayBasic from "./pages/Subscription/vnpay-basic";
 import VNPayPremium from "./pages/Subscription/vnpay-premium";
 import VNPayPremiumQR from "./pages/Subscription/vnpay-premiumqr";
+
+//Trang Dashboard cho shop
 import SellerHome from "./pages/SellerDashboard/SellDashboard-Home";
 import SettingMyShop from "./pages/SellerDashboard/Setting-MyShop";
+import CatalogProducts from "./pages/SellerDashboard/Catalog-Products";
 
 // Auth pages
 import SignIn from "./pages/Account/SignIn";
@@ -113,6 +116,7 @@ const router = createBrowserRouter(
       <Route element={<RequireAuth allowedRoles={["seller"]} />}>
         <Route path="sellerhome" element={<SellerHome />} />
         <Route path="myshop" element={<SettingMyShop />} />
+        <Route path="productscatalog" element={<CatalogProducts />} />
       </Route>
 
       {/* Auth (không show header/footer) */}

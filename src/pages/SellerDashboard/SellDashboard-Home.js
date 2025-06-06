@@ -107,6 +107,8 @@ const SellerHome = () => {
         break;
       case 'catalog':
       case 'catalog/products':
+        navigate('/productscatalog');
+        break;
       case 'catalog/categories':
         showNotification('Opening Catalog...');
         break;
@@ -178,7 +180,11 @@ const SellerHome = () => {
       {/* Sidebar Navigation */}
       <aside className="sidebar">
         <div className="sidebar-header">
-          <h2>Thriftorium</h2>
+          <div className="logo-container">
+            <span className="logo-icon">🛒</span>
+            <h2>Thriftorium</h2>
+          </div>
+          <div className="plan-badge">BASIC</div>
         </div>
         <nav className="sidebar-nav">
           <ul>
@@ -209,7 +215,7 @@ const SellerHome = () => {
             </li>
             <li className={`nav-item ${activeNavItem === 'catalog' ? 'active' : ''}`}>
               <a href="#" onClick={(e) => { e.preventDefault(); toggleSubmenu('catalog'); }}>
-                <span>🛍️</span> Catalog
+                <span>📋</span> Catalog
                 <span className={`expand-arrow ${expandedSubmenus.catalog ? 'expanded' : ''}`}>▶</span>
               </a>
               {expandedSubmenus.catalog && (
@@ -357,6 +363,7 @@ const SellerHome = () => {
           display: flex;
           min-height: 100vh;
           background-color: #f5f5f5;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
         }
 
         .sidebar {
@@ -369,12 +376,35 @@ const SellerHome = () => {
         .sidebar-header {
           padding: 20px;
           border-bottom: 1px solid #333;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .logo-container {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .logo-icon {
+          font-size: 1.5rem;
         }
 
         .sidebar-header h2 {
           margin: 0;
           font-size: 1.5rem;
           color: #4a90e2;
+          font-weight: 600;
+        }
+
+        .plan-badge {
+          background: #28a745;
+          color: white;
+          padding: 4px 8px;
+          border-radius: 12px;
+          font-size: 0.7rem;
+          font-weight: 600;
         }
 
         .sidebar-nav ul {
@@ -395,6 +425,7 @@ const SellerHome = () => {
           color: #ccc;
           text-decoration: none;
           transition: all 0.3s ease;
+          font-size: 0.9rem;
         }
 
         .nav-item:hover a,
