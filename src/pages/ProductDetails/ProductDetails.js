@@ -1,12 +1,12 @@
-// src/pages/ProductDetails/ProductDetails.js
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom"; // Đảm bảo import đúng useNavigate và Link
 import { FaStar, FaRegStar, FaCheckCircle, FaArrowRight } from "react-icons/fa";
 
 const ProductDetails = () => {
   const { slug } = useParams();
+  const navigate = useNavigate(); // Khai báo navigate
   const [product, setProduct] = useState(null);
-  const [qty, setQty] = useState(1);
+  const [qty, setQty] = useState(1); // Quản lý số lượng
   const [reviewRating, setReviewRating] = useState(0); // state cho review stars
 
   useEffect(() => {
@@ -35,9 +35,11 @@ const ProductDetails = () => {
   }, [slug]);
 
   if (!product) return <div className="p-8 text-center">Loading…</div>;
+
   const { title, author, price, rating, views, description, images } = product;
   const [mainImage, ...thumbs] = images;
 
+  // Hàm import hình ảnh sản phẩm
   const importImg = (file) => {
     try {
       return require(`../../assets/images/products/bestSeller/${file}`);
@@ -45,6 +47,8 @@ const ProductDetails = () => {
       return "";
     }
   };
+
+  // Hàm import asset chung (logo, avatar…)
   const importAsset = (file) => {
     try {
       return require(`../../assets/images/${file}`);
@@ -53,6 +57,7 @@ const ProductDetails = () => {
     }
   };
 
+  // Tạo các sao cho review
   const stars = (count) =>
     Array.from({ length: 5 }, (_, i) =>
       i < count ? (
@@ -78,6 +83,10 @@ const ProductDetails = () => {
       rating: 5,
     },
   ];
+
+  // Xử lý tăng giảm số lượng
+  const handleIncreaseQty = () => setQty((prevQty) => prevQty + 1);
+  const handleDecreaseQty = () => setQty((prevQty) => Math.max(1, prevQty - 1));
 
   return (
     <div className="bg-white">
@@ -142,27 +151,27 @@ const ProductDetails = () => {
             {/* Quantity + Add to Cart */}
             <div className="flex items-center space-x-4 mb-4">
               <div className="inline-flex items-center h-12 bg-black text-white rounded-lg">
-                <button
-                  onClick={() => setQty((q) => Math.max(1, q - 1))}
-                  className="px-5"
-                >
+                <button onClick={handleDecreaseQty} className="px-5">
                   –
                 </button>
                 <span className="px-6">{qty}</span>
-                <button
-                  onClick={() => setQty((q) => q + 1)}
-                  className="px-5"
-                >
+                <button onClick={handleIncreaseQty} className="px-5">
                   +
                 </button>
               </div>
-              <button className="flex-1 h-12 bg-red-600 text-white px-6 rounded-lg hover:bg-red-700 transition">
+              <button
+                onClick={() => navigate("/cart")}
+                className="flex-1 h-12 bg-red-600 text-white px-6 rounded-lg hover:bg-red-700 transition"
+              >
                 Add to Cart
               </button>
             </div>
 
             {/* Buy Now */}
-            <button className="w-full h-12 bg-black text-white px-6 rounded-lg hover:bg-gray-800 transition">
+            <button
+              onClick={() => navigate("/cart")}
+              className="w-full h-12 bg-black text-white px-6 rounded-lg hover:bg-gray-800 transition"
+            >
               Buy Now
             </button>
           </div>
@@ -180,19 +189,19 @@ const ProductDetails = () => {
               <div className="text-lg font-semibold">Shop Lí Lắc</div>
               <div className="flex items-center space-x-2 text-sm">
                 {stars(5)}
-                <span className="none">138</span>
+                <span className="text-gray-600">138</span>
                 <span className="flex items-center space-x-1 text-green-600 font-medium">
                   <FaCheckCircle /> Verified account
                 </span>
               </div>
-              <div className="text-sm text-gray-600">
-                0 Followers  191 Following
-              </div>
+              <div className="text-sm text-gray-600">0 Followers | 191 Following</div>
             </div>
           </div>
-          <button className="h-10 px-6 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
-            Follow
-          </button>
+          <Link to={`/shop/shop-li-lac`}>
+            <button className="h-10 px-6 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+              Visit Shop
+            </button>
+          </Link>
         </div>
 
         {/* Description | Reviews */}
@@ -211,10 +220,7 @@ const ProductDetails = () => {
           </ul>
 
           {sampleReviews.map((rev, idx) => (
-            <div
-              key={idx}
-              className="mb-4 border border-gray-300 rounded-lg p-4 flex space-x-4"
-            >
+            <div key={idx} className="mb-4 border border-gray-300 rounded-lg p-4 flex space-x-4">
               <img
                 src={rev.avatar}
                 alt={rev.name}
@@ -233,74 +239,6 @@ const ProductDetails = () => {
               </div>
             </div>
           ))}
-
-          {/* Review Form */}
-          <div className="border border-gray-300 rounded-lg p-6 mt-6">
-            <div className="flex items-start space-x-4 mb-4">
-              <img
-                src={importAsset("orebiLogo.png")}
-                alt="You"
-                className="w-12 h-12 rounded-full object-cover"
-              />
-              <div className="flex-1">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1">
-                      Your Name:
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm"
-                      placeholder="Bui Khanh Duy"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">
-                      Your Email:
-                    </label>
-                    <input
-                      type="email"
-                      className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm"
-                      placeholder="duy@gmail.com"
-                    />
-                  </div>
-                  <div className="col-span-2">
-                    <label className="block text-sm font-medium mb-1">
-                      Your Review:
-                    </label>
-                    <textarea
-                      className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm h-24"
-                      placeholder="Your review…"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Your Ratings + Post Review */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <span className="text-sm font-medium">Your Ratings:</span>
-                <div className="flex space-x-1">
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <span
-                      key={i}
-                      onClick={() => setReviewRating(i + 1)}
-                      className={`cursor-pointer text-xl ${
-                        i < reviewRating ? "text-yellow-400" : "text-gray-300"
-                      }`}
-                    >
-                      ★
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <button className="flex items-center px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
-                Post Review <FaArrowRight className="ml-2" />
-              </button>
-            </div>
-          </div>
-
         </div>
       </div>
     </div>

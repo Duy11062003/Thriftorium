@@ -2,14 +2,14 @@ import React from "react";
 import {
   createBrowserRouter,
   RouterProvider,
-  Outlet,
   Route,
-  createRoutesFromElements,
-  ScrollRestoration,
   Navigate,
-} from "react-router-dom";
+  ScrollRestoration,
+  Outlet,
+  createRoutesFromElements
+} from "react-router-dom"; // Thêm các import cần thiết
 
-// Layouts chung
+// Import các trang và Layouts
 import Header from "./components/home/Header/Header";
 import HeaderBottom from "./components/home/Header/HeaderBottom";
 import SpecialCase from "./components/SpecialCase/SpecialCase";
@@ -37,7 +37,7 @@ import VNPayBasic from "./pages/Subscription/vnpay-basic";
 import VNPayPremium from "./pages/Subscription/vnpay-premium";
 import VNPayPremiumQR from "./pages/Subscription/vnpay-premiumqr";
 
-//Trang Dashboard cho seller
+// Trang Dashboard cho seller
 import SellerHome from "./pages/SellerDashboard/SellDashboard-Home";
 import SettingMyShop from "./pages/SellerDashboard/Setting-MyShop";
 import CatalogProducts from "./pages/SellerDashboard/Catalog-Products";
@@ -58,6 +58,9 @@ import ChangePassword from "./pages/Profile/ChangePassword";
 // Error + middleware
 import Forbidden from "./pages/Forbidden/Forbidden";
 import RequireAuth from "./components/RequireAuth/RequireAuth";
+
+// Import ShopDetails
+import ShopDetails from "./pages/ProductDetails/ShopDetails"; // Import trang ShopDetails
 
 // Layout chung cho các trang public (có Header + Footer)
 const PublicLayout = () => (
@@ -88,29 +91,11 @@ const router = createBrowserRouter(
       <Route path="/" element={<PublicLayout />}>
         <Route index element={<Home />} />
         <Route path="shop" element={<Shop />} />
-        <Route path="blog" element={<Blog />} />
-        <Route path="about" element={<About />} />
-        <Route path="contact" element={<Contact />} />
-        <Route path="offer" element={<Offer />} />
         <Route path="product/:_id" element={<ProductDetails />} />
-        <Route path="cart" element={<Cart />} />
+        <Route path="shop/:shopSlug" element={<ShopDetails />} /> {/* Route cho ShopDetails */}
 
-        {/* Thay vì đặt route “paymentgateway”, chúng ta dùng “payment” làm đầu mối */}
-        <Route path="payment" element={<Payment />} />
-        <Route path="vnpay-basicqr" element={<VNPayBasicQR />} />
-        <Route path="payment/success" element={<PaymentSuccess />} />
-
-        {/* Nếu vẫn muốn giữ “paymentgateway” để tương thích link cũ, có thể redirect về /payment */}
-        <Route
-          path="paymentgateway"
-          element={<Navigate to="/payment" replace />}
-        />
-
-        {/* Ví dụ thêm subscription (nếu bạn có) */}
-        <Route path="subscription" element={<Subscription />} />
-        <Route path="vnpay-basic" element={<VNPayBasic />} />
-        <Route path="vnpay-premium" element={<VNPayPremium />} />
-        <Route path="vnpay-premiumqr" element={<VNPayPremiumQR />} />
+        {/* Các route khác */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
 
       {/* Route cho Seller */}
@@ -142,6 +127,9 @@ const router = createBrowserRouter(
           </Route>
         </Route>
       </Route>
+
+      {/* Shop details page route */}
+      <Route path="shop/:shopSlug" element={<ShopDetails />} /> {/* Đường dẫn cho Shop Lí Lắc */}
 
       {/* ========= Nếu không có route nào khớp, chuyển về trang chủ ========= */}
       <Route path="*" element={<Navigate to="/" replace />} />
