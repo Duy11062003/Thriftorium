@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { login } from './AuthService'; // Importing the login function from AuthService
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -19,7 +20,7 @@ const SignIn = () => {
     setErrPassword("");
   };
 
-  const handleSignIn = (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
 
     if (!email) {
@@ -38,23 +39,24 @@ const SignIn = () => {
     };
 
     if (email && password) {
-      if (
-        (email === users.admin.email && password === users.admin.password) ||
-        (email === users.seller.email && password === users.seller.password) ||
-        (email === users.user.email && password === users.user.password)
-      ) {
+      try {
+        // Call the login function from AuthService.js
+        const response = await login(email, password);
+
+        // Handle success, save token, and set user info
         const user = {
           email,
-          token: "fake-token", // Giả lập token
-          roles: users[email.split("@")[0]].roles, // Assign role based on email
+          token: response.token,
+          roles: response.roles,
         };
-        localStorage.setItem("user", JSON.stringify(user)); // Lưu user vào localStorage
+        localStorage.setItem("user", JSON.stringify(user)); // Save user to localStorage
         setSuccessMsg(`Hello, ${email}. We are processing your login.`);
-        navigate("/profile"); // Redirect to profile or main page
+        navigate("/"); // Redirect to profile or main page
         setEmail("");
         setPassword("");
-      } else {
-        setErrEmail("Invalid credentials.");
+      } catch (error) {
+        // Handle error
+        setErrEmail(error.message || "Login failed!");
       }
     }
   };
