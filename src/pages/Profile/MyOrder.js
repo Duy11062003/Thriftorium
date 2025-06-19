@@ -8,6 +8,7 @@ import {
   FaKey,
   FaSignOutAlt,
 } from "react-icons/fa";
+import { useAuth } from "../../context/AuthContext";
 
 const importAsset = (file) => {
   try {
@@ -26,6 +27,8 @@ const importProductImg = (file) => {
 };
 
 export default function MyOrder() {
+  const { logout } = useAuth();
+
   const tabs = [
     "All",
     "Waiting for confirmation",
@@ -152,7 +155,10 @@ export default function MyOrder() {
               >
                 <FaKey className="mr-3" /> Change Password
               </NavLink>
-              <button className="flex items-center w-full px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg">
+              <button
+                onClick={() => logout()}
+                className="flex items-center w-full px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg"
+              >
                 <FaSignOutAlt className="mr-3" /> Log Out
               </button>
             </nav>

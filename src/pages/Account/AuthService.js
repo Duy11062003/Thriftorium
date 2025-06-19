@@ -2,6 +2,7 @@
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 
+// eslint-disable-next-line react-hooks/rules-of-hooks
 const API_URL = "https://localhost:7208/api/account";
 const AuthService = {
   login: async (username, password) => {
@@ -25,7 +26,9 @@ const AuthService = {
   },
 
   confirmEmail: async (email, code) => {
-    const response = await axios.post(`${API_URL}/confirmation/${email}/${code}`);
+    const response = await axios.post(
+      `${API_URL}/confirmation/${email}/${code}`
+    );
     return response.data;
   },
 
@@ -34,7 +37,7 @@ const AuthService = {
       email: email,
     });
     return response.data;
-  }
+  },
 };
 
 export default AuthService;

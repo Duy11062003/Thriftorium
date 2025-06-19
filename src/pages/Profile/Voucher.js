@@ -9,6 +9,7 @@ import {
   FaSignOutAlt,
   FaGift,
 } from "react-icons/fa";
+import { useAuth } from "../../context/AuthContext";
 
 const importAsset = (file) => {
   try {
@@ -36,6 +37,8 @@ const vouchers = [
 ];
 
 export default function Voucher() {
+  const { logout } = useAuth();
+
   return (
     <div className="bg-gray-50 min-h-screen py-10">
       <div className="max-w-container mx-auto px-4">
@@ -94,7 +97,10 @@ export default function Voucher() {
               >
                 <FaKey className="mr-3" /> Change Password
               </NavLink>
-              <button className="flex items-center w-full px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg">
+              <button
+                onClick={() => logout()}
+                className="flex items-center w-full px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg"
+              >
                 <FaSignOutAlt className="mr-3" /> Log Out
               </button>
             </nav>

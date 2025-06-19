@@ -1,7 +1,14 @@
 // src/pages/Profile/AccountInformation.js
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { FaUser, FaReceipt, FaTicketAlt, FaKey, FaSignOutAlt } from "react-icons/fa";
+import {
+  FaUser,
+  FaReceipt,
+  FaTicketAlt,
+  FaKey,
+  FaSignOutAlt,
+} from "react-icons/fa";
+import { useAuth } from "../../context/AuthContext";
 
 const importAsset = (file) => {
   try {
@@ -18,7 +25,7 @@ export default function AccountInformation() {
   const [address, setAddress] = useState(
     "9/1, đường số 7, khu phố 5, phường Linh Chiểu, thành phố Thủ Đức."
   );
-
+  const { logout } = useAuth();
   return (
     <div className="bg-gray-50 min-h-screen py-10">
       <div className="max-w-container mx-auto px-4">
@@ -69,7 +76,10 @@ export default function AccountInformation() {
               >
                 <FaKey className="mr-3" /> Change Password
               </NavLink>
-              <button className="flex items-center w-full px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg">
+              <button
+                onClick={() => logout()}
+                className="flex items-center w-full px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg"
+              >
                 <FaSignOutAlt className="mr-3" /> Log Out
               </button>
             </nav>
@@ -81,7 +91,9 @@ export default function AccountInformation() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Full name */}
               <div>
-                <label className="block text-sm font-bold mb-1">Full name</label>
+                <label className="block text-sm font-bold mb-1">
+                  Full name
+                </label>
                 <input
                   type="text"
                   value={fullName}

@@ -10,6 +10,7 @@ import {
   FaEye,
   FaEyeSlash,
 } from "react-icons/fa";
+import { useAuth } from "../../context/AuthContext";
 
 const importAsset = (file) => {
   try {
@@ -26,6 +27,7 @@ export default function ChangePassword() {
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const { logout } = useAuth();
 
   return (
     <div className="bg-gray-50 min-h-screen py-10">
@@ -92,7 +94,10 @@ export default function ChangePassword() {
               >
                 <FaKey className="mr-3" /> Change Password
               </NavLink>
-              <button className="flex items-center w-full px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg">
+              <button
+                onClick={() => logout()}
+                className="flex items-center w-full px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg"
+              >
                 <FaSignOutAlt className="mr-3" /> Log Out
               </button>
             </nav>
