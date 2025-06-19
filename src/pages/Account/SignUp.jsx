@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { confirmEmail, signup } from "./AuthService"; // Import hàm signup từ AuthService.js
+import AuthService from "./AuthService"; // Import hàm signup từ AuthService.js
 
 const SignUp = () => {
   // ============= Initial State Start here =============
@@ -11,7 +11,6 @@ const SignUp = () => {
   const [address, setAddress] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
   const [errVerificationCode, setErrVerificationCode] = useState("");
-  const [isVerified, setIsVerified] = useState(true); // Track verification state
 
   // ============= Error Msg Start here =================
   const [errClientName, setErrClientName] = useState("");
@@ -48,12 +47,54 @@ const SignUp = () => {
   // ============= Event Handler End here ===============
 
   // ================= Email Validation start here =============
-  const EmailValidation = (email) => {
-    return String(email)
-      .toLowerCase()
-      .match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i);
+  const validateEmail = (email) => {
+    if (!email) {
+      setErrEmail("Please input your email!");
+      return false;
+    } else if (
+      !String(email)
+        .toLowerCase()
+        .match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
+    ) {
+      setErrEmail("Enter a valid email address!");
+      return false;
+    }
+    setErrEmail("");
+    return true;
   };
   // ================= Email Validation End here ===============
+  const validatePassword = (password) => {
+    if (!password) {
+      setErrPassword("Please input your password!");
+      return false;
+    }
+
+    if (password.length < 12) {
+      setErrPassword("Passwords must be at least 12 characters.");
+      return false;
+    }
+
+    if (!/[^\w\s]/.test(password)) {
+      setErrPassword(
+        "Passwords must have at least one non alphanumeric character."
+      );
+      return false;
+    }
+
+    if (!/\d/.test(password)) {
+      setErrPassword("Passwords must have at least one digit ('0'-'9').");
+      return false;
+    }
+
+    if (!/[A-Z]/.test(password)) {
+      setErrPassword("Passwords must have at least one uppercase ('A'-'Z').");
+      return false;
+    }
+
+    // If everything is valid
+    setErrPassword(""); // clear error if needed
+    return true;
+  };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -61,19 +102,11 @@ const SignUp = () => {
     if (!clientName) {
       setErrClientName("Please input your username!");
     }
-    if (!email) {
-      setErrEmail("Please input your email!");
-    } else if (!EmailValidation(email)) {
-      setErrEmail("Enter a valid email address!");
-    }
+    validateEmail(email);
     if (!phone) {
       setErrPhone("Please input your phone number!");
     }
-    if (!password) {
-      setErrPassword("Please input your password!");
-    } else if (password.length < 12) {
-      setErrPassword("Password must be at least 12 characters!");
-    }
+    validatePassword(password);
     if (!address) {
       setErrAddress("Please input your address!");
     }
@@ -81,9 +114,8 @@ const SignUp = () => {
     if (
       clientName &&
       email &&
-      EmailValidation(email) &&
-      password &&
-      password.length >= 12 &&
+      validateEmail(email) &&
+      validatePassword(password) &&
       address
     ) {
       const userData = {
@@ -97,9 +129,9 @@ const SignUp = () => {
 
       try {
         // Gọi API đăng ký
-        const data = await signup(userData);
+        const data = await AuthService.signup(userData);
         setSuccessMsg(
-          `Hello ${clientName}, welcome to OREBI! We have received your sign-up request. We are processing it now and will notify you soon at ${email}.`
+          `Hello ${clientName}, welcome to OREBI! We have received your sign-up request. We are processing it now and will notify you soon at ${email}. Log in to verify your account.`
         );
 
         // Reset form fields
@@ -123,10 +155,9 @@ const SignUp = () => {
     // Simulate sending the verification code to the backend (add API call here)
     try {
       // Example API call to verify the code (replace with your actual API endpoint)
-      const response = await confirmEmail(email, verificationCode);
+      const response = await AuthService.confirmEmail(email, verificationCode);
 
       if (response.data.success) {
-        setIsVerified(true);
         setSuccessMsg("Email successfully verified!");
         navigate("/dashboard"); // Redirect to the dashboard or main page after verification
       } else {
@@ -140,36 +171,44 @@ const SignUp = () => {
     <div className="w-full h-screen flex items-center justify-center bg-gradient-to-r from-[#a8edea] via-[#fed6e3] to-[#a8edea]">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg border-2 border-gray-200">
         {successMsg ? (
-          <form onSubmit={handleVerificationSubmit}>
-            <h1 className="text-3xl font-semibold text-center mb-6">
-              Enter Verification Code
-            </h1>
-            <div className="flex flex-col mb-4">
-              <label
-                htmlFor="verificationCode"
-                className="font-semibold text-lg"
-              >
-                <span className="text-red-500">*</span> Verification Code
-              </label>
-              <input
-                type="text"
-                id="verificationCode"
-                value={verificationCode}
-                onChange={(e) => {setVerificationCode(e.target.value)}}
-                className="p-2 border border-gray-300 rounded-md"
-                placeholder="Enter your 6-digit code"
-              />
-              {errVerificationCode && (
-                <p className="text-red-500 text-sm">{errVerificationCode}</p>
-              )}
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white p-2 rounded-lg"
-            >
-              Verify Code
-            </button>
-          </form>
+          // <form onSubmit={handleVerificationSubmit}>
+          //   <h1 className="text-3xl font-semibold text-center mb-6">
+          //     Enter Verification Code
+          //   </h1>
+          //   <div className="flex flex-col mb-4">
+          //     <label
+          //       htmlFor="verificationCode"
+          //       className="font-semibold text-lg"
+          //     >
+          //       <span className="text-red-500">*</span> Verification Code
+          //     </label>
+          //     <input
+          //       type="text"
+          //       id="verificationCode"
+          //       value={verificationCode}
+          //       onChange={(e) => {setVerificationCode(e.target.value)}}
+          //       className="p-2 border border-gray-300 rounded-md"
+          //       placeholder="Enter your 6-digit code"
+          //     />
+          //     {errVerificationCode && (
+          //       <p className="text-red-500 text-sm">{errVerificationCode}</p>
+          //     )}
+          //   </div>
+          //   <button
+          //     type="submit"
+          //     className="w-full bg-blue-500 text-white p-2 rounded-lg"
+          //   >
+          //     Verify Code
+          //   </button>
+          // </form>
+          <div className="text-center">
+            <p className="text-green-500">{successMsg}</p>
+            <Link to="/signin">
+              <button className="mt-4 bg-blue-500 text-white p-2 rounded-lg w-full">
+                Log in
+              </button>
+            </Link>
+          </div>
         ) : (
           <form onSubmit={handleSignUp}>
             <h1 className="text-3xl font-semibold text-center mb-6">
