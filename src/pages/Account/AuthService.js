@@ -34,6 +34,16 @@ const AuthService = {
     });
     return response.data;
   },
+  getResetPasswordToken: async (email) => {
+    const response = await axios.post(`${API_URL}/Reset-Password-Token`, {
+      email: email,
+    });
+    return response.data;
+  },
+  resetPassword: async (data) => {
+    const response = await axios.post(`${API_URL}/Reset-Password`, data);
+    return response.data;
+  },
   resendVerification: async (email) => {
     const response = await axios.post(`${API_URL}/resend-confirmation-email`, {
       email: email,
