@@ -129,7 +129,7 @@ const SignUp = () => {
 
       try {
         // Gọi API đăng ký
-        const data = await AuthService.signup(userData);
+        await AuthService.signup(userData);
         setSuccessMsg(
           `Hello ${clientName}, welcome to OREBI! We have received your sign-up request. We are processing it now and will notify you soon at ${email}. Log in to verify your account.`
         );
@@ -143,28 +143,6 @@ const SignUp = () => {
       } catch (error) {
         setErrClientName(error.message); // Hiển thị lỗi nếu có
       }
-    }
-  };
-  const handleVerificationSubmit = async (e) => {
-    e.preventDefault();
-    if (verificationCode.length !== 6) {
-      setErrVerificationCode("The verification code must be 6 digits.");
-      return;
-    }
-
-    // Simulate sending the verification code to the backend (add API call here)
-    try {
-      // Example API call to verify the code (replace with your actual API endpoint)
-      const response = await AuthService.confirmEmail(email, verificationCode);
-
-      if (response.data.success) {
-        setSuccessMsg("Email successfully verified!");
-        navigate("/dashboard"); // Redirect to the dashboard or main page after verification
-      } else {
-        setErrVerificationCode("Invalid verification code!");
-      }
-    } catch (error) {
-      setErrVerificationCode("Verification failed!");
     }
   };
   return (

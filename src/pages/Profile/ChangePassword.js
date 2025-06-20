@@ -11,6 +11,8 @@ import {
   FaEyeSlash,
 } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
+import AuthService from "../Account/AuthService";
+import { toast } from "react-toastify";
 
 const importAsset = (file) => {
   try {
@@ -27,7 +29,67 @@ export default function ChangePassword() {
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const { logout } = useAuth();
+  const [errors, setErrors] = useState({
+    currentPwd: "",
+    newPwd: [],
+    confirmPwd: "",
+  });
+  const { logout, user } = useAuth();
+
+  const validateNewPassword = (password) => {
+    const errs = [];
+    if (password.length < 12) {
+      errs.push("Passwords must be at least 12 characters.");
+    }
+    if (!/[^a-zA-Z0-9]/.test(password)) {
+      errs.push("Passwords must have at least one non alphanumeric character.");
+    }
+    if (!/\d/.test(password)) {
+      errs.push("Passwords must have at least one digit ('0'-'9').");
+    }
+    if (!/[A-Z]/.test(password)) {
+      errs.push("Passwords must have at least one uppercase ('A'-'Z').");
+    }
+    if (!/[a-z]/.test(password)) {
+      errs.push("Passwords must have at least one lowercase ('a'-'z').");
+    }
+    return errs;
+  };
+
+  const handleChangePassword = async () => {
+    const newPwdErrors = validateNewPassword(newPwd);
+    let confirmPwdError = "";
+    if (newPwd !== confirmPwd) {
+      confirmPwdError = "Passwords do not match.";
+    }
+    setErrors({
+      currentPwd: "",
+      newPwd: newPwdErrors,
+      confirmPwd: confirmPwdError,
+    });
+    if (newPwdErrors.length > 0 || confirmPwdError) {
+      return;
+    }
+    const data = {
+      userName: user.userName,
+      currentPassword: currentPwd,
+      newPassword: newPwd,
+      confirmNewPassword: confirmPwd,
+    };
+    try {
+      await AuthService.changePassword(data);
+      toast.success("Đổi mật khẩu thành công!");
+    } catch (error) {
+      console.log(error);
+      if (error.response.data[0].code == "PasswordMismatch") {
+        setErrors({
+          currentPwd: "Current password is incorrect.",
+          newPwd: [],
+          confirmPwd: "",
+        });
+      }
+    }
+  };
 
   return (
     <div className="bg-gray-50 min-h-screen py-10">
@@ -124,6 +186,9 @@ export default function ChangePassword() {
                 >
                   {showCurrent ? <FaEyeSlash /> : <FaEye />}
                 </span>
+                {errors.currentPwd && (
+                  <div className="text-red-500 text-xs mt-1">{errors.currentPwd}</div>
+                )}
               </div>
               {/* New */}
               <div className="relative">
@@ -142,6 +207,13 @@ export default function ChangePassword() {
                 >
                   {showNew ? <FaEyeSlash /> : <FaEye />}
                 </span>
+                {errors.newPwd && errors.newPwd.length > 0 && (
+                  <ul className="text-red-500 text-xs mt-1">
+                    {errors.newPwd.map((err, idx) => (
+                      <li key={idx}>{err}</li>
+                    ))}
+                  </ul>
+                )}
               </div>
               {/* Confirm */}
               <div className="relative">
@@ -160,11 +232,19 @@ export default function ChangePassword() {
                 >
                   {showConfirm ? <FaEyeSlash /> : <FaEye />}
                 </span>
+                {errors.confirmPwd && (
+                  <div className="text-red-500 text-xs mt-1">{errors.confirmPwd}</div>
+                )}
               </div>
             </div>
 
             <div className="flex justify-end mt-6">
-              <button className="bg-black text-white px-8 py-2 rounded-lg hover:bg-gray-800 transition">
+              <button
+                onClick={() => {
+                  handleChangePassword();
+                }}
+                className="bg-black text-white px-8 py-2 rounded-lg hover:bg-gray-800 transition"
+              >
                 Change Password
               </button>
             </div>

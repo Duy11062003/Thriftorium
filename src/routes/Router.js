@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Navigate, Outlet, Routes } from "react-router-dom"; // Thêm các import cần thiết
+import { Route, Navigate, Routes } from "react-router-dom"; // Thêm các import cần thiết
 
 // Các trang public
 import Home from "../pages/Home/Home";

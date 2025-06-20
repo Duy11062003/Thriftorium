@@ -1,6 +1,5 @@
 // authService.js
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const API_URL = "https://localhost:7208/api/account";
@@ -10,13 +9,8 @@ const AuthService = {
       username,
       password,
     });
-
-    const user = {
-      token: response.data.token,
-      roles: response.data.roles,
-    };
-
-    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("user", JSON.stringify(response.data));
+    localStorage.setItem("token", response.data.token);
     return response.data;
   },
 
@@ -31,7 +25,15 @@ const AuthService = {
     );
     return response.data;
   },
-
+  changePassword: async (data) => {
+    const response = await axios.post(`${API_URL}/Change-Password`, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    return response.data;
+  },
   resendVerification: async (email) => {
     const response = await axios.post(`${API_URL}/resend-confirmation-email`, {
       email: email,

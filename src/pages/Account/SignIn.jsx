@@ -37,15 +37,8 @@ const SignIn = () => {
     if (email && password) {
       try {
         // Call the login function from AuthService.js
-        const response = await AuthService.login(email, password);
+        await AuthService.login(email, password);
 
-        // Handle success, save token, and set user info
-        const user = {
-          email,
-          token: response.token,
-          roles: response.roles,
-        };
-        localStorage.setItem("user", JSON.stringify(user)); // Save user to localStorage
         navigate("/"); // Redirect to profile or main page
         setEmail("");
         setPassword("");

@@ -14,22 +14,17 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); // null nếu chưa login
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState("");
-  const [tokenExpiration, setTokenExpiration] = useState("");
 
   const navigate = useNavigate();
   // Giả lập kiểm tra token (có thể thay bằng gọi API /validate-token)
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     const storedToken = localStorage.getItem("token");
-    const storedTokenExpiration = localStorage.getItem("tokenExpiration");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
     if (storedToken) {
       setToken(storedToken);
-    }
-    if (storedTokenExpiration) {
-      setTokenExpiration(storedTokenExpiration);
     }
     setLoading(false);
   }, []);
@@ -37,8 +32,8 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     setToken("");
-    setTokenExpiration("");
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     navigate("/signin");
   };
   const value = {
@@ -46,7 +41,6 @@ export const AuthProvider = ({ children }) => {
     logout,
     isAuthenticated: !!user,
     token,
-    tokenExpiration,
   };
 
   if (loading) return null; // hoặc spinner
