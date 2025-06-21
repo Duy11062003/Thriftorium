@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Heading from "../Products/Heading";
 import Product from "../Products/Product";
+import ProductService from "../../../service/ProductService";
 import {
   spfOne,
   spfTwo,
@@ -9,47 +10,62 @@ import {
 } from "../../../assets/images/index";
 
 const SpecialOffers = () => {
+  const [specialOffers, setSpecialOffers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fallback images cho trường hợp không có ảnh từ API
+  const fallbackImages = [spfOne, spfTwo, spfThree, spfFour];
+
+  useEffect(() => {
+    const fetchSpecialOffers = async () => {
+      try {
+        const data = await ProductService.getProductsBase({
+          sortBy: "price_asc", // sắp xếp theo giá tăng dần
+          pageSize: 8, // lấy 8 sản phẩm
+          pageIndex: 1
+        });
+        setSpecialOffers(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error("Error fetching special offers:", error);
+        setSpecialOffers([]);
+      }
+      setLoading(false);
+    };
+    fetchSpecialOffers();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="w-full pb-20">
+        <Heading heading="Special Offers" />
+        <div className="text-center">Đang tải ưu đãi đặc biệt...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full pb-20">
       <Heading heading="Special Offers" />
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 lgl:grid-cols-3 xl:grid-cols-4 gap-10">
-        <Product
-          _id="1101"
-          img={spfOne}
-          productName="Cap for Boys"
-          price="35.00"
-          color="Blank and White"
-          badge={true}
-          des="Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic excepturi quibusdam odio deleniti reprehenderit facilis."
-        />
-        <Product
-          _id="1102"
-          img={spfTwo}
-          productName="Tea Table"
-          price="180.00"
-          color="Gray"
-          badge={true}
-          des="Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic excepturi quibusdam odio deleniti reprehenderit facilis."
-        />
-        <Product
-          _id="1103"
-          img={spfThree}
-          productName="Headphones"
-          price="25.00"
-          color="Mixed"
-          badge={true}
-          des="Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic excepturi quibusdam odio deleniti reprehenderit facilis."
-        />
-        <Product
-          _id="1104"
-          img={spfFour}
-          productName="Sun glasses"
-          price="220.00"
-          color="Black"
-          badge={true}
-          des="Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic excepturi quibusdam odio deleniti reprehenderit facilis."
-        />
-      </div>
+      {specialOffers.length > 0 ? (
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 lgl:grid-cols-3 xl:grid-cols-4 gap-10">
+          {specialOffers.map((product, index) => (
+            <Product
+              key={product.productId}
+              _id={product.productId}
+              img={product.imageProducts?.[0]?.image || fallbackImages[index % fallbackImages.length]}
+              productName={product.name}
+              price={product.purchasePrice?.toString() || "0"}
+              color={product.category?.name || "Chưa phân loại"}
+              badge={true}
+              des={`Đánh giá: ${product.averageRating || 0}/5 (${product.ratings?.length || 0} lượt)`}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center text-gray-500">
+          Không có ưu đãi đặc biệt nào
+        </div>
+      )}
     </div>
   );
 };

@@ -68,7 +68,7 @@ const ProductService = {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
-    return response.data;
+    return response.data.data;
   },
   getTopProductInMonth: async (top) => {
     const response = await axios.get(`${API_URL}/base/GetTopProductInMonth?top=${top}`, {
@@ -76,7 +76,7 @@ const ProductService = {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
-    return response.data;
+    return response.data.data;
   },
 };
 

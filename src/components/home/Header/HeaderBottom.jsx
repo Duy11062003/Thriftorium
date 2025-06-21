@@ -6,12 +6,15 @@ import { FaSearch, FaUser, FaCaretDown, FaShoppingCart } from "react-icons/fa";
 import Flex from "../../designLayouts/Flex";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { paginationItems } from "../../../constants";
+import CategoryService from "../../../service/CategoryService";
+import ProductService from "../../../service/ProductService";
 
 const HeaderBottom = () => {
   const products = useSelector((state) => state.orebiReducer.products);
   const [show, setShow] = useState(false);
   const [showUser, setShowUser] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [loadingCategories, setLoadingCategories] = useState(false);
   const navigate = useNavigate();
   const ref = useRef();
 
@@ -25,18 +28,82 @@ const HeaderBottom = () => {
     });
   }, [show, ref]);
 
+  // Fetch categories when component mounts
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoadingCategories(true);
+        const categoryData = await CategoryService.getAllCategory();
+        setCategories(categoryData || []);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        // Fallback to static categories if API fails
+        setCategories([
+          { categoryID: 1, name: "Accessories" },
+          { categoryID: 2, name: "Furniture" },
+          { categoryID: 3, name: "Electronics" },
+          { categoryID: 4, name: "Clothes" },
+          { categoryID: 5, name: "Bags" },
+          { categoryID: 6, name: "Home appliances" }
+        ]);
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
 
   useEffect(() => {
-    const filtered = paginationItems.filter((item) =>
-      item.productName.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setFilteredProducts(filtered);
+    const searchProducts = async () => {
+      if (searchQuery.trim() === "") {
+        setFilteredProducts([]);
+        return;
+      }
+
+      try {
+        setSearchLoading(true);
+        const searchResults = await ProductService.getProductsBase({
+          search: searchQuery,
+          pageSize: 10 // Limit search results to 10 items
+        });
+        setFilteredProducts(searchResults || []);
+      } catch (error) {
+        console.error("Error searching products:", error);
+        setFilteredProducts([]);
+      } finally {
+        setSearchLoading(false);
+      }
+    };
+
+    // Debounce search to avoid too many API calls
+    const debounceTimer = setTimeout(() => {
+      searchProducts();
+    }, 300);
+
+    return () => clearTimeout(debounceTimer);
   }, [searchQuery]);
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
+  };
+
+  const handleSearchSubmit = (e) => {
+    if (e.key === 'Enter' && searchQuery.trim()) {
+      navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery("");
+    }
+  };
+
+  const handleSearchIconClick = () => {
+    if (searchQuery.trim()) {
+      navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery("");
+    }
   };
 
   return (
@@ -59,14 +126,25 @@ const HeaderBottom = () => {
                 transition={{ duration: 0.5 }}
                 className="absolute top-36 z-50 bg-primeColor w-auto text-[#767676] p-4 pb-6"
               >
-                {["Accessories","Furniture","Electronics","Clothes","Bags","Home appliances"].map((cat) => (
-                  <li
-                    key={cat}
-                    className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:border-white hover:text-white duration-300 cursor-pointer"
-                  >
-                    {cat}
+                {loadingCategories ? (
+                  <li className="text-gray-400 px-4 py-1 border-b border-gray-400">
+                    Loading categories...
                   </li>
-                ))}
+                ) : (
+                  categories.map((cat) => (
+                    <li
+                      key={cat.categoryID}
+                      className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:border-white hover:text-white duration-300 cursor-pointer"
+                      onClick={() => {
+                        // Navigate to shop page with category filter
+                        navigate(`/shop?category=${cat.categoryID}`);
+                        setShow(false);
+                      }}
+                    >
+                      {cat.name}
+                    </li>
+                  ))
+                )}
               </motion.ul>
             )}
           </div>
@@ -77,34 +155,52 @@ const HeaderBottom = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearch}
+              onKeyDown={handleSearchSubmit}
               placeholder="Search your products here"
               className="flex-1 h-full outline-none placeholder:text-[#C4C4C4] placeholder:text-[14px]"
             />
-            <FaSearch className="w-5 h-5" />
+            <FaSearch 
+              className="w-5 h-5 cursor-pointer hover:text-black transition-colors" 
+              onClick={handleSearchIconClick}
+            />
             {searchQuery && (
               <div className="absolute top-16 left-0 w-full max-h-96 bg-white overflow-y-auto shadow-2xl scrollbar-hide z-50 cursor-pointer">
-                {filteredProducts.map((item) => (
-                  <div
-                    key={item._id}
-                    onClick={() => {
-                      navigate(
-                        `/product/${item.productName.toLowerCase().replace(/\s+/g, "")}`,
-                        { state: { item } }
-                      );
-                      setSearchQuery("");
-                    }}
-                    className="flex items-center gap-3 bg-gray-100 mb-3 p-3 max-w-[600px] h-28"
-                  >
-                    <img className="w-24" src={item.img} alt="productImg" />
-                    <div className="flex flex-col gap-1">
-                      <p className="font-semibold text-lg">{item.productName}</p>
-                      <p className="text-xs">{item.des}</p>
-                      <p className="text-sm">
-                        Price: <span className="text-primeColor font-semibold">${item.price}</span>
-                      </p>
-                    </div>
+                {searchLoading ? (
+                  <div className="p-4 text-center text-gray-500">
+                    Searching...
                   </div>
-                ))}
+                ) : filteredProducts.length > 0 ? (
+                  filteredProducts.map((item) => (
+                    <div
+                      key={item.productId}
+                      onClick={() => {
+                        navigate(`/product/${item.productId}`);
+                        setSearchQuery("");
+                      }}
+                      className="flex items-center gap-3 bg-gray-100 mb-3 p-3 max-w-[600px] h-28 hover:bg-gray-200 transition-colors"
+                    >
+                      <img 
+                        className="w-24 h-20 object-cover" 
+                        src={item.imageProducts?.[0]?.image || '/placeholder-image.jpg'} 
+                        alt="productImg" 
+                      />
+                      <div className="flex flex-col gap-1">
+                        <p className="font-semibold text-lg">{item.name}</p>
+                        <p className="text-xs line-clamp-2">{item.description}</p>
+                        <p className="text-sm">
+                          Price: <span className="text-primeColor font-semibold">${item.purchasePrice}</span>
+                        </p>
+                        {item.category && (
+                          <p className="text-xs text-gray-500">Category: {item.category.name}</p>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-4 text-center text-gray-500">
+                    No products found for "{searchQuery}"
+                  </div>
+                )}
               </div>
             )}
           </div>

@@ -35,8 +35,8 @@ import AdminLayout from "../layouts/AdminLayout";
 
 const publicRoutes = [
   { path: "", element: <Home />, layout: PublicLayout },
-  { path: "shop", element: <Shop /> },
-  { path: "product/:_id", element: <ProductDetails />, layout: PublicLayout },
+  { path: "shop", element: <Shop />, layout: PublicLayout },
+  { path: "product/:productId", element: <ProductDetails />, layout: PublicLayout },
   { path: "shop/:shopSlug", element: <ShopDetails />, layout: PublicLayout },
   { path: "*", element: <Navigate to="/" replace />, layout: PublicLayout },
   { path: "signin", element: <SignIn />, layout: PublicLayout },

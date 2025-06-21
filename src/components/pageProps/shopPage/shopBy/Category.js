@@ -1,56 +1,67 @@
-import React, { useState } from "react";
-// import { FaPlus } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
 import { ImPlus } from "react-icons/im";
 import NavTitle from "./NavTitle";
+import CategoryService from "../../../../service/CategoryService";
 
-const Category = () => {
+const Category = ({ selectedCategory, onCategoryChange }) => {
   const [showSubCatOne, setShowSubCatOne] = useState(false);
-  const items = [
-    {
-      _id: 990,
-      title: "New Arrivals",
-      icons: true,
-    },
-    {
-      _id: 991,
-      title: "Gudgets",
-    },
-    {
-      _id: 992,
-      title: "Accessories",
-      icons: true,
-    },
-    {
-      _id: 993,
-      title: "Electronics",
-    },
-    {
-      _id: 994,
-      title: "Others",
-    },
-  ];
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        const categoryData = await CategoryService.getAllCategory();
+        setCategories(categoryData || []);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        // Fallback to static categories if API fails
+        setCategories([
+          { categoryID: 1, name: "Accessories" },
+          { categoryID: 2, name: "Furniture" },
+          { categoryID: 3, name: "Electronics" },
+          { categoryID: 4, name: "Clothes" },
+          { categoryID: 5, name: "Bags" },
+          { categoryID: 6, name: "Home appliances" }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
   return (
     <div className="w-full">
       <NavTitle title="Shop by Category" icons={false} />
       <div>
-        <ul className="flex flex-col gap-4 text-sm lg:text-base text-[#767676]">
-          {items.map(({ _id, title, icons }) => (
+        {loading ? (
+          <div className="text-sm text-gray-500 py-2">Loading categories...</div>
+        ) : (
+          <ul className="flex flex-col gap-4 text-sm lg:text-base text-[#767676]">
+            {/* All Categories option */}
             <li
-              key={_id}
-              className="border-b-[1px] border-b-[#F0F0F0] pb-2 flex items-center justify-between"
+              className={`border-b-[1px] border-b-[#F0F0F0] pb-2 flex items-center justify-between cursor-pointer hover:text-primeColor duration-300 ${
+                !selectedCategory || selectedCategory === '' ? 'text-primeColor font-semibold' : ''
+              }`}
+              onClick={() => onCategoryChange('')}
             >
-              {title}
-              {icons && (
-                <span
-                  onClick={() => setShowSubCatOne(!showSubCatOne)}
-                  className="text-[10px] lg:text-xs cursor-pointer text-gray-400 hover:text-primeColor duration-300"
-                >
-                  <ImPlus />
-                </span>
-              )}
+              All Categories
             </li>
-          ))}
-        </ul>
+            {categories.map(({ categoryID, name }) => (
+              <li
+                key={categoryID}
+                className={`border-b-[1px] border-b-[#F0F0F0] pb-2 flex items-center justify-between cursor-pointer hover:text-primeColor duration-300 ${
+                  selectedCategory === categoryID.toString() ? 'text-primeColor font-semibold' : ''
+                }`}
+                onClick={() => onCategoryChange(categoryID.toString())}
+              >
+                {name}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );
