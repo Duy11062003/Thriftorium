@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AuthService from "./AuthService"; // Importing the login function from AuthService
+import AuthService from "../../service/AuthService"; // Importing the login function from AuthService
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -65,9 +65,9 @@ const SignIn = () => {
       // Example API call to verify the code (replace with your actual API endpoint)
       const response = await AuthService.confirmEmail(email, verificationCode);
 
-      if (response.data.success) {
+      if (response) {
         setSuccessMsg("Email successfully verified!");
-        navigate("/dashboard"); // Redirect to the dashboard or main page after verification
+        navigate("/");
       } else {
         setErrVerificationCode("Invalid verification code!");
       }

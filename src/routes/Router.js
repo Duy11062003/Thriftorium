@@ -7,12 +7,6 @@ import Shop from "../pages/Shop/Shop";
 import ProductDetails from "../pages/ProductDetails/ProductDetails";
 import ShopDetails from "../pages/ProductDetails/ShopDetails"; // Import trang ShopDetails
 
-// Trang Dashboard cho seller
-import SellerHome from "../pages/SellerDashboard/SellDashboard-Home";
-import SettingMyShop from "../pages/SellerDashboard/Setting-MyShop";
-import CatalogProducts from "../pages/SellerDashboard/Catalog-Products";
-import SettingsPlan from "../pages/SellerDashboard/Setting-Plan";
-
 // Auth pages
 import SignIn from "../pages/Account/SignIn";
 import SignUp from "../pages/Account/SignUp";
@@ -35,6 +29,9 @@ import ManagementRoute from "./components/ManagementRoute";
 import PrivateRoute from "./components/PrivateRoute";
 import PublicLayout from "../layouts/PublicLayout";
 import ProfileLayout from "../layouts/ProfileLayout";
+import AdminProductManager from "../pages/Admin/products/ProductManager";
+import CategoryManager from "../pages/Admin/category/CategoryManager";
+import AdminLayout from "../layouts/AdminLayout";
 
 const publicRoutes = [
   { path: "", element: <Home />, layout: PublicLayout },
@@ -48,11 +45,9 @@ const publicRoutes = [
   { path: "new-password", element: <NewPassword />, layout: PublicLayout },
 ];
 
-const sellerRoutes = [
-  { path: "sellerhome", element: <SellerHome /> },
-  { path: "myshop", element: <SettingMyShop /> },
-  { path: "productscatalog", element: <CatalogProducts /> },
-  { path: "plan", element: <SettingsPlan /> },
+const adminRoutes = [
+  { path: "product-manager", element: <AdminProductManager />, layout: AdminLayout },
+  { path: "category-manager", element: <CategoryManager />, layout: AdminLayout },
 ];
 
 // const shipperRoutes = [
@@ -89,15 +84,18 @@ const Routers = () => {
           />
         ))}
       </Route>
-      <Route path="/seller">
-        {sellerRoutes.map((route) => (
+      <Route path="/admin">
+        {adminRoutes.map((route) => (
           <Route
             key={route.path}
             path={route.path}
             element={
-              <ManagementRoute layout={route.layout ?? null}>
+              <ManagementRoute layout={route.layout}>
                 {route.element}
               </ManagementRoute>
+              // <PrivateRoute layout={route.layout ?? null}>
+              //   {route.element}
+              // </PrivateRoute>
             }
           />
         ))}

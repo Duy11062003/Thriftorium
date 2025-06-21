@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AuthService from "./AuthService"; // Import hàm signup từ AuthService.js
+import AuthService from "../../service/AuthService"; // Import hàm signup từ AuthService.js
 
 const SignUp = () => {
   // ============= Initial State Start here =============

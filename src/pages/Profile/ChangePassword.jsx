@@ -11,7 +11,7 @@ import {
   FaEyeSlash,
 } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
-import AuthService from "../Account/AuthService";
+import AuthService from "../../service/AuthService";
 import { toast } from "react-toastify";
 
 const importAsset = (file) => {

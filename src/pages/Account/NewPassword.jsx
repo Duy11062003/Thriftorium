@@ -1,26 +1,26 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AuthService from "./AuthService";
+import AuthService from "../../service/AuthService";
 import { toast } from "react-toastify";
 
 const NewPassword = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
-  const [token, setToken] = useState("");
-  const [password, setPassword] = useState("");
+  const [code, setCode] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
-  const handlePasswordChange = (e) => setPassword(e.target.value);
+  const handlePasswordChange = (e) => setNewPassword(e.target.value);
   const handleConfirmPasswordChange = (e) => setConfirmPassword(e.target.value);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !username || !token || !password || !confirmPassword) {
+    if (!email || !username || !code || !newPassword || !confirmPassword) {
       toast.error("Vui lòng nhập đầy đủ thông tin.");
       return;
     }
-    if (password !== confirmPassword) {
+    if (newPassword !== confirmPassword) {
       toast.error("Mật khẩu xác nhận không khớp.");
       return;
     }
@@ -28,9 +28,9 @@ const NewPassword = () => {
       await AuthService.resetPassword({
         username,
         email,
-        password,
+        newPassword: newPassword,
         confirmPassword,
-        token,
+        code: code,
       });
       toast.success("Đặt lại mật khẩu thành công!");
       setTimeout(() => navigate("/signin"), 1500);
@@ -86,8 +86,8 @@ const NewPassword = () => {
               type="text"
               id="token"
               placeholder="Enter verification code"
-              value={token}
-              onChange={e => setToken(e.target.value)}
+              value={code}
+              onChange={e => setCode(e.target.value)}
               className="p-2 border border-gray-300 rounded-md"
               required
             />
@@ -100,7 +100,7 @@ const NewPassword = () => {
               type="password"
               id="password"
               placeholder="Enter your password"
-              value={password}
+              value={newPassword}
               onChange={handlePasswordChange}
               className="p-2 border border-gray-300 rounded-md"
               required

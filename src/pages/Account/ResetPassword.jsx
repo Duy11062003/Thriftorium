@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import AuthService from "./AuthService";
+import AuthService from "../../service/AuthService";
 import { toast } from "react-toastify";
 
 const ResetPassword = () => {

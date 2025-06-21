@@ -35,13 +35,13 @@ const AuthService = {
     return response.data;
   },
   getResetPasswordToken: async (email) => {
-    const response = await axios.post(`${API_URL}/Reset-Password-Token`, {
+    const response = await axios.post(`${API_URL}/forgot-password`, {
       email: email,
     });
     return response.data;
   },
   resetPassword: async (data) => {
-    const response = await axios.post(`${API_URL}/Reset-Password`, data);
+    const response = await axios.post(`${API_URL}/reset-password-with-code`, data);
     return response.data;
   },
   resendVerification: async (email) => {
