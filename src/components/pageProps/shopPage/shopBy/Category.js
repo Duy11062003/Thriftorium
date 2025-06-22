@@ -39,7 +39,7 @@ const Category = ({ selectedCategory, onCategoryChange }) => {
         {loading ? (
           <div className="text-sm text-gray-500 py-2">Loading categories...</div>
         ) : (
-          <ul className="flex flex-col gap-4 text-sm lg:text-base text-[#767676]">
+        <ul className="flex flex-col gap-4 text-sm lg:text-base text-[#767676]">
             {/* All Categories option */}
             <li
               className={`border-b-[1px] border-b-[#F0F0F0] pb-2 flex items-center justify-between cursor-pointer hover:text-primeColor duration-300 ${
@@ -58,9 +58,9 @@ const Category = ({ selectedCategory, onCategoryChange }) => {
                 onClick={() => onCategoryChange(categoryID.toString())}
               >
                 {name}
-              </li>
-            ))}
-          </ul>
+            </li>
+          ))}
+        </ul>
         )}
       </div>
     </div>

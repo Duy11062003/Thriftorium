@@ -40,7 +40,7 @@ const BestSellers = () => {
       </div>
     );
   }
-
+  console.log(bestSellers);
   return (
     <div className="w-full pb-20">
       <Heading heading="Our Bestsellers" />

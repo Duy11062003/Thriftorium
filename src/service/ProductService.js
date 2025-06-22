@@ -14,7 +14,7 @@ const ProductService = {
   },
   getProductDetails: async (id) => {
     const response = await axios.get(`${API_URL}/productDetails/${id}`);
-    return response.data;
+    return response.data.data;
   },
   deleteProduct: async (id) => {
     const response = await axios.delete(`${API_URL}/${id}`, {

@@ -48,25 +48,25 @@ const Pagination = ({ products, itemsPerPage, currentPage, totalProducts, onPage
         <Items products={products} />
       </div>
       {totalProducts > 0 && (
-        <div className="flex flex-col mdl:flex-row justify-center mdl:justify-between items-center">
-          <ReactPaginate
-            nextLabel=""
-            onPageChange={handlePageClick}
-            pageRangeDisplayed={3}
-            marginPagesDisplayed={2}
-            pageCount={pageCount}
-            previousLabel=""
+      <div className="flex flex-col mdl:flex-row justify-center mdl:justify-between items-center">
+        <ReactPaginate
+          nextLabel=""
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={3}
+          marginPagesDisplayed={2}
+          pageCount={pageCount}
+          previousLabel=""
             forcePage={currentPage - 1} // ReactPaginate uses 0-based index
-            pageLinkClassName="w-9 h-9 border-[1px] border-lightColor hover:border-gray-500 duration-300 flex justify-center items-center"
-            pageClassName="mr-6"
-            containerClassName="flex text-base font-semibold font-titleFont py-10"
-            activeClassName="bg-black text-white"
-          />
+          pageLinkClassName="w-9 h-9 border-[1px] border-lightColor hover:border-gray-500 duration-300 flex justify-center items-center"
+          pageClassName="mr-6"
+          containerClassName="flex text-base font-semibold font-titleFont py-10"
+          activeClassName="bg-black text-white"
+        />
 
-          <p className="text-base font-normal text-lightText">
+        <p className="text-base font-normal text-lightText">
             Products from {startItem} to {endItem} of {totalProducts}
-          </p>
-        </div>
+        </p>
+      </div>
       )}
     </div>
   );

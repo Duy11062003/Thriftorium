@@ -7,30 +7,110 @@ import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 import { resetCart } from "../../redux/orebiSlice";
 import { emptyCart } from "../../assets/images";
 import ItemCard from "./ItemCard";
+import CartService from "../../service/CartService";
+import { useAuth } from "../../context/AuthContext";
+import { toast } from "react-toastify";
 
 const Cart = () => {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.orebiReducer.products);
+  const { user } = useAuth();
+  const isLoggedIn = !!localStorage.getItem("token");
 
+  const [cartItems, setCartItems] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [totalAmt, setTotalAmt] = useState(0);
   const [shippingCharge, setShippingCharge] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [couponCode, setCouponCode] = useState("");
 
+  // Fetch cart data from API
+  useEffect(() => {
+    const fetchCartData = async () => {
+      if (isLoggedIn && user?.userID) {
+        try {
+          const data = await CartService.getCartByAccountId(user.userID);
+          setCartItems(data.cartItem || []);
+        } catch (error) {
+          console.error("Error fetching cart data:", error);
+          setCartItems([]);
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchCartData();
+  }, [isLoggedIn, user?.userID]);
   // Hàm format VND (nhân amount lên 1000, sau đó chèn dấu chấm hàng ngàn, thêm " VND")
   const formatVND = (amount) => {
     const realValue = amount * 1000;
     return realValue.toLocaleString("vi-VN") + " VND";
   };
 
-  // Tính subtotal
+  // Refresh cart data from API
+  const refreshCartData = async () => {
+    try {
+      const data = await CartService.getCartByAccountId(user.userID);
+      setCartItems(data.cartItem || []);
+    } catch (error) {
+      console.error("Error refreshing cart data:", error);
+    }
+  };
+
+  // Handle update cart quantity
+  const handleUpdateQuantity = async (productId, newQuantity) => {
+    if (newQuantity <= 0) return;
+    
+    try {
+      await CartService.updateCart(user.userID, productId, newQuantity);
+      
+      // Refresh from API to ensure data consistency
+      await refreshCartData();
+      
+      toast.success("Đã cập nhật số lượng sản phẩm");
+    } catch (error) {
+      console.error("Error updating cart:", error);
+      toast.error("Có lỗi xảy ra khi cập nhật giỏ hàng");
+    }
+  };
+
+  // Handle remove item from cart
+  const handleRemoveItem = async (productId) => {
+    try {
+      await CartService.deleteCart(user.userID, productId);
+      
+      // Refresh from API to ensure data consistency
+      await refreshCartData();
+      
+      toast.success("Đã xóa sản phẩm khỏi giỏ hàng");
+    } catch (error) {
+      console.error("Error removing item:", error);
+      toast.error("Có lỗi xảy ra khi xóa sản phẩm");
+    }
+  };
+
+  // Handle clear cart
+  const handleClearCart = async () => {
+    if (!window.confirm("Bạn có chắc chắn muốn xóa toàn bộ giỏ hàng?")) return;
+    
+    try {
+      await CartService.deleteUserCart(user.userID);
+      setCartItems([]);
+      toast.success("Đã xóa toàn bộ giỏ hàng");
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+      toast.error("Có lỗi xảy ra khi xóa giỏ hàng");
+    }
+  };
+
+  // Tính subtotal - sử dụng cartItems từ API thay vì Redux products
   useEffect(() => {
     let sum = 0;
-    products.forEach((item) => {
-      sum += item.price * item.quantity;
+    cartItems.forEach((item) => {
+      sum += (item.product?.unitPrice || 0) * item.quantity;
     });
     setTotalAmt(sum);
-  }, [products]);
+  }, [cartItems]);
 
   // Tính phí vận chuyển
   useEffect(() => {
@@ -51,11 +131,37 @@ const Cart = () => {
   // Tổng cuối = subtotal + shipping - discount
   const finalTotal = totalAmt + shippingCharge - discount;
 
+  if (loading) {
+    return <div className="max-w-container mx-auto px-4 py-20 text-center">Đang tải giỏ hàng...</div>;
+  }
+
   return (
     <div className="max-w-container mx-auto px-4">
       <Breadcrumbs title="Cart" />
 
-      {products.length > 0 ? (
+      {!isLoggedIn ? (
+        // Not logged in state
+        <motion.div
+          initial={{ y: 30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.4 }}
+          className="flex flex-col mdl:flex-row justify-center items-center gap-4 pb-20"
+        >
+          <div className="max-w-[500px] p-4 py-8 bg-white flex gap-4 flex-col items-center rounded-md shadow-lg">
+            <h1 className="font-titleFont text-xl font-bold uppercase">
+              Vui lòng đăng nhập
+            </h1>
+            <p className="text-sm text-center px-10 -mt-2">
+              Bạn cần đăng nhập để xem giỏ hàng của mình.
+            </p>
+            <Link to="/signin">
+              <button className="bg-primeColor rounded-md cursor-pointer hover:bg-black active:bg-gray-900 px-8 py-2 font-titleFont font-semibold text-lg text-gray-200 hover:text-white duration-300">
+                Đăng nhập
+              </button>
+            </Link>
+          </div>
+        </motion.div>
+      ) : cartItems.length > 0 ? (
         <div className="pb-20">
           {/* Header bảng */}
           <div className="w-full h-20 bg-[#F5F7F7] text-primeColor hidden lgl:grid grid-cols-5 place-content-center px-6 text-lg font-titleFont font-semibold">
@@ -67,21 +173,23 @@ const Cart = () => {
 
           {/* Danh sách sản phẩm */}
           <div className="mt-5">
-            {products.map((item) => (
+            {cartItems.map((item) => (
               <ItemCard
-                key={item._id}
+                key={item.cartID}
                 item={item}
                 formatVND={formatVND}
+                onUpdateQuantity={handleUpdateQuantity}
+                onRemoveItem={handleRemoveItem}
               />
             ))}
           </div>
 
           {/* Nút Reset */}
           <button
-            onClick={() => dispatch(resetCart())}
+            onClick={handleClearCart}
             className="py-2 px-10 bg-red-500 text-white font-semibold uppercase mb-4 hover:bg-red-700 duration-300"
           >
-            Reset Cart
+            Xóa toàn bộ giỏ hàng
           </button>
 
           {/* Coupon */}

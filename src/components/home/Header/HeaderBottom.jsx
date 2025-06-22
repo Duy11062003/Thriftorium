@@ -171,25 +171,25 @@ const HeaderBottom = () => {
                   </div>
                 ) : filteredProducts.length > 0 ? (
                   filteredProducts.map((item) => (
-                    <div
+                  <div
                       key={item.productId}
-                      onClick={() => {
+                    onClick={() => {
                         navigate(`/product/${item.productId}`);
-                        setSearchQuery("");
-                      }}
+                      setSearchQuery("");
+                    }}
                       className="flex items-center gap-3 bg-gray-100 mb-3 p-3 max-w-[600px] h-28 hover:bg-gray-200 transition-colors"
-                    >
+                  >
                       <img 
                         className="w-24 h-20 object-cover" 
                         src={item.imageProducts?.[0]?.image || '/placeholder-image.jpg'} 
                         alt="productImg" 
                       />
-                      <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-1">
                         <p className="font-semibold text-lg">{item.name}</p>
                         <p className="text-xs line-clamp-2">{item.description}</p>
-                        <p className="text-sm">
+                      <p className="text-sm">
                           Price: <span className="text-primeColor font-semibold">${item.purchasePrice}</span>
-                        </p>
+                      </p>
                         {item.category && (
                           <p className="text-xs text-gray-500">Category: {item.category.name}</p>
                         )}

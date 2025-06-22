@@ -32,6 +32,7 @@ import ProfileLayout from "../layouts/ProfileLayout";
 import AdminProductManager from "../pages/Admin/products/ProductManager";
 import CategoryManager from "../pages/Admin/category/CategoryManager";
 import AdminLayout from "../layouts/AdminLayout";
+import Cart from "../pages/Cart/Cart";
 
 const publicRoutes = [
   { path: "", element: <Home />, layout: PublicLayout },
@@ -43,6 +44,7 @@ const publicRoutes = [
   { path: "signup", element: <SignUp />, layout: PublicLayout },
   { path: "reset-password", element: <ResetPassword />, layout: PublicLayout },
   { path: "new-password", element: <NewPassword />, layout: PublicLayout },
+  { path: "cart", element: <Cart />, layout: PublicLayout },
 ];
 
 const adminRoutes = [
