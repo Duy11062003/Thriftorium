@@ -51,8 +51,8 @@ const BestSellers = () => {
               key={product.id || product.productID}
               _id={product.id || product.productID}
               img={product.imageProducts?.[0]?.image || fallbackImages[index] || bestSellerOne}
-              productName={product.name}
-              price={product.unitPrice?.toString() || "0"}
+              productName={product.productName}
+              price={product.purchasePrice?.toString() || "0"}
               color={product.original || "N/A"}
               badge={product.status}
               des={product.description || "Không có mô tả"}

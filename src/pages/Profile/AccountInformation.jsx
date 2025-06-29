@@ -1,5 +1,5 @@
 // src/pages/Profile/AccountInformation.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import {
   FaUser,
@@ -9,6 +9,8 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
+import AccountAppService from "../../service/AccountAppService";
+import { toast } from "react-toastify";
 
 const importAsset = (file) => {
   try {
@@ -19,13 +21,79 @@ const importAsset = (file) => {
 };
 
 export default function AccountInformation() {
-  const [fullName, setFullName] = useState("Bùi Khánh Duy");
-  const [email, setEmail] = useState("duy@gmail.com");
-  const [phone, setPhone] = useState("0123456789");
-  const [address, setAddress] = useState(
-    "9/1, đường số 7, khu phố 5, phường Linh Chiểu, thành phố Thủ Đức."
-  );
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
+  const [name, setname] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  // Load user data khi component mount
+  useEffect(() => {
+    if (user) {
+      setname(user.name || user.userName || "");
+      setEmail(user.email || "");
+      setPhone(user.phone || user.phone || "");
+      setAddress(user.address || "");
+    }
+  }, [user]);
+
+  const handleUpdateAccount = async () => {
+    if (!user?.userID) {
+      toast.error("Không tìm thấy thông tin người dùng!");
+      return;
+    }
+
+    // Validation
+    if (!name.trim()) {
+      toast.error("Vui lòng nhập họ tên!");
+      return;
+    }
+    if (!email.trim()) {
+      toast.error("Vui lòng nhập email!");
+      return;
+    }
+    if (!phone.trim()) {
+      toast.error("Vui lòng nhập số điện thoại!");
+      return;
+    }
+
+    setIsUpdating(true);
+
+    try {
+      const updateData = {
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        address: address.trim(),
+      };
+
+      await AccountAppService.updateAccount(user.userID, updateData);
+      
+      // Cập nhật thông tin user trong localStorage (optional)
+      const updatedUser = { ...user, ...updateData };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      
+      toast.success("Cập nhật thông tin tài khoản thành công!");
+      
+    } catch (error) {
+      console.error("Error updating account:", error);
+      
+      if (error.response?.status === 401) {
+        toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!");
+        logout();
+      } else if (error.response?.status === 400) {
+        toast.error("Thông tin không hợp lệ. Vui lòng kiểm tra lại!");
+      } else if (error.response?.status === 404) {
+        toast.error("Không tìm thấy tài khoản!");
+      } else {
+        toast.error("Có lỗi xảy ra khi cập nhật thông tin. Vui lòng thử lại!");
+      }
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen py-10">
       <div className="max-w-container mx-auto px-4">
@@ -44,7 +112,7 @@ export default function AccountInformation() {
                 alt="avatar"
                 className="w-16 h-16 rounded-full object-cover"
               />
-              <div className="font-semibold">Bùi Khánh Duy</div>
+              <div className="font-semibold">{user?.name || user?.userName || "User"}</div>
             </div>
             <nav className="space-y-2">
               <NavLink
@@ -92,35 +160,41 @@ export default function AccountInformation() {
               {/* Full name */}
               <div>
                 <label className="block text-sm font-bold mb-1">
-                  Full name
+                  Full name *
                 </label>
                 <input
                   type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-300"
+                  value={name}
+                  onChange={(e) => setname(e.target.value)}
+                  disabled={isUpdating}
+                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  placeholder="Nhập họ tên"
                 />
               </div>
               {/* Email */}
               <div>
-                <label className="block text-sm font-bold mb-1">Email</label>
+                <label className="block text-sm font-bold mb-1">Email *</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-300"
+                  disabled={isUpdating}
+                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  placeholder="Nhập email"
                 />
               </div>
               {/* Phone */}
               <div>
                 <label className="block text-sm font-bold mb-1">
-                  Phone Number
+                  Phone Number *
                 </label>
                 <input
                   type="text"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-300"
+                  disabled={isUpdating}
+                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  placeholder="Nhập số điện thoại"
                 />
               </div>
               {/* Address */}
@@ -130,13 +204,23 @@ export default function AccountInformation() {
                   type="text"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-300"
+                  disabled={isUpdating}
+                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  placeholder="Nhập địa chỉ"
                 />
               </div>
             </div>
             <div className="flex justify-end mt-6">
-              <button className="bg-black text-white px-8 py-2 rounded-lg hover:bg-gray-800 transition">
-                Update Information
+              <button 
+                onClick={handleUpdateAccount}
+                disabled={isUpdating}
+                className={`px-8 py-2 rounded-lg transition ${
+                  isUpdating 
+                    ? "bg-gray-400 cursor-not-allowed text-white" 
+                    : "bg-black text-white hover:bg-gray-800"
+                }`}
+              >
+                {isUpdating ? "Đang cập nhật..." : "Update Information"}
               </button>
             </div>
           </div>

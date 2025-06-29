@@ -2,7 +2,7 @@
 import React from "react";
 import { ImCross } from "react-icons/im";
 
-const ItemCard = ({ item, formatVND, onUpdateQuantity, onRemoveItem }) => {
+const ItemCard = ({ item, onUpdateQuantity, onRemoveItem }) => {
   // item structure from API: { cartID, productID, quantity, product: { name, unitPrice, imageProducts } }
   const product = item.product || {};
   const itemSubtotal = item.quantity * (product.unitPrice || 0);
@@ -61,7 +61,7 @@ const ItemCard = ({ item, formatVND, onUpdateQuantity, onRemoveItem }) => {
       <div className="col-span-5 mdl:col-span-3 flex items-center justify-between py-4 mdl:py-0 px-4 mdl:px-0 gap-6 mdl:gap-0">
         {/* Giá (format VND) */}
         <div className="flex w-1/3 items-center text-lg font-semibold">
-          {formatVND(product.unitPrice || 0)}
+          {product.unitPrice || 0}đ
         </div>
         {/* Số lượng */}
         <div className="w-1/3 flex items-center gap-6 text-lg">
@@ -81,7 +81,7 @@ const ItemCard = ({ item, formatVND, onUpdateQuantity, onRemoveItem }) => {
         </div>
         {/* Thành tiền của item */}
         <div className="w-1/3 flex items-center font-titleFont font-bold text-lg">
-          <p>{formatVND(itemSubtotal)}</p>
+          <p>{itemSubtotal}đ</p>
         </div>
       </div>
     </div>

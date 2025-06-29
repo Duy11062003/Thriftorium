@@ -33,11 +33,24 @@ import AdminProductManager from "../pages/Admin/products/ProductManager";
 import CategoryManager from "../pages/Admin/category/CategoryManager";
 import AdminLayout from "../layouts/AdminLayout";
 import Cart from "../pages/Cart/Cart";
+import About from "../pages/About/About";
+import Blog from "../pages/Blog/Blog";
+import Dashboard from "../pages/Admin/dashboard/Dashboard";
+import BlogManager from "../pages/Admin/blog/BlogManager";
+import BlogDetail from "../pages/Blog/BlogDetail";
+import BlogList from "../pages/Blog/BlogList";
+import UserManager from "../pages/Admin/user/UserManager";
+import Subscription from "../pages/Subscription/Subscription";
+import SubscriptionManager from "../pages/Admin/subscription/SubscriptionManager";
 
 const publicRoutes = [
   { path: "", element: <Home />, layout: PublicLayout },
   { path: "shop", element: <Shop />, layout: PublicLayout },
-  { path: "product/:productId", element: <ProductDetails />, layout: PublicLayout },
+  {
+    path: "product/:productId",
+    element: <ProductDetails />,
+    layout: PublicLayout,
+  },
   { path: "shop/:shopSlug", element: <ShopDetails />, layout: PublicLayout },
   { path: "*", element: <Navigate to="/" replace />, layout: PublicLayout },
   { path: "signin", element: <SignIn />, layout: PublicLayout },
@@ -45,17 +58,30 @@ const publicRoutes = [
   { path: "reset-password", element: <ResetPassword />, layout: PublicLayout },
   { path: "new-password", element: <NewPassword />, layout: PublicLayout },
   { path: "cart", element: <Cart />, layout: PublicLayout },
+  { path: "about", element: <About />, layout: PublicLayout },
+  { path: "blog", element: <Blog />, layout: PublicLayout },
+  { path: "blogs", element: <BlogList />, layout: PublicLayout },
+  { path: "blog/:blogID", element: <BlogDetail />, layout: PublicLayout },
+  { path: "subscription", element: <Subscription />, layout: PublicLayout },
 ];
 
 const adminRoutes = [
-  { path: "product-manager", element: <AdminProductManager />, layout: AdminLayout },
-  { path: "category-manager", element: <CategoryManager />, layout: AdminLayout },
+  {
+    path: "product-manager",
+    element: <AdminProductManager />,
+    layout: AdminLayout,
+  },
+  {
+    path: "category-manager",
+    element: <CategoryManager />,
+    layout: AdminLayout,
+  },
+  { path: "dashboard", element: <Dashboard />, layout: AdminLayout },
+  { path: "blog-manager", element: <BlogManager />, layout: AdminLayout },
+  { path: "user-manager", element: <UserManager />, layout: AdminLayout },
+  { path: "subscription-manager", element: <SubscriptionManager />, layout: AdminLayout },
 ];
 
-// const shipperRoutes = [
-//   { path: "shipper-dashboard", element: <ShipperDashboard /> },
-//   // Các route khác cho shipper
-// ];
 
 const privateRoutes = [
   {
@@ -95,9 +121,6 @@ const Routers = () => {
               <ManagementRoute layout={route.layout}>
                 {route.element}
               </ManagementRoute>
-              // <PrivateRoute layout={route.layout ?? null}>
-              //   {route.element}
-              // </PrivateRoute>
             }
           />
         ))}

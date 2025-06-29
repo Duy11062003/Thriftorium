@@ -5,12 +5,13 @@ import {
   FaBox,
   FaList,
   FaUsers,
-  FaChartBar,
-  FaCog,
   FaSignOutAlt,
   FaBars,
   FaTimes,
+  FaBlog,
+  FaCreditCard,
 } from "react-icons/fa";
+import { useAuth } from "../context/AuthContext";
 
 const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -20,15 +21,13 @@ const AdminLayout = ({ children }) => {
     { path: "/admin/dashboard", name: "Dashboard", icon: FaHome },
     { path: "/admin/product-manager", name: "Quản lý sản phẩm", icon: FaBox },
     { path: "/admin/category-manager", name: "Quản lý danh mục", icon: FaList },
-    { path: "/admin/users", name: "Quản lý người dùng", icon: FaUsers },
-    { path: "/admin/analytics", name: "Thống kê", icon: FaChartBar },
-    { path: "/admin/settings", name: "Cài đặt", icon: FaCog },
+    { path: "/admin/user-manager", name: "Quản lý người dùng", icon: FaUsers },
+    { path: "/admin/blog-manager", name: "Quản lý blog", icon: FaBlog },
+    { path: "/admin/subscription-manager", name: "Quản lý gói đăng ký", icon: FaCreditCard },
   ];
-
+  const { logout } = useAuth();
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    window.location.href = "/signin";
+    logout();
   };
 
   return (

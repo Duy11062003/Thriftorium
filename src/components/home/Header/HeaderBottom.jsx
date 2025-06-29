@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import CategoryService from "../../../service/CategoryService";
 import ProductService from "../../../service/ProductService";
+import { useAuth } from "../../../context/AuthContext";
 
 const HeaderBottom = () => {
   const products = useSelector((state) => state.orebiReducer.products);
@@ -17,10 +18,11 @@ const HeaderBottom = () => {
   const [loadingCategories, setLoadingCategories] = useState(false);
   const navigate = useNavigate();
   const ref = useRef();
+  const { user } = useAuth();
 
   useEffect(() => {
     document.body.addEventListener("click", (e) => {
-      if (ref.current.contains(e.target)) {
+      if (ref?.current?.contains(e.target)) {
         setShow(true);
       } else {
         setShow(false);
@@ -44,7 +46,7 @@ const HeaderBottom = () => {
           { categoryID: 3, name: "Electronics" },
           { categoryID: 4, name: "Clothes" },
           { categoryID: 5, name: "Bags" },
-          { categoryID: 6, name: "Home appliances" }
+          { categoryID: 6, name: "Home appliances" },
         ]);
       } finally {
         setLoadingCategories(false);
@@ -69,7 +71,7 @@ const HeaderBottom = () => {
         setSearchLoading(true);
         const searchResults = await ProductService.getProductsBase({
           search: searchQuery,
-          pageSize: 10 // Limit search results to 10 items
+          pageSize: 10, // Limit search results to 10 items
         });
         setFilteredProducts(searchResults || []);
       } catch (error) {
@@ -93,7 +95,7 @@ const HeaderBottom = () => {
   };
 
   const handleSearchSubmit = (e) => {
-    if (e.key === 'Enter' && searchQuery.trim()) {
+    if (e.key === "Enter" && searchQuery.trim()) {
       navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery("");
     }
@@ -159,8 +161,8 @@ const HeaderBottom = () => {
               placeholder="Search your products here"
               className="flex-1 h-full outline-none placeholder:text-[#C4C4C4] placeholder:text-[14px]"
             />
-            <FaSearch 
-              className="w-5 h-5 cursor-pointer hover:text-black transition-colors" 
+            <FaSearch
+              className="w-5 h-5 cursor-pointer hover:text-black transition-colors"
               onClick={handleSearchIconClick}
             />
             {searchQuery && (
@@ -171,27 +173,37 @@ const HeaderBottom = () => {
                   </div>
                 ) : filteredProducts.length > 0 ? (
                   filteredProducts.map((item) => (
-                  <div
+                    <div
                       key={item.productId}
-                    onClick={() => {
+                      onClick={() => {
                         navigate(`/product/${item.productId}`);
-                      setSearchQuery("");
-                    }}
+                        setSearchQuery("");
+                      }}
                       className="flex items-center gap-3 bg-gray-100 mb-3 p-3 max-w-[600px] h-28 hover:bg-gray-200 transition-colors"
-                  >
-                      <img 
-                        className="w-24 h-20 object-cover" 
-                        src={item.imageProducts?.[0]?.image || '/placeholder-image.jpg'} 
-                        alt="productImg" 
+                    >
+                      <img
+                        className="w-24 h-20 object-cover"
+                        src={
+                          item.imageProducts?.[0]?.image ||
+                          "/placeholder-image.jpg"
+                        }
+                        alt="productImg"
                       />
-                    <div className="flex flex-col gap-1">
+                      <div className="flex flex-col gap-1">
                         <p className="font-semibold text-lg">{item.name}</p>
-                        <p className="text-xs line-clamp-2">{item.description}</p>
-                      <p className="text-sm">
-                          Price: <span className="text-primeColor font-semibold">${item.purchasePrice}</span>
-                      </p>
+                        <p className="text-xs line-clamp-2">
+                          {item.description}
+                        </p>
+                        <p className="text-sm">
+                          Price:{" "}
+                          <span className="text-primeColor font-semibold">
+                            ${item.purchasePrice}
+                          </span>
+                        </p>
                         {item.category && (
-                          <p className="text-xs text-gray-500">Category: {item.category.name}</p>
+                          <p className="text-xs text-gray-500">
+                            Category: {item.category.name}
+                          </p>
                         )}
                       </div>
                     </div>
@@ -207,7 +219,10 @@ const HeaderBottom = () => {
 
           {/* User & Cart */}
           <div className="flex gap-4 mt-2 lg:mt-0 items-center pr-6 cursor-pointer relative">
-            <div onClick={() => setShowUser(!showUser)} className="flex items-center gap-1 text-primeColor">
+            <div
+              onClick={() => setShowUser(!showUser)}
+              className="flex items-center gap-1 text-primeColor"
+            >
               <FaUser />
               <FaCaretDown />
             </div>
@@ -216,27 +231,45 @@ const HeaderBottom = () => {
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className="absolute top-6 left-0 z-50 bg-primeColor w-44 text-[#767676] p-4 pb-6"
+                className="absolute top-6 right-0 z-50 bg-primeColor w-44 text-[#767676] p-4 pb-6"
               >
-                <Link to="/signin" onClick={() => setShowUser(false)}>
-                  <li className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:border-white hover:text-white duration-300">
-                    Login
-                  </li>
-                </Link>
-                <Link to="/signup" onClick={() => setShowUser(false)}>
-                  <li className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:border-white hover:text-white duration-300">
-                    Sign Up
-                  </li>
-                </Link>
+                {!user && (
+                  <>
+                    <Link to="/signin" onClick={() => setShowUser(false)}>
+                      <li className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:border-white hover:text-white duration-300">
+                        Login
+                      </li>
+                    </Link>
+                    <Link to="/signup" onClick={() => setShowUser(false)}>
+                      <li className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:border-white hover:text-white duration-300">
+                        Sign Up
+                      </li>
+                    </Link>
+                  </>
+                )}
+
                 {/* Profile now links to /profile/account-information */}
-                <Link to="/profile/account-information" onClick={() => setShowUser(false)}>
+                <Link
+                  to="/profile/account-information"
+                  onClick={() => setShowUser(false)}
+                >
                   <li className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:border-white hover:text-white duration-300">
                     Profile
                   </li>
                 </Link>
-                <li className="text-gray-400 px-4 py-1 hover:text-white duration-300">
-                  Others
-                </li>
+                {user &&
+                  (user?.roles?.includes("Admin") ||
+                    user?.roles?.includes("Manager") ||
+                    user?.roles?.includes("Staff")) && (
+                    <Link
+                      to="/admin/dashboard"
+                      onClick={() => setShowUser(false)}
+                    >
+                      <li className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:border-white hover:text-white duration-300">
+                        Administration
+                      </li>
+                    </Link>
+                  )}
               </motion.ul>
             )}
             <Link to="/cart">

@@ -11,6 +11,7 @@ import {
 import ProductService from "../../service/ProductService";
 import RatingService from "../../service/RatingService";
 import CartService from "../../service/CartService";
+import ReviewService from "../../service/ReviewService";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 
@@ -20,10 +21,16 @@ const ProductDetails = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1); // Quản lý số lượng
-  const [reviewRating, setReviewRating] = useState(0); // state cho review stars
+  // Separate states for Rating (stars) and Review (text)
+  const [rating, setRating] = useState(0); // state cho rating stars
+  const [reviewContent, setReviewContent] = useState(""); // state cho review content
   const [isSubmittingRating, setIsSubmittingRating] = useState(false);
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [editingRating, setEditingRating] = useState(null);
+  const [editingReview, setEditingReview] = useState(null);
   const [userRatings, setUserRatings] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [loadingReviews, setLoadingReviews] = useState(true);
 
   // Get current user info from localStorage
   const { user } = useAuth();
@@ -62,10 +69,37 @@ const ProductDetails = () => {
     };
 
     fetchUserRatings();
-  }, [isLoggedIn, user.userId]);
+  }, [isLoggedIn, user?.userID]);
+
+  // Fetch reviews từ ReviewService
+  useEffect(() => {
+    const fetchReviews = async () => {
+      if (productId) {
+        setLoadingReviews(true);
+        try {
+          const reviewsData = await ReviewService.getReviewByProductId(
+            productId
+          );
+          console.log(reviewsData);
+          setReviews(reviewsData || []);
+        } catch (error) {
+          console.error("Error fetching reviews:", error);
+          setReviews([]);
+        }
+        setLoadingReviews(false);
+      }
+    };
+
+    fetchReviews();
+  }, [productId]);
 
   const userProductRating = userRatings.find(
     (rating) => rating.productID === parseInt(productId)
+  );
+
+  // Kiểm tra user đã review chưa
+  const userReview = reviews.find(
+    (review) => review.accountID === user?.userID
   );
 
   const handleAddRating = async () => {
@@ -74,7 +108,7 @@ const ProductDetails = () => {
       return;
     }
 
-    if (reviewRating === 0) {
+    if (rating === 0) {
       toast.error("Vui lòng chọn số sao đánh giá");
       return;
     }
@@ -83,7 +117,7 @@ const ProductDetails = () => {
     try {
       const ratingData = {
         accountID: user.userID,
-        rate: reviewRating,
+        rate: rating,
         productID: parseInt(productId),
       };
       console.log(ratingData);
@@ -92,14 +126,14 @@ const ProductDetails = () => {
       toast.success("Đánh giá đã được thêm thành công!");
 
       // Reset form
-      setReviewRating(0);
+      setRating(0);
 
       // Refresh product data and user ratings
       const updatedProduct = await ProductService.getProductDetails(productId);
       setProduct(updatedProduct);
 
       const updatedUserRatings = await RatingService.getRatingByAccountId(
-        user.userId
+        user.userID
       );
       setUserRatings(updatedUserRatings || []);
     } catch (error) {
@@ -117,8 +151,8 @@ const ProductDetails = () => {
     try {
       const ratingData = {
         ratingId: editingRating.ratingId,
-        accountId: user.userId,
-        rate: reviewRating,
+        accountID: user.userID,
+        rate: rating,
         productId: parseInt(productId),
       };
 
@@ -126,7 +160,7 @@ const ProductDetails = () => {
       toast.success("Đánh giá đã được cập nhật thành công!");
 
       // Reset form
-      setReviewRating(0);
+      setRating(0);
       setEditingRating(null);
 
       // Refresh product data and user ratings
@@ -134,7 +168,7 @@ const ProductDetails = () => {
       setProduct(updatedProduct);
 
       const updatedUserRatings = await RatingService.getRatingByAccountId(
-        user.userId
+        user.userID
       );
       setUserRatings(updatedUserRatings || []);
     } catch (error) {
@@ -157,7 +191,7 @@ const ProductDetails = () => {
       setProduct(updatedProduct);
 
       const updatedUserRatings = await RatingService.getRatingByAccountId(
-        user.userId
+        user.userID
       );
       setUserRatings(updatedUserRatings || []);
     } catch (error) {
@@ -166,16 +200,114 @@ const ProductDetails = () => {
     }
   };
 
-  // Handle starting edit mode
-  const handleStartEdit = (rating) => {
-    setEditingRating(rating);
-    setReviewRating(rating.rate);
+  // ===== REVIEW FUNCTIONS =====
+
+  // Handle adding review
+  const handleAddReview = async () => {
+    if (!isLoggedIn) {
+      toast.error("Vui lòng đăng nhập để viết đánh giá");
+      return;
+    }
+
+    if (!reviewContent.trim()) {
+      toast.error("Vui lòng nhập nội dung đánh giá");
+      return;
+    }
+
+    setIsSubmittingReview(true);
+    try {
+      const reviewData = {
+        accountID: user.userID,
+        productID: parseInt(productId),
+        content: reviewContent.trim(),
+      };
+
+      await ReviewService.createReview(reviewData);
+      toast.success("Đánh giá đã được thêm thành công!");
+
+      // Reset form
+      setReviewContent("");
+
+      // Refresh reviews
+      const updatedReviews = await ReviewService.getReviewByProductId(
+        productId
+      );
+      setReviews(updatedReviews || []);
+    } catch (error) {
+      console.error("Error adding review:", error);
+      if (error.response?.status === 400) {
+        toast.error("Bạn đã đánh giá sản phẩm này rồi!");
+      } else {
+        toast.error("Có lỗi xảy ra khi thêm đánh giá");
+      }
+    }
+    setIsSubmittingReview(false);
   };
 
-  // Handle canceling edit
-  const handleCancelEdit = () => {
-    setEditingRating(null);
-    setReviewRating(0);
+  // Handle updating review
+  const handleUpdateReview = async () => {
+    if (!editingReview) return;
+
+    if (!reviewContent.trim()) {
+      toast.error("Vui lòng nhập nội dung đánh giá");
+      return;
+    }
+
+    setIsSubmittingReview(true);
+    try {
+      const reviewData = {
+        reviewID: editingReview.reviewID,
+        content: reviewContent.trim(),
+      };
+
+      await ReviewService.updateReview(editingReview.reviewID, reviewData);
+      toast.success("Đánh giá đã được cập nhật thành công!");
+
+      // Reset form
+      setReviewContent("");
+      setEditingReview(null);
+
+      // Refresh reviews
+      const updatedReviews = await ReviewService.getReviewByProductId(
+        productId
+      );
+      setReviews(updatedReviews || []);
+    } catch (error) {
+      console.error("Error updating review:", error);
+      toast.error("Có lỗi xảy ra khi cập nhật đánh giá");
+    }
+    setIsSubmittingReview(false);
+  };
+
+  // Handle deleting review
+  const handleDeleteReview = async (reviewID) => {
+    if (!window.confirm("Bạn có chắc chắn muốn xóa đánh giá này?")) return;
+
+    try {
+      await ReviewService.deleteReview(reviewID);
+      toast.success("Đánh giá đã được xóa thành công!");
+
+      // Refresh reviews
+      const updatedReviews = await ReviewService.getReviewByProductId(
+        productId
+      );
+      setReviews(updatedReviews || []);
+    } catch (error) {
+      console.error("Error deleting review:", error);
+      toast.error("Có lỗi xảy ra khi xóa đánh giá");
+    }
+  };
+
+  // Handle starting edit review mode
+  const handleStartEditReview = (review) => {
+    setEditingReview(review);
+    setReviewContent(review.content);
+  };
+
+  // Handle canceling edit review
+  const handleCancelEditReview = () => {
+    setEditingReview(null);
+    setReviewContent("");
   };
 
   if (loading) return <div className="p-8 text-center">Đang tải...</div>;
@@ -191,10 +323,10 @@ const ProductDetails = () => {
     ratings,
   } = product;
 
-  // Tính average rating từ ratings array
+  // Tính average rating từ reviews API (không từ product.ratings)
   const averageRating =
-    ratings && ratings.length > 0
-      ? ratings.reduce((sum, r) => sum + (r.rate || 0), 0) / ratings.length
+    reviews && reviews.length > 0
+      ? reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length
       : 0;
 
   const images = imageProducts?.map((img) => img.image) || [];
@@ -266,14 +398,14 @@ const ProductDetails = () => {
 
     try {
       const cartData = {
-        accountId: user.userID,
+        accountID: user.userID,
         productId: parseInt(productId),
-        quantity: qty
+        quantity: qty,
       };
 
       await CartService.addCart(cartData);
       toast.success(`Đã thêm ${qty} sản phẩm vào giỏ hàng!`);
-      
+
       // Reset quantity to 1 after adding
       setQty(1);
     } catch (error) {
@@ -291,9 +423,9 @@ const ProductDetails = () => {
 
     try {
       const cartData = {
-        accountId: user.userID,
+        accountID: user.userID,
         productId: parseInt(productId),
-        quantity: qty
+        quantity: qty,
       };
 
       await CartService.addCart(cartData);
@@ -353,7 +485,7 @@ const ProductDetails = () => {
                   {stars(Math.round(averageRating))}
                 </span>
                 <span className="text-gray-500">
-                  | {ratings?.length || 0} đánh giá
+                  | {reviews?.length || 0} đánh giá
                 </span>
               </div>
               <p className="text-gray-700 mb-4">
@@ -390,78 +522,169 @@ const ProductDetails = () => {
           </div>
         </div>
 
-        {/* Rating Form */}
+        {/* Rating Section */}
         {isLoggedIn && (
           <div className="mt-8 p-6 bg-gray-50 rounded-lg">
             <h3 className="text-lg font-semibold mb-4">
-              {editingRating
-                ? "Chỉnh sửa đánh giá"
-                : userProductRating
-                ? "Bạn đã đánh giá sản phẩm này"
-                : "Đánh giá sản phẩm"}
+              {userProductRating ? "Cập nhật đánh giá sao" : "Đánh giá sao"}
             </h3>
 
-            {userProductRating && !editingRating ? (
-              <div className="flex items-center justify-between p-4 bg-white rounded-lg">
-                <div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <StarRating rating={userProductRating.rate} readonly />
-                    <span className="text-sm text-gray-600">
-                      ({userProductRating.rate}/5)
-                    </span>
+            {userProductRating ? (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-white rounded-lg border">
+                  <div>
+                    <span className="text-sm text-gray-600">Đánh giá hiện tại của bạn:</span>
+                    <div className="flex items-center space-x-2 mt-1">
+                      {stars(userProductRating.rate)}
+                      <span className="text-sm text-gray-600">({userProductRating.rate} sao)</span>
+                    </div>
                   </div>
-                  {userProductRating.comment && (
-                    <p className="text-gray-700">{userProductRating.comment}</p>
-                  )}
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => {
+                        setEditingRating(userProductRating);
+                        setRating(userProductRating.rate);
+                      }}
+                      className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                    >
+                      Chỉnh sửa
+                    </button>
+                    <button
+                      onClick={() => handleDeleteRating(userProductRating.ratingId)}
+                      className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition"
+                    >
+                      Xóa
+                    </button>
+                  </div>
                 </div>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => handleStartEdit(userProductRating)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
-                  >
-                    <FaEdit />
-                  </button>
-                  <button
-                    onClick={() =>
-                      handleDeleteRating(userProductRating.ratingId)
-                    }
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
-                  >
-                    <FaTrash />
-                  </button>
+
+                {editingRating && (
+                  <div className="space-y-4 p-4 bg-white rounded-lg border">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">
+                        Đánh giá mới:
+                      </label>
+                      <StarRating
+                        rating={rating}
+                        onRatingChange={setRating}
+                      />
+                    </div>
+                    <div className="flex space-x-3">
+                      <button
+                        onClick={handleUpdateRating}
+                        disabled={isSubmittingRating || rating === 0}
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+                      >
+                        {isSubmittingRating ? "Đang cập nhật..." : "Cập nhật đánh giá"}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setEditingRating(null);
+                          setRating(0);
+                        }}
+                        className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"
+                      >
+                        Hủy
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Đánh giá sao của bạn:
+                  </label>
+                  <StarRating
+                    rating={rating}
+                    onRatingChange={setRating}
+                  />
+                </div>
+                <button
+                  onClick={handleAddRating}
+                  disabled={isSubmittingRating || rating === 0}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+                >
+                  {isSubmittingRating ? "Đang gửi..." : "Gửi đánh giá sao"}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Review Section */}
+        {isLoggedIn && (
+          <div className="mt-6 p-6 bg-blue-50 rounded-lg">
+            <h3 className="text-lg font-semibold mb-4">
+              {editingReview
+                ? "Chỉnh sửa nhận xét"
+                : userReview
+                ? "Nhận xét của bạn"
+                : "Viết nhận xét"}
+            </h3>
+
+            {userReview && !editingReview ? (
+              <div className="space-y-4">
+                <div className="p-4 bg-white rounded-lg border">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-gray-600">Nhận xét của bạn:</span>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => handleStartEditReview(userReview)}
+                        className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                      >
+                        Chỉnh sửa
+                      </button>
+                      <button
+                        onClick={() => handleDeleteReview(userReview.reviewID)}
+                        className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition"
+                      >
+                        Xóa
+                      </button>
+                    </div>
+                  </div>
+                  <p className="text-gray-700">{userReview.content}</p>
                 </div>
               </div>
             ) : (
-              (!userProductRating || editingRating) && (
+              (!userReview || editingReview) && (
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Đánh giá của bạn:
+                      Nội dung nhận xét:
                     </label>
-                    <StarRating
-                      rating={reviewRating}
-                      onRatingChange={setReviewRating}
+                    <textarea
+                      value={reviewContent}
+                      onChange={(e) => setReviewContent(e.target.value)}
+                      placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."
+                      rows={4}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 resize-none"
+                      disabled={isSubmittingReview}
                     />
                   </div>
 
                   <div className="flex space-x-3">
                     <button
                       onClick={
-                        editingRating ? handleUpdateRating : handleAddRating
+                        editingReview ? handleUpdateReview : handleAddReview
                       }
-                      disabled={isSubmittingRating || reviewRating === 0}
+                      disabled={
+                        isSubmittingReview ||
+                        !reviewContent?.trim()
+                      }
                       className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
                     >
-                      {isSubmittingRating
+                      {isSubmittingReview
                         ? "Đang xử lý..."
-                        : editingRating
-                        ? "Cập nhật đánh giá"
-                        : "Gửi đánh giá"}
+                        : editingReview
+                        ? "Cập nhật nhận xét"
+                        : "Gửi nhận xét"}
                     </button>
 
-                    {editingRating && (
+                    {editingReview && (
                       <button
-                        onClick={handleCancelEdit}
+                        onClick={handleCancelEditReview}
                         className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"
                       >
                         Hủy
@@ -480,10 +703,12 @@ const ProductDetails = () => {
           <p className="mb-4 text-gray-700">
             {description || "Không có mô tả chi tiết"}
           </p>
-          {ratings && ratings.length > 0 ? (
-            ratings.map((review, idx) => (
+          {loadingReviews ? (
+            <div className="text-center py-4">Đang tải đánh giá...</div>
+          ) : reviews && reviews.length > 0 ? (
+            reviews.map((review, idx) => (
               <div
-                key={idx}
+                key={review.reviewID || idx}
                 className="mb-4 border border-gray-300 rounded-lg p-4 flex space-x-4"
               >
                 <img
@@ -493,45 +718,51 @@ const ProductDetails = () => {
                 />
                 <div className="flex-1">
                   <div className="font-semibold mb-1">
-                    {review.account?.fullName || "Người dùng"}
+                    {review.accountName || review.account?.name || "Người dùng"}
                   </div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <StarRating rating={review.rate || 0} readonly />
-                    <span className="text-sm text-gray-600">
-                      ({review.rate}/5)
-                    </span>
-                  </div>
-                  {review.comment && (
+                  {review.content && (
                     <p className="text-sm text-gray-700 mb-2">
-                      {review.comment}
+                      {review.content}
                     </p>
                   )}
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-gray-500">
-                      {review.ratingDate
-                        ? new Date(review.ratingDate).toLocaleDateString(
-                            "vi-VN"
-                          )
+                      {review.createdAt || review.reviewDate
+                        ? new Date(
+                            review.createdAt || review.reviewDate
+                          ).toLocaleDateString("vi-VN")
                         : ""}
                     </span>
-                    <div className="space-x-4 text-sm text-gray-500">
-                      <button className="hover:underline">Like</button>
-                      <button className="hover:underline">Reply</button>
+                    <div className="flex items-center space-x-4">
+                      {/* Hiển thị nút edit/delete chỉ cho review của user hiện tại */}
+                      {review.accountID === user?.userID && (
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handleStartEditReview(review)}
+                            className="text-blue-600 hover:bg-blue-50 p-1 rounded text-sm transition"
+                          >
+                            <FaEdit />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteReview(review.reviewID)}
+                            className="text-red-600 hover:bg-red-50 p-1 rounded text-sm transition"
+                          >
+                            <FaTrash />
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
             ))
           ) : (
-            <div className="mb-4 border border-gray-300 rounded-lg p-4 flex space-x-4">
-              <img
-                src={importAsset("orebiLogo.png")}
-                alt="No reviews"
-                className="w-12 h-12 rounded-full object-cover"
-              />
-              <div className="flex-1">
-                <div className="text-center text-gray-500">
-                  Chưa có đánh giá nào
+            <div className="mb-4 border border-gray-300 rounded-lg p-4 text-center">
+              <div className="text-gray-500 py-8">
+                <div className="text-lg mb-2">📝</div>
+                <div>Chưa có đánh giá nào cho sản phẩm này</div>
+                <div className="text-sm mt-1">
+                  Hãy là người đầu tiên đánh giá!
                 </div>
               </div>
             </div>

@@ -8,7 +8,7 @@ const ManagementRoute = ({ children, layout: Layout }) => {
   if (
     !user ||
     !user.roles ||
-    (user.roles[0] !== "Admin" && user.roles[0] !== "Manager")
+    !(user.roles.includes("Admin") || user.roles.includes("Manager") || user.roles.includes("Staff"))
   ) {
     return <Navigate to="/403" replace />;
   }

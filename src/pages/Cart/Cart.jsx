@@ -177,7 +177,6 @@ const Cart = () => {
               <ItemCard
                 key={item.cartID}
                 item={item}
-                formatVND={formatVND}
                 onUpdateQuantity={handleUpdateQuantity}
                 onRemoveItem={handleRemoveItem}
               />
@@ -219,19 +218,19 @@ const Cart = () => {
               <div>
                 <p className="flex items-center justify-between border-[1px] border-gray-400 border-b-0 py-1.5 text-lg px-4 font-medium">
                   Subtotal
-                  <span className="font-semibold">{formatVND(totalAmt)}</span>
+                  <span className="font-semibold">{totalAmt}đ</span>
                 </p>
                 <p className="flex items-center justify-between border-[1px] border-gray-400 border-b-0 py-1.5 text-lg px-4 font-medium">
                   Phí vận chuyển
-                  <span className="font-semibold">{formatVND(shippingCharge)}</span>
+                  <span className="font-semibold">{shippingCharge}đ</span>
                 </p>
                 <p className="flex items-center justify-between border-[1px] border-gray-400 border-b-0 py-1.5 text-lg px-4 font-medium">
                   Giảm giá
-                  <span className="font-semibold">-{formatVND(discount)}</span>
+                  <span className="font-semibold">-{discount}đ</span>
                 </p>
                 <p className="flex items-center justify-between border-[1px] border-gray-400 py-1.5 text-lg px-4 font-bold">
                   Tổng cộng
-                  <span className="font-bold">{formatVND(finalTotal)}</span>
+                  <span className="font-bold">{finalTotal}đ</span>
                 </p>
               </div>
               <div className="flex flex-col gap-2 items-center"> 
