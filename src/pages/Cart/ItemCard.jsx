@@ -3,9 +3,8 @@ import React from "react";
 import { ImCross } from "react-icons/im";
 
 const ItemCard = ({ item, onUpdateQuantity, onRemoveItem }) => {
-  // item structure from API: { cartID, productID, quantity, product: { name, unitPrice, imageProducts } }
   const product = item.product || {};
-  const itemSubtotal = item.quantity * (product.unitPrice || 0);
+  const itemSubtotal = item.quantity * (product.purchasePrice || 0);
   
   // Get first image from imageProducts array
   const productImage = product.imageProducts && product.imageProducts.length > 0 
@@ -61,7 +60,7 @@ const ItemCard = ({ item, onUpdateQuantity, onRemoveItem }) => {
       <div className="col-span-5 mdl:col-span-3 flex items-center justify-between py-4 mdl:py-0 px-4 mdl:px-0 gap-6 mdl:gap-0">
         {/* Giá (format VND) */}
         <div className="flex w-1/3 items-center text-lg font-semibold">
-          {product.unitPrice || 0}đ
+          {product.purchasePrice || 0}đ
         </div>
         {/* Số lượng */}
         <div className="w-1/3 flex items-center gap-6 text-lg">

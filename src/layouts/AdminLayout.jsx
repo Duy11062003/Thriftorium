@@ -10,6 +10,8 @@ import {
   FaTimes,
   FaBlog,
   FaCreditCard,
+  FaFlag,
+  FaGift,
 } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 
@@ -24,6 +26,9 @@ const AdminLayout = ({ children }) => {
     { path: "/admin/user-manager", name: "Quản lý người dùng", icon: FaUsers },
     { path: "/admin/blog-manager", name: "Quản lý blog", icon: FaBlog },
     { path: "/admin/subscription-manager", name: "Quản lý gói đăng ký", icon: FaCreditCard },
+    { path: "/admin/report-manager", name: "Quản lý báo cáo", icon: FaFlag },
+    { path: "/admin/order-manager", name: "Quản lý đơn hàng", icon: FaBox },
+    { path: "/admin/voucher-manager", name: "Quản lý voucher", icon: FaGift },
   ];
   const { logout } = useAuth();
   const handleLogout = () => {

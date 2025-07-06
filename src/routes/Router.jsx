@@ -5,7 +5,6 @@ import { Route, Navigate, Routes } from "react-router-dom"; // Thêm các import
 import Home from "../pages/Home/Home";
 import Shop from "../pages/Shop/Shop";
 import ProductDetails from "../pages/ProductDetails/ProductDetails";
-import ShopDetails from "../pages/ProductDetails/ShopDetails"; // Import trang ShopDetails
 
 // Auth pages
 import SignIn from "../pages/Account/SignIn";
@@ -25,7 +24,6 @@ import Forbidden from "../pages/Forbidden/Forbidden";
 // Import các route phân quyền
 import PublicRoute from "./components/PublicRoute";
 import ManagementRoute from "./components/ManagementRoute";
-// import ShipperRoute from "./components/components/ShipperRoute";
 import PrivateRoute from "./components/PrivateRoute";
 import PublicLayout from "../layouts/PublicLayout";
 import ProfileLayout from "../layouts/ProfileLayout";
@@ -42,6 +40,10 @@ import BlogList from "../pages/Blog/BlogList";
 import UserManager from "../pages/Admin/user/UserManager";
 import Subscription from "../pages/Subscription/Subscription";
 import SubscriptionManager from "../pages/Admin/subscription/SubscriptionManager";
+import VoucherManager from "../pages/Admin/voucher/VoucherManager";
+import OrderManager from "../pages/Admin/order/OrderManager";
+import Payment from "../pages/payment/Payment";
+import PaymentSuccess from "../pages/payment/PaymentSuccess";
 
 const publicRoutes = [
   { path: "", element: <Home />, layout: PublicLayout },
@@ -51,7 +53,6 @@ const publicRoutes = [
     element: <ProductDetails />,
     layout: PublicLayout,
   },
-  { path: "shop/:shopSlug", element: <ShopDetails />, layout: PublicLayout },
   { path: "*", element: <Navigate to="/" replace />, layout: PublicLayout },
   { path: "signin", element: <SignIn />, layout: PublicLayout },
   { path: "signup", element: <SignUp />, layout: PublicLayout },
@@ -63,6 +64,8 @@ const publicRoutes = [
   { path: "blogs", element: <BlogList />, layout: PublicLayout },
   { path: "blog/:blogID", element: <BlogDetail />, layout: PublicLayout },
   { path: "subscription", element: <Subscription />, layout: PublicLayout },
+  { path: "payment", element: <Payment />, layout: PublicLayout },
+  { path: "payment-success", element: <PaymentSuccess />, layout: PublicLayout }, 
 ];
 
 const adminRoutes = [
@@ -79,9 +82,14 @@ const adminRoutes = [
   { path: "dashboard", element: <Dashboard />, layout: AdminLayout },
   { path: "blog-manager", element: <BlogManager />, layout: AdminLayout },
   { path: "user-manager", element: <UserManager />, layout: AdminLayout },
-  { path: "subscription-manager", element: <SubscriptionManager />, layout: AdminLayout },
+  {
+    path: "subscription-manager",
+    element: <SubscriptionManager />,
+    layout: AdminLayout,
+  },
+  { path: "voucher-manager", element: <VoucherManager />, layout: AdminLayout },
+  { path: "order-manager", element: <OrderManager />, layout: AdminLayout },
 ];
-
 
 const privateRoutes = [
   {

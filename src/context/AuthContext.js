@@ -36,11 +36,22 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     navigate("/signin");
   };
+  const login = () => {
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+    if (storedToken) {
+      setToken(storedToken);
+    }
+  };
   const value = {
     user,
     logout,
     isAuthenticated: !!user,
     token,
+    login,
   };
 
   if (loading) return null; // hoặc spinner

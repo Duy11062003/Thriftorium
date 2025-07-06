@@ -4,7 +4,6 @@ import {
   FaStar,
   FaRegStar,
   FaCheckCircle,
-  FaArrowRight,
   FaEdit,
   FaTrash,
 } from "react-icons/fa";
@@ -70,6 +69,8 @@ const ProductDetails = () => {
 
     fetchUserRatings();
   }, [isLoggedIn, user?.userID]);
+
+
 
   // Fetch reviews từ ReviewService
   useEffect(() => {
@@ -310,6 +311,8 @@ const ProductDetails = () => {
     setReviewContent("");
   };
 
+
+
   if (loading) return <div className="p-8 text-center">Đang tải...</div>;
   if (!product)
     return <div className="p-8 text-center">Không tìm thấy sản phẩm</div>;
@@ -317,16 +320,16 @@ const ProductDetails = () => {
   const {
     productID,
     name: title,
-    unitPrice: price,
+    purchasePrice: price,
     description,
     imageProducts,
     ratings,
   } = product;
 
-  // Tính average rating từ reviews API (không từ product.ratings)
+  // Tính average rating từ ratings của product
   const averageRating =
-    reviews && reviews.length > 0
-      ? reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length
+    ratings && ratings.length > 0
+      ? ratings.reduce((sum, r) => sum + (r.rate || 0), 0) / ratings.length
       : 0;
 
   const images = imageProducts?.map((img) => img.image) || [];
@@ -485,7 +488,7 @@ const ProductDetails = () => {
                   {stars(Math.round(averageRating))}
                 </span>
                 <span className="text-gray-500">
-                  | {reviews?.length || 0} đánh giá
+                  | {ratings?.length || 0} đánh giá
                 </span>
               </div>
               <p className="text-gray-700 mb-4">
@@ -769,6 +772,8 @@ const ProductDetails = () => {
           )}
         </div>
       </div>
+
+
     </div>
   );
 };

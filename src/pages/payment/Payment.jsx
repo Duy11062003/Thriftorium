@@ -1,23 +1,38 @@
 // src/pages/payment/Payment.js
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import VNPayBasicQR from "./VNPayBasicQR";
-import Breadcrumbs from "../../components/pageProps/Breadcrumbs"; // Import Breadcrumbs component
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
+import CheckoutService from "../../service/CheckoutService";
+import { useAuth } from "../../context/AuthContext";
+import { toast } from "react-toastify";
 
 export default function Payment() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user } = useAuth();
+  const [orderData, setOrderData] = useState(null);
 
-  const [step, setStep] = useState("form");
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    address: "",
-    city: "",
-    postalCode: "",
+    detailAddress: "",
+    province: "",
+    provinceCode: "",
     ward: "",
     district: "",
-    recipient: "",
+    receiverName: "",
     phone: "",
   });
+
+  // Get cart data from location state
+  useEffect(() => {
+    if (!location.state?.cartData) {
+      toast.error("Không tìm thấy thông tin giỏ hàng");
+      navigate("/cart");
+      return;
+    }
+    setOrderData(location.state.cartData);
+  }, [location.state, navigate]);
 
   const handleChange = (e) => {
     setFormData({
@@ -27,33 +42,60 @@ export default function Payment() {
   };
 
   const handleCancel = () => {
-    window.history.back();
+    navigate("/cart");
   };
 
-  const handleConfirm = () => {
-    setStep("qr");
-  };
+  const handleConfirm = async () => {
+    try {
+      setLoading(true);
 
-  const handleQRDone = (status) => {
-    if (status === "expired") {
-      setStep("form");
-    } else if (status === "paid") {
-      navigate("/payment/success");
+      // Validate shipping details
+      try {
+        CheckoutService.validateShippingDetails(formData);
+      } catch (error) {
+        toast.error(error.message);
+        return;
+      }
+
+      // Create order - response is VNPay URL
+      const vnpayUrl = await CheckoutService.createOrder(
+        user.userID,
+        orderData.totalAmount,
+        orderData.selectedVoucher?.userVoucherID || -1,
+        formData
+      );
+
+      if (vnpayUrl) {
+        // Store order info for later use
+        sessionStorage.setItem("orderData", JSON.stringify(orderData));
+        sessionStorage.setItem("formData", JSON.stringify(formData));
+        
+        // Redirect to VNPay payment page
+        window.location.href = vnpayUrl;
+      }
+    } catch (error) {
+      console.error("Error creating order:", error);
+      toast.error("Có lỗi xảy ra khi tạo đơn hàng");
+    } finally {
+      setLoading(false);
     }
   };
+
+
+
+  if (!orderData) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-start justify-center py-10 px-4">
       <div className="w-full max-w-xl">
-        {/* Breadcrumbs component */}
-        <Breadcrumbs prevLocation="Payment" title="Payment gateway" />
+        <Breadcrumbs title="Payment gateway" />
 
         <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6 mt-4">
-          {step === "form" && (
-            <>
-              <h2 className="text-2xl font-semibold mb-6 text-center">
-                Xác Nhận Thanh Toán
-              </h2>
+          <h2 className="text-2xl font-semibold mb-6 text-center">
+            Xác Nhận Thanh Toán
+          </h2>
 
               <div className="space-y-4">
                 {/* Địa chỉ chi tiết */}
@@ -63,8 +105,8 @@ export default function Payment() {
                   </label>
                   <input
                     type="text"
-                    name="address"
-                    value={formData.address}
+                    name="detailAddress"
+                    value={formData.detailAddress}
                     onChange={handleChange}
                     placeholder="Ví dụ: 123/45 Đường ABC"
                     className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
@@ -78,8 +120,8 @@ export default function Payment() {
                   </label>
                   <input
                     type="text"
-                    name="city"
-                    value={formData.city}
+                    name="province"
+                    value={formData.province}
                     onChange={handleChange}
                     placeholder="Ví dụ: TP. Hồ Chí Minh"
                     className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
@@ -93,8 +135,8 @@ export default function Payment() {
                   </label>
                   <input
                     type="text"
-                    name="postalCode"
-                    value={formData.postalCode}
+                    name="provinceCode"
+                    value={formData.provinceCode}
                     onChange={handleChange}
                     placeholder="Ví dụ: 700000"
                     className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
@@ -138,8 +180,8 @@ export default function Payment() {
                   </label>
                   <input
                     type="text"
-                    name="recipient"
-                    value={formData.recipient}
+                    name="receiverName"
+                    value={formData.receiverName}
                     onChange={handleChange}
                     placeholder="Ví dụ: Nguyễn Văn A"
                     className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
@@ -160,9 +202,41 @@ export default function Payment() {
                     className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                   />
                 </div>
+
+                {/* Order Summary */}
+                <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                  <h3 className="font-semibold mb-2">Thông tin đơn hàng</h3>
+                  <div className="space-y-2">
+                    <p className="flex justify-between">
+                      <span>Tổng tiền hàng:</span>
+                      <span>{orderData.totalAmount.toLocaleString()} VND</span>
+                    </p>
+                    {orderData.selectedVoucher && (
+                      <p className="flex justify-between text-green-600">
+                        <span>Giảm giá:</span>
+                        <span>-{orderData.discount.toLocaleString()} VND</span>
+                      </p>
+                    )}
+                    <p className="flex justify-between">
+                      <span>Tổng cộng:</span>
+                      <span>{(orderData.totalAmount - (orderData.discount || 0)).toLocaleString()} VND</span>
+                    </p>
+                    <p className="flex justify-between">
+                      <span>Phí vận chuyển:</span>
+                      <span>{orderData.shippingCharge.toLocaleString()} VND</span>
+                    </p>
+                    <p className="text-xs text-gray-500 ml-4">
+                      (Trong TP.HCM: 30,000 VND - Ngoài TP.HCM: 50,000 VND)
+                    </p>
+                    <p className="flex justify-between font-bold pt-2 border-t">
+                      <span>Tổng thanh toán:</span>
+                      <span>{orderData.finalTotal.toLocaleString()} VND</span>
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              {/* Hai nút Hủy / Xác Nhận */}
+              {/* Buttons */}
               <div className="flex justify-end space-x-4 mt-6">
                 <button
                   onClick={handleCancel}
@@ -172,20 +246,12 @@ export default function Payment() {
                 </button>
                 <button
                   onClick={handleConfirm}
-                  className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                  disabled={loading}
+                  className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors disabled:bg-blue-300"
                 >
-                  Xác Nhận
+                  {loading ? "Đang xử lý..." : "Xác Nhận"}
                 </button>
               </div>
-            </>
-          )}
-
-          {/* Nếu đã bấm “Xác Nhận” và step = "qr", thì show phần QR */}
-          {step === "qr" && (
-            <div className="mt-4">
-              <VNPayBasicQR onDone={handleQRDone} />
-            </div>
-          )}
         </div>
       </div>
     </div>

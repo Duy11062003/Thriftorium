@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../../service/AuthService"; // Importing the login function from AuthService
+import { useAuth } from "../../context/AuthContext";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -11,6 +12,7 @@ const SignIn = () => {
   const [isEmailConfirmed, setIsEmailConfirmed] = useState(true);
   const [verificationCode, setVerificationCode] = useState("");
   const [errVerificationCode, setErrVerificationCode] = useState("");
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleEmail = (e) => {
@@ -42,6 +44,7 @@ const SignIn = () => {
         navigate("/"); // Redirect to profile or main page
         setEmail("");
         setPassword("");
+        login();
       } catch (error) {
         // Handle error
         if (

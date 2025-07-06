@@ -1,5 +1,5 @@
 // src/pages/Profile/Voucher.js
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import {
   FaUser,
@@ -8,8 +8,11 @@ import {
   FaKey,
   FaSignOutAlt,
   FaGift,
+  FaCopy,
 } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
+import UserVoucherService from "../../service/UserVoucherService";
+import { toast } from "react-toastify";
 
 const importAsset = (file) => {
   try {
@@ -19,25 +22,44 @@ const importAsset = (file) => {
   }
 };
 
-const vouchers = [
-  {
-    title: "First Purchase",
-    icon: <FaGift className="text-blue-600" />,
-    description: "5% off for your next order",
-    code: "FIRST123",
-    expires: "Valid Until 15.05.2025",
-  },
-  {
-    title: "Gift From Customer Care",
-    icon: <FaGift className="text-blue-600" />,
-    description: "15% off your next purchase",
-    code: "CARE15",
-    expires: "Valid Until 15.05.2025",
-  },
-];
-
 export default function Voucher() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
+  const [vouchers, setVouchers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch vouchers from API
+  useEffect(() => {
+    const fetchVouchers = async () => {
+      if (!user?.userID) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await UserVoucherService.getUnusedVouchersByAccountId(user.userID);
+        setVouchers(response || []);
+      } catch (error) {
+        console.error("Error fetching vouchers:", error);
+        toast.error("Không thể tải danh sách voucher");
+        setVouchers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVouchers();
+  }, [user?.userID]);
+
+  // Handle copy voucher code
+  const handleCopyCode = async (code) => {
+    try {
+      await navigator.clipboard.writeText(code);
+      toast.success("Đã sao chép mã voucher!");
+    } catch (error) {
+      console.error("Error copying code:", error);
+      toast.error("Không thể sao chép mã voucher");
+    }
+  };
 
   return (
     <div className="bg-gray-50 min-h-screen py-10">
@@ -55,7 +77,7 @@ export default function Voucher() {
                 alt="avatar"
                 className="w-16 h-16 rounded-full object-cover"
               />
-              <div className="font-semibold">Bùi Khánh Duy</div>
+              <div className="font-semibold">{user?.fullName || user?.userName || "Người dùng"}</div>
             </div>
             <nav className="space-y-2">
               <NavLink
@@ -108,10 +130,19 @@ export default function Voucher() {
 
           {/* Voucher List */}
           <div className="w-full md:w-2/3 space-y-6">
-            <h2 className="text-xl font-semibold">Best offers for you</h2>
-            {vouchers.map((v, i) => (
+            <h2 className="text-xl font-semibold">Voucher của bạn ({vouchers.length})</h2>
+            
+            {/* Loading state */}
+            {loading && (
+              <div className="text-center py-8">
+                <p className="text-gray-500">Đang tải voucher...</p>
+              </div>
+            )}
+
+            {/* Voucher list */}
+            {!loading && vouchers.length > 0 && vouchers.map((voucher, i) => (
               <div
-                key={i}
+                key={voucher.voucherCode || i}
                 className="relative border border-gray-300 rounded-lg p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center"
               >
                 {/* Notch effect */}
@@ -120,24 +151,53 @@ export default function Voucher() {
 
                 {/* Left: Voucher info */}
                 <div className="flex items-center space-x-4">
-                  <div className="text-2xl">{v.icon}</div>
+                  <div className="text-2xl">
+                    <FaGift className="text-blue-600" />
+                  </div>
                   <div>
-                    <div className="font-semibold">{v.title}</div>
-                    <p className="text-sm text-gray-600">{v.description}</p>
+                    <div className="font-semibold">
+                      {voucher.voucherTemplate?.name || "Voucher giảm giá"}
+                    </div>
+                    <p className="text-sm text-gray-600">
+                      Giảm {voucher.voucherTemplate?.discountPercentage || 0}% cho đơn hàng của bạn
+                    </p>
+                    {voucher.voucherTemplate?.milestoneAmount && (
+                      <p className="text-xs text-gray-500">
+                        Đơn tối thiểu: {voucher.voucherTemplate.milestoneAmount.toLocaleString()} VND
+                      </p>
+                    )}
+                    <p className="text-sm font-medium text-blue-600 mt-1">
+                      Mã: {voucher.voucherCode}
+                    </p>
                   </div>
                 </div>
 
                 {/* Right: Expires & Button */}
                 <div className="mt-4 sm:mt-0 flex flex-col sm:items-end">
                   <span className="text-xs text-gray-500 mb-2">
-                    {v.expires}
+                    Hết hạn: {new Date(voucher.expiredAt).toLocaleDateString('vi-VN')}
                   </span>
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-                    Copy Code
-                  </button>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => handleCopyCode(voucher.voucherCode)}
+                      className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition flex items-center gap-2"
+                    >
+                      <FaCopy className="text-sm" />
+                      Sao chép mã
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
+
+            {/* Empty state */}
+            {!loading && vouchers.length === 0 && (
+              <div className="text-center py-12">
+                <FaTicketAlt className="text-6xl text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-600 mb-2">Chưa có voucher nào</h3>
+                <p className="text-gray-500">Bạn chưa có voucher nào có thể sử dụng. Hãy tiếp tục mua sắm để nhận voucher mới!</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

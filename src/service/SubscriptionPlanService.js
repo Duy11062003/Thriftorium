@@ -4,7 +4,11 @@ const API_URL = "https://localhost:7208/api/category";
 
 export const getAllSubscriptionPlans = async () => {
   try {
-    const response = await axios.get(`${API_URL}/GetAllSubcriptionPlan`);
+    const response = await axios.get(`${API_URL}/GetAllSubcriptionPlan`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     return response.data.data;
   } catch (error) {
     throw error;
@@ -13,7 +17,11 @@ export const getAllSubscriptionPlans = async () => {
 
 export const getSubscriptionPlanById = async (id) => {
   try {
-    const response = await axios.get(`${API_URL}/GetSubcriptionPlan/${id}`);
+    const response = await axios.get(`${API_URL}/GetSubcriptionPlan/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     return response.data.data;
   } catch (error) {
     throw error;
@@ -27,6 +35,11 @@ export const createSubscriptionPlan = async (planData) => {
       price: planData.price,
       description: planData.description,
       duration: planData.duration
+    }, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
     });
     return response.data;
   } catch (error) {
@@ -41,6 +54,11 @@ export const updateSubscriptionPlan = async (planData) => {
       price: planData.price,
       description: planData.description,
       duration: planData.duration
+    }, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
     });
     return response.data.data;
   } catch (error) {
