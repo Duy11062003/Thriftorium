@@ -53,6 +53,7 @@ export default function MyOrder() {
   // Report modal states
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportOrderId, setReportOrderId] = useState(null);
+  const [reportProductId, setReportProductId] = useState(null);
   const [reportText, setReportText] = useState("");
   const [reportImage, setReportImage] = useState(null);
   const [submittingReport, setSubmittingReport] = useState(false);
@@ -190,8 +191,9 @@ export default function MyOrder() {
   };
 
   // Handle report functions
-  const openReportModal = (orderId) => {
+  const openReportModal = (orderId, productId) => {
     setReportOrderId(orderId);
+    setReportProductId(productId);
     setShowReportModal(true);
     setReportText("");
     setReportImage(null);
@@ -200,6 +202,7 @@ export default function MyOrder() {
   const closeReportModal = () => {
     setShowReportModal(false);
     setReportOrderId(null);
+    setReportProductId(null);
     setReportText("");
     setReportImage(null);
   };
@@ -230,12 +233,18 @@ export default function MyOrder() {
       return;
     }
 
+    if (!reportProductId) {
+      toast.error("Không tìm thấy thông tin sản phẩm");
+      return;
+    }
+
     setSubmittingReport(true);
     try {
       const formData = new FormData();
       formData.append("ReportText", reportText.trim());
       formData.append("ResponseText", reportText.trim());
       formData.append("OrderID", reportOrderId);
+      formData.append("ProductID", reportProductId);
       formData.append("AccountID", user.userID);
 
       if (reportImage) {
@@ -415,6 +424,13 @@ export default function MyOrder() {
                               Thành tiền: {detail.totalAmount?.toLocaleString()}{" "}
                               VND
                             </div>
+                            <button
+                              onClick={() => openReportModal(order.orderID, detail.product?.productID)}
+                              className="mt-2 px-3 py-1 text-xs border border-red-500 text-red-500 bg-white hover:bg-red-50 rounded flex items-center gap-1"
+                            >
+                              <FaFlag size={10} />
+                              Báo cáo sản phẩm
+                            </button>
                           </div>
                         </div>
                       ))}
@@ -510,33 +526,16 @@ export default function MyOrder() {
 
                       {/* Hoàn thành */}
                       {order.status === 4 && (
-                        <>
-                          <button className="px-4 py-2 text-sm border border-blue-500 text-blue-500 bg-white hover:bg-blue-50 rounded">
-                            Mua lại
-                          </button>
-                          <button
-                            onClick={() => handleRequestReturn(order.orderID)}
-                            className="px-4 py-2 text-sm border border-orange-500 text-orange-500 bg-white hover:bg-orange-50 rounded"
-                          >
-                            Yêu cầu trả hàng
-                          </button>
-                        </>
-                      )}
-
-                      {/* Hoàn trả */}
-                      {order.status === 6 && (
-                        <button className="px-4 py-2 text-sm border border-blue-500 text-blue-500 bg-white hover:bg-blue-50 rounded">
-                          Mua lại
+                        <button
+                          onClick={() => handleRequestReturn(order.orderID)}
+                          className="px-4 py-2 text-sm border border-orange-500 text-orange-500 bg-white hover:bg-orange-50 rounded"
+                        >
+                          Yêu cầu trả hàng
                         </button>
                       )}
 
-                      <button
-                        onClick={() => openReportModal(order.orderID)}
-                        className="px-4 py-2 text-sm border border-red-500 text-red-500 bg-white hover:bg-red-50 rounded flex items-center gap-1"
-                      >
-                        <FaFlag size={12} />
-                        Báo cáo
-                      </button>
+                      {/* Hoàn trả */}
+                      {order.status === 6 && null}
 
                       <button className="px-4 py-2 text-sm bg-black text-white rounded hover:bg-gray-800">
                         Chi tiết
@@ -562,7 +561,7 @@ export default function MyOrder() {
             {/* Modal Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900">
-                Báo cáo đơn hàng #{reportOrderId}
+                Báo cáo sản phẩm trong đơn hàng #{reportOrderId}
               </h3>
               <button
                 onClick={closeReportModal}

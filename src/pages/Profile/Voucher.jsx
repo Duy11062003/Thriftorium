@@ -184,7 +184,7 @@ export default function Voucher() {
                     >
                       <FaCopy className="text-sm" />
                       Sao chép mã
-                    </button>
+                  </button>
                   </div>
                 </div>
               </div>

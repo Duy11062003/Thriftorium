@@ -44,6 +44,7 @@ import VoucherManager from "../pages/Admin/voucher/VoucherManager";
 import OrderManager from "../pages/Admin/order/OrderManager";
 import Payment from "../pages/payment/Payment";
 import PaymentSuccess from "../pages/payment/PaymentSuccess";
+import ReportManager from "../pages/Admin/report/ReportManager";
 
 const publicRoutes = [
   { path: "", element: <Home />, layout: PublicLayout },
@@ -65,7 +66,11 @@ const publicRoutes = [
   { path: "blog/:blogID", element: <BlogDetail />, layout: PublicLayout },
   { path: "subscription", element: <Subscription />, layout: PublicLayout },
   { path: "payment", element: <Payment />, layout: PublicLayout },
-  { path: "payment-success", element: <PaymentSuccess />, layout: PublicLayout }, 
+  {
+    path: "payment-success",
+    element: <PaymentSuccess />,
+    layout: PublicLayout,
+  },
 ];
 
 const adminRoutes = [
@@ -89,6 +94,7 @@ const adminRoutes = [
   },
   { path: "voucher-manager", element: <VoucherManager />, layout: AdminLayout },
   { path: "order-manager", element: <OrderManager />, layout: AdminLayout },
+  { path: "report-manager", element: <ReportManager />, layout: AdminLayout },
 ];
 
 const privateRoutes = [

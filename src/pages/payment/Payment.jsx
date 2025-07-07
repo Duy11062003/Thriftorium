@@ -93,9 +93,9 @@ export default function Payment() {
         <Breadcrumbs title="Payment gateway" />
 
         <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6 mt-4">
-          <h2 className="text-2xl font-semibold mb-6 text-center">
-            Xác Nhận Thanh Toán
-          </h2>
+              <h2 className="text-2xl font-semibold mb-6 text-center">
+                Xác Nhận Thanh Toán
+              </h2>
 
               <div className="space-y-4">
                 {/* Địa chỉ chi tiết */}
