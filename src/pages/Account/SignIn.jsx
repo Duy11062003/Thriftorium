@@ -4,9 +4,9 @@ import AuthService from "../../service/AuthService"; // Importing the login func
 import { useAuth } from "../../context/AuthContext";
 
 const SignIn = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errEmail, setErrEmail] = useState("");
+  const [errUsername, setErrUsername] = useState("");
   const [errPassword, setErrPassword] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [isEmailConfirmed, setIsEmailConfirmed] = useState(true);
@@ -15,9 +15,9 @@ const SignIn = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleEmail = (e) => {
-    setEmail(e.target.value);
-    setErrEmail("");
+  const handleUsername = (e) => {
+    setUsername(e.target.value);
+    setErrUsername("");
   };
 
   const handlePassword = (e) => {
@@ -28,21 +28,21 @@ const SignIn = () => {
   const handleSignIn = async (e) => {
     e.preventDefault();
 
-    if (!email) {
-      setErrEmail("Please input your username!");
+    if (!username) {
+      setErrUsername("Please input your username!");
     }
 
     if (!password) {
       setErrPassword("Please input your password!");
     }
 
-    if (email && password) {
+    if (username && password) {
       try {
         // Call the login function from AuthService.js
-        await AuthService.login(email, password);
+        await AuthService.login(username, password);
 
         navigate("/"); // Redirect to profile or main page
-        setEmail("");
+        setUsername("");
         setPassword("");
         login();
       } catch (error) {
@@ -52,7 +52,7 @@ const SignIn = () => {
           error.response.data === "You need to confirm email before login"
         )
           setIsEmailConfirmed(false);
-        else setErrEmail(error.message || "Login failed!");
+        else setErrUsername(error.message || "Login failed!");
       }
     }
   };
@@ -66,7 +66,7 @@ const SignIn = () => {
     // Simulate sending the verification code to the backend (add API call here)
     try {
       // Example API call to verify the code (replace with your actual API endpoint)
-      const response = await AuthService.confirmEmail(email, verificationCode);
+      const response = await AuthService.confirmEmail(username, verificationCode);
 
       if (response) {
         setSuccessMsg("Email successfully verified!");
@@ -80,7 +80,7 @@ const SignIn = () => {
   };
   const handleResendVerificationCode = async () => {
     try {
-      await AuthService.resendVerification(email);
+      await AuthService.resendVerification(username);
       setIsEmailConfirmed(true);
       setErrVerificationCode("");
     } catch (error) {
@@ -148,18 +148,18 @@ const SignIn = () => {
             <h1 className="text-3xl font-semibold text-center mb-6">Login</h1>
 
             <div className="flex flex-col mb-6">
-              <label htmlFor="email" className="font-semibold text-lg">
+              <label htmlFor="username" className="font-semibold text-lg">
                 <span className="text-red-500">*</span> UserName
               </label>
               <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={handleEmail}
+                type="text"
+                id="username"
+                value={username}
+                onChange={handleUsername}
                 className="p-2 border border-gray-300 rounded-md"
                 placeholder="Enter your UserName"
               />
-              {errEmail && <p className="text-red-500 text-sm">{errEmail}</p>}
+              {errUsername && <p className="text-red-500 text-sm">{errUsername}</p>}
             </div>
 
             <div className="flex flex-col mb-6">
