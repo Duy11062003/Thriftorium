@@ -99,10 +99,10 @@ export default function ProductModal({ open, onClose, onSave, product, mode }) {
             />
           </label>
           <label className="block font-medium">
-            Giá bán
+            Giá mua
             <input
               className="w-full border p-2 rounded mt-1"
-              placeholder="Giá bán"
+              placeholder="Giá mua"
               type="number"
               value={form.unitPrice}
               onChange={(e) =>
@@ -112,10 +112,10 @@ export default function ProductModal({ open, onClose, onSave, product, mode }) {
             />
           </label>
           <label className="block font-medium">
-            Giá nhập
+            Giá bán
             <input
               className="w-full border p-2 rounded mt-1"
-              placeholder="Giá nhập"
+              placeholder="Giá bán"
               type="number"
               value={form.purchasePrice}
               onChange={(e) =>

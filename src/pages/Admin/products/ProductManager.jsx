@@ -65,7 +65,7 @@ export default function AdminProductManager() {
               <th className="border p-2">Tên</th>
               <th className="border p-2">Danh mục</th>
               <th className="border p-2">Số lượng</th>
-              <th className="border p-2">Giá bán</th>
+              <th className="border p-2">Giá mua</th>
               <th className="border p-2">Nhà cung cấp</th>
               <th className="border p-2">Trạng thái</th>
               <th className="border p-2">Thao tác</th>
