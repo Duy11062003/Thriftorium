@@ -381,7 +381,7 @@ const OrderManager = () => {
                               </div>
                             </td>
                             <td className="px-4 py-2 text-sm text-gray-900">{detail.quantity}</td>
-                            <td className="px-4 py-2 text-sm text-gray-900">{detail.unitPrice?.toLocaleString()} VND</td>
+                            <td className="px-4 py-2 text-sm text-gray-900">{detail.purchasePrice?.toLocaleString()} VND</td>
                             <td className="px-4 py-2 text-sm text-gray-900">{detail.totalAmount?.toLocaleString()} VND</td>
                           </tr>
                         ))}

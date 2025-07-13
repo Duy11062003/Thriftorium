@@ -101,7 +101,6 @@ const Cart = () => {
       // Refresh from API to ensure data consistency
       await refreshCartData();
       
-      toast.success("Đã cập nhật số lượng sản phẩm");
     } catch (error) {
       console.error("Error updating cart:", error);
       toast.error("Có lỗi xảy ra khi cập nhật giỏ hàng");

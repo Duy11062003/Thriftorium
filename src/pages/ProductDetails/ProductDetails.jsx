@@ -11,6 +11,7 @@ import ProductService from "../../service/ProductService";
 import RatingService from "../../service/RatingService";
 import CartService from "../../service/CartService";
 import ReviewService from "../../service/ReviewService";
+import AccountAppService from "../../service/AccountAppService";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 
@@ -30,6 +31,7 @@ const ProductDetails = () => {
   const [userRatings, setUserRatings] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [loadingReviews, setLoadingReviews] = useState(true);
+  const [reviewUsers, setReviewUsers] = useState({});
 
   // Get current user info from localStorage
   const { user } = useAuth();
@@ -83,6 +85,24 @@ const ProductDetails = () => {
           );
           console.log(reviewsData);
           setReviews(reviewsData || []);
+
+          // Fetch user info for each review
+          const userPromises = reviewsData.map(async (review) => {
+            try {
+              const userData = await AccountAppService.getAccountById(review.accountID);
+              return { userId: review.accountID, userData };
+            } catch (error) {
+              console.error(`Error fetching user data for ID ${review.accountID}:`, error);
+              return { userId: review.accountID, userData: null };
+            }
+          });
+
+          const users = await Promise.all(userPromises);
+          const userMap = {};
+          users.forEach(({ userId, userData }) => {
+            userMap[userId] = userData;
+          });
+          setReviewUsers(userMap);
         } catch (error) {
           console.error("Error fetching reviews:", error);
           setReviews([]);
@@ -721,7 +741,7 @@ const ProductDetails = () => {
                 />
                 <div className="flex-1">
                   <div className="font-semibold mb-1">
-                    {review.accountName || review.account?.name || "Người dùng"}
+                    {reviewUsers[review.accountID]?.name || "Người dùng"}
                   </div>
                   {review.content && (
                     <p className="text-sm text-gray-700 mb-2">

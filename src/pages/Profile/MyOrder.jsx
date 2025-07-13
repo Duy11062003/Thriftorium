@@ -1,6 +1,6 @@
 // src/pages/Profile/MyOrder.js
 import React, { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   FaUser,
   FaReceipt,
@@ -57,7 +57,7 @@ export default function MyOrder() {
   const [reportText, setReportText] = useState("");
   const [reportImage, setReportImage] = useState(null);
   const [submittingReport, setSubmittingReport] = useState(false);
-
+  const navigate = useNavigate();
   // Map status from API to UI
   const getStatusText = (status) => {
     switch (status) {
@@ -336,7 +336,7 @@ export default function MyOrder() {
           <div className="w-full md:w-2/3 bg-white rounded-lg shadow p-6 border border-gray-200">
             {/* Tabs */}
             <div className="mb-6">
-              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+              <div className="flex gap-2 overflow-x-auto pb-2">
                 {tabs.map((t) => {
                   const count =
                     t === "All"
@@ -413,19 +413,32 @@ export default function MyOrder() {
                             }}
                           />
                           <div className="flex-1">
-                            <div className="font-medium text-lg">
-                              {detail.product?.name || "Unknown Product"}
+                            <div className="flex items-center justify-between">
+                              <div className="font-medium text-lg">
+                                {detail.product?.name || "Unknown Product"}
+                              </div>
+                              <button
+                                onClick={() => navigate(`/product/${detail.product?.productID}`)}
+                                className="px-4 py-2 text-sm bg-black text-white rounded hover:bg-gray-800"
+                              >
+                                Xem chi tiết
+                              </button>
                             </div>
                             <div className="text-sm text-gray-600">
                               Số lượng: {detail.quantity} x{" "}
-                              {detail.unitPrice?.toLocaleString()} VND
+                              {detail.purchasePrice?.toLocaleString()} VND
                             </div>
                             <div className="text-sm font-medium text-gray-800">
                               Thành tiền: {detail.totalAmount?.toLocaleString()}{" "}
                               VND
                             </div>
                             <button
-                              onClick={() => openReportModal(order.orderID, detail.product?.productID)}
+                              onClick={() =>
+                                openReportModal(
+                                  order.orderID,
+                                  detail.product?.productID
+                                )
+                              }
                               className="mt-2 px-3 py-1 text-xs border border-red-500 text-red-500 bg-white hover:bg-red-50 rounded flex items-center gap-1"
                             >
                               <FaFlag size={10} />
@@ -536,10 +549,6 @@ export default function MyOrder() {
 
                       {/* Hoàn trả */}
                       {order.status === 6 && null}
-
-                      <button className="px-4 py-2 text-sm bg-black text-white rounded hover:bg-gray-800">
-                        Chi tiết
-                      </button>
                     </div>
                   </div>
                 </div>

@@ -13,6 +13,14 @@ const AccountAppService = {
     return response.data.data;
   },
 
+  getAccountById: async (userId) => {
+    const response = await axios.get(`${API_URL}/base/string/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    return response.data.data;
+  },
 };
 
 export default AccountAppService;

@@ -5,13 +5,16 @@ import { HiOutlineMenuAlt4 } from "react-icons/hi";
 import { FaSearch, FaUser, FaCaretDown, FaShoppingCart } from "react-icons/fa";
 import Flex from "../../designLayouts/Flex";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import CategoryService from "../../../service/CategoryService";
 import ProductService from "../../../service/ProductService";
+import CartService from "../../../service/CartService";
 import { useAuth } from "../../../context/AuthContext";
+import { setCartItems } from "../../../redux/orebiSlice";
 
 const HeaderBottom = () => {
-  const products = useSelector((state) => state.orebiReducer.products);
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.orebiReducer.cartItems);
   const [show, setShow] = useState(false);
   const [showUser, setShowUser] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -29,6 +32,36 @@ const HeaderBottom = () => {
       }
     });
   }, [show, ref]);
+
+  // Fetch cart items and update Redux store
+  const fetchCartItems = async () => {
+    if (user?.userID) {
+      try {
+        const response = await CartService.getCartByAccountId(user.userID);
+        const items = response?.cartItem || [];
+        dispatch(setCartItems(items));
+      } catch (error) {
+        console.error("Error fetching cart items:", error);
+        dispatch(setCartItems([]));
+      }
+    } else {
+      dispatch(setCartItems([]));
+    }
+  };
+
+  // Initial fetch
+  useEffect(() => {
+    fetchCartItems();
+  }, [user?.userID, dispatch]);
+
+  // Set up polling for real-time updates
+  useEffect(() => {
+    if (!user?.userID) return;
+
+    const interval = setInterval(fetchCartItems, 5000); // Poll every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [user?.userID]);
 
   // Fetch categories when component mounts
   useEffect(() => {
@@ -276,7 +309,7 @@ const HeaderBottom = () => {
               <div className="relative text-primeColor">
                 <FaShoppingCart />
                 <span className="absolute top-3 -right-2 text-xs w-4 h-4 flex items-center justify-center rounded-full bg-primeColor text-white">
-                  {products.length || 0}
+                  {cartItems.length}
                 </span>
               </div>
             </Link>
