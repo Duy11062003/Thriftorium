@@ -4,10 +4,12 @@ import AuthService from "../../service/AuthService"; // Importing the login func
 import { useAuth } from "../../context/AuthContext";
 
 const SignIn = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errEmail, setErrEmail] = useState("");
+  const [email, setEmail] = useState(""); // Added email state for verification
+  const [errUsername, setErrUsername] = useState("");
   const [errPassword, setErrPassword] = useState("");
+  const [errEmail, setErrEmail] = useState(""); // Added email error state
   const [successMsg, setSuccessMsg] = useState("");
   const [isEmailConfirmed, setIsEmailConfirmed] = useState(true);
   const [verificationCode, setVerificationCode] = useState("");
@@ -15,9 +17,9 @@ const SignIn = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleEmail = (e) => {
-    setEmail(e.target.value);
-    setErrEmail("");
+  const handleUsername = (e) => {
+    setUsername(e.target.value);
+    setErrUsername("");
   };
 
   const handlePassword = (e) => {
@@ -25,24 +27,29 @@ const SignIn = () => {
     setErrPassword("");
   };
 
+  const handleEmail = (e) => {
+    setEmail(e.target.value);
+    setErrEmail("");
+  };
+
   const handleSignIn = async (e) => {
     e.preventDefault();
 
-    if (!email) {
-      setErrEmail("Please input your username!");
+    if (!username) {
+      setErrUsername("Please input your username!");
     }
 
     if (!password) {
       setErrPassword("Please input your password!");
     }
 
-    if (email && password) {
+    if (username && password) {
       try {
         // Call the login function from AuthService.js
-        await AuthService.login(email, password);
+        await AuthService.login(username, password);
 
         navigate("/"); // Redirect to profile or main page
-        setEmail("");
+        setUsername("");
         setPassword("");
         login();
       } catch (error) {
@@ -50,22 +57,30 @@ const SignIn = () => {
         if (
           error.response &&
           error.response.data === "You need to confirm email before login"
-        )
+        ) {
           setIsEmailConfirmed(false);
-        else setErrEmail(error.message || "Login failed!");
+        } else {
+          setErrUsername(error.message || "Login failed!");
+        }
       }
     }
   };
+
   const handleVerificationSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!email) {
+      setErrEmail("Please input your email!");
+      return;
+    }
+
     if (verificationCode.length !== 6) {
       setErrVerificationCode("The verification code must be 6 digits.");
       return;
     }
 
-    // Simulate sending the verification code to the backend (add API call here)
+    // Send verification code with email instead of username
     try {
-      // Example API call to verify the code (replace with your actual API endpoint)
       const response = await AuthService.confirmEmail(email, verificationCode);
 
       if (response) {
@@ -78,15 +93,22 @@ const SignIn = () => {
       setErrVerificationCode("Verification failed!");
     }
   };
+
   const handleResendVerificationCode = async () => {
+    if (!email) {
+      setErrEmail("Please input your email to resend verification code!");
+      return;
+    }
+
     try {
-      await AuthService.resendVerification(email);
-      setIsEmailConfirmed(true);
+      await AuthService.resendVerification(email); // Use email instead of username
+      setSuccessMsg("Verification code sent to your email!");
       setErrVerificationCode("");
     } catch (error) {
       setErrVerificationCode("Failed to resend verification code.");
     }
   };
+
   return (
     <div className="w-full h-screen flex items-center justify-center bg-gradient-to-r from-[#a8edea] via-[#fed6e3] to-[#a8edea]">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg border-2 border-gray-200">
@@ -95,6 +117,25 @@ const SignIn = () => {
             <h1 className="text-3xl font-semibold text-center mb-6">
               Enter Verification Code
             </h1>
+            
+            {/* Email input field for verification */}
+            <div className="flex flex-col mb-4">
+              <label htmlFor="email" className="font-semibold text-lg">
+                <span className="text-red-500">*</span> Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={handleEmail}
+                className="p-2 border border-gray-300 rounded-md"
+                placeholder="Enter your email"
+              />
+              {errEmail && (
+                <p className="text-red-500 text-sm">{errEmail}</p>
+              )}
+            </div>
+
             <div className="flex flex-col mb-4">
               <label
                 htmlFor="verificationCode"
@@ -148,18 +189,18 @@ const SignIn = () => {
             <h1 className="text-3xl font-semibold text-center mb-6">Login</h1>
 
             <div className="flex flex-col mb-6">
-              <label htmlFor="email" className="font-semibold text-lg">
+              <label htmlFor="username" className="font-semibold text-lg">
                 <span className="text-red-500">*</span> UserName
               </label>
               <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={handleEmail}
+                type="text"
+                id="username"
+                value={username}
+                onChange={handleUsername}
                 className="p-2 border border-gray-300 rounded-md"
                 placeholder="Enter your UserName"
               />
-              {errEmail && <p className="text-red-500 text-sm">{errEmail}</p>}
+              {errUsername && <p className="text-red-500 text-sm">{errUsername}</p>}
             </div>
 
             <div className="flex flex-col mb-6">
