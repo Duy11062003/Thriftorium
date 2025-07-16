@@ -40,7 +40,6 @@ const BestSellers = () => {
       </div>
     );
   }
-  console.log(bestSellers);
   return (
     <div className="w-full pb-20">
       <Heading heading="Our Bestsellers" />
@@ -50,7 +49,7 @@ const BestSellers = () => {
             <Product
               key={product.id || product.productID}
               _id={product.id || product.productID}
-              img={product.imageProducts?.[0]?.image || fallbackImages[index] || bestSellerOne}
+              img={product.image}
               productName={product.productName}
               price={product.purchasePrice?.toString() || "0"}
               color={product.original || "N/A"}

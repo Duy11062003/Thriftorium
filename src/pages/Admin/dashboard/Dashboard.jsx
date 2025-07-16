@@ -6,6 +6,7 @@ import {
   FaMoneyBillWave,
   FaChartBar,
   FaChartPie,
+  FaPercentage,
 } from "react-icons/fa";
 import DashboardService from "../../../service/DashboardService";
 import { toast } from "react-toastify";
@@ -37,11 +38,35 @@ export default function Dashboard() {
           DashboardService.getTotalOrdersAndAmount(),
         ]);
 
-        setWeeklyStats(weeklyData);
-        setOrderStats(orderStatsData);
-        setTopProducts(topProductsData.topProducts || []);
-        setMonthlyRevenue(revenueData.monthList || []);
-        setTotalStats(totalsData[0]); // Get first item from array
+        // Validate and set weekly stats with proper defaults
+        setWeeklyStats({
+          totalAmount: weeklyData?.totalAmount || 0,
+          totalProducts: weeklyData?.totalProducts || 0,
+          totalProfit: weeklyData?.totalProfit === "-Infinity" || weeklyData?.totalProfit === null ? 0 : weeklyData?.totalProfit,
+          profitPercentage: weeklyData?.profitPercentage === "-Infinity" || weeklyData?.profitPercentage === null ? 0 : weeklyData?.profitPercentage
+        });
+
+        // Set order stats with defaults
+        setOrderStats(orderStatsData || {
+          ordersReturnOrCancell: 0,
+          orders: 0,
+          ordersComplete: 0,
+          ordersCancell: 0,
+          ordersReturnRefund: 0,
+          ordersReport: 0
+        });
+
+        // Set top products with validation
+        setTopProducts(topProductsData?.topProducts || []);
+
+        // Set monthly revenue with validation
+        setMonthlyRevenue(revenueData?.monthList || []);
+
+        // Set total stats with validation
+        setTotalStats(totalsData?.[0] || {
+          totalOrders: 0,
+          totalOrdersAmount: 0
+        });
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
         toast.error("Không thể tải dữ liệu thống kê");
@@ -60,6 +85,9 @@ export default function Dashboard() {
       </div>
     );
   }
+
+  // Calculate max revenue for the chart
+  const maxRevenue = Math.max(...(monthlyRevenue?.map(m => m.item2) || [1]));
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -83,24 +111,30 @@ export default function Dashboard() {
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Sản phẩm đã bán (tuần)</p>
-                <p className="text-2xl font-bold text-gray-800">
-                  {weeklyStats?.totalProducts || 0}
-                </p>
+                <p className="text-sm text-gray-600">Lợi nhuận tuần</p>
+                <div>
+                  <p className="text-2xl font-bold text-gray-800">
+                    {weeklyStats?.totalProfit?.toLocaleString()} VND
+                  </p>
+                  <p className={`text-sm ${weeklyStats?.profitPercentage >= 0 ? 'text-green-500' : 'text-red-500'} flex items-center`}>
+                    {weeklyStats?.profitPercentage >= 0 ? '+' : ''}{weeklyStats?.profitPercentage?.toFixed(2)}%
+                    <FaPercentage className="ml-1" />
+                  </p>
+                </div>
               </div>
-              <FaBox className="text-blue-500 text-3xl" />
+              <FaChartLine className="text-blue-500 text-3xl" />
             </div>
           </div>
 
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Tổng đơn hàng</p>
+                <p className="text-sm text-gray-600">Sản phẩm đã bán (tuần)</p>
                 <p className="text-2xl font-bold text-gray-800">
-                  {totalStats?.totalOrders || 0}
+                  {weeklyStats?.totalProducts || 0}
                 </p>
               </div>
-              <FaShoppingBag className="text-purple-500 text-3xl" />
+              <FaBox className="text-purple-500 text-3xl" />
             </div>
           </div>
 
@@ -132,37 +166,37 @@ export default function Dashboard() {
                     label="Tổng đơn hàng" 
                     value={orderStats.orders} 
                     color="bg-blue-500"
-                    total={orderStats.orders} 
+                    total={orderStats.orders || 1} 
                   />
                   <StatItem 
                     label="Đơn hoàn thành" 
                     value={orderStats.ordersComplete} 
                     color="bg-green-500"
-                    total={orderStats.orders} 
+                    total={orderStats.orders || 1} 
                   />
                   <StatItem 
                     label="Đơn hủy" 
                     value={orderStats.ordersCancell} 
                     color="bg-red-500"
-                    total={orderStats.orders} 
+                    total={orderStats.orders || 1} 
                   />
                   <StatItem 
                     label="Đơn hoàn trả" 
                     value={orderStats.ordersReturnOrCancell} 
                     color="bg-yellow-500"
-                    total={orderStats.orders} 
+                    total={orderStats.orders || 1} 
                   />
                   <StatItem 
                     label="Đơn hoàn tiền" 
                     value={orderStats.ordersReturnRefund} 
                     color="bg-purple-500"
-                    total={orderStats.orders} 
+                    total={orderStats.orders || 1} 
                   />
                   <StatItem 
                     label="Đơn báo cáo" 
                     value={orderStats.ordersReport} 
                     color="bg-orange-500"
-                    total={orderStats.orders} 
+                    total={orderStats.orders || 1} 
                   />
                 </>
               )}
@@ -176,19 +210,25 @@ export default function Dashboard() {
               Top sản phẩm bán chạy
             </h2>
             <div className="space-y-4">
-              {topProducts.map((product, index) => (
-                <div key={index} className="flex items-center">
-                  <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center mr-3">
-                    {index + 1}
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-sm font-medium">{product.item1}</div>
-                    <div className="text-xs text-gray-500">
-                      Đã bán: {product.item2}
+              {topProducts.length > 0 ? (
+                topProducts.map((product, index) => (
+                  <div key={index} className="flex items-center">
+                    <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center mr-3">
+                      {index + 1}
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm font-medium">{product.item1}</div>
+                      <div className="text-xs text-gray-500">
+                        Đã bán: {product.item2}
+                      </div>
                     </div>
                   </div>
+                ))
+              ) : (
+                <div className="text-center text-gray-500 py-4">
+                  Chưa có dữ liệu sản phẩm bán chạy
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>
@@ -209,7 +249,7 @@ export default function Dashboard() {
                       <div
                         className="h-full bg-green-500"
                         style={{
-                          width: `${(month.item2 / Math.max(...monthlyRevenue.map(m => m.item2))) * 100}%`
+                          width: `${maxRevenue > 0 ? (month.item2 / maxRevenue) * 100 : 0}%`
                         }}
                       />
                     </div>
@@ -228,8 +268,10 @@ export default function Dashboard() {
 }
 
 // StatItem component for order statistics
-function StatItem({ label, value, color, total }) {
-  const percentage = total > 0 ? (value / total) * 100 : 0;
+function StatItem({ label, value = 0, color, total = 1 }) {
+  // Ensure total is at least 1 to avoid division by zero
+  const safeTotal = Math.max(1, total);
+  const percentage = (value / safeTotal) * 100;
   
   return (
     <div className="flex items-center">
