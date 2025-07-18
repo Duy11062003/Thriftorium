@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://localhost:7208/api/UserVoucher";
+const API_URL = "http://104.43.89.177/api/UserVoucher";
 
 const UserVoucherService = {
   getAllUserVouchers: async () => {

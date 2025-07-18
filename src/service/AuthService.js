@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
-const API_URL = "https://localhost:7208/api/account";
+const API_URL = "http://104.43.89.177/api/account";
 const AuthService = {
   login: async (username, password) => {
     const response = await axios.post(`${API_URL}/login`, {

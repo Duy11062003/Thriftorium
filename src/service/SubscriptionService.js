@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://localhost:7208/api/Subscription";
+const API_URL = "http://104.43.89.177/api/Subcription";
 
 export const getSubscriptionByAccountId = async (accountId) => {
   try {
@@ -17,7 +17,7 @@ export const getSubscriptionByAccountId = async (accountId) => {
 
 export const getSubscriptionsByPlanId = async (planId) => {
   try {
-    const response = await axios.get(`${API_URL}/get-subcription-by-id/${planId}`, {
+    const response = await axios.get(`${API_URL}/get-subcription-by-plan/${planId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },

@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
-const API_URL = "https://localhost:7208/api/category";
+const API_URL = "http://104.43.89.177/api/category";
 const CategoryService = {
   getAllCategory: async () => {
     const response = await axios.get(`${API_URL}/GetAllCategory`, {
