@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
-const API_URL = "http://104.43.89.177/api/Product";
+const API_URL = "https://104.43.89.177/api/Product";
 const ProductService = {
   getAllProductManager: async () => {
     const response = await axios.get(`${API_URL}/GetForManagement`, {

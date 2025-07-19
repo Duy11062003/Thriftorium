@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://104.43.89.177/api/Order/adminDashBoard";
+const API_URL = "https://104.43.89.177/api/Order/adminDashBoard";
 
 const DashboardService = {
   // Get total amount and total products of week

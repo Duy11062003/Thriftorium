@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
-const API_URL = "http://104.43.89.177/api/account";
+const API_URL = "https://104.43.89.177/api/account";
 const AccountService = {
   updateAccount: async (userId, data) => {
     const response = await axios.put(`${API_URL}/Update-Account?userId=${userId}`, data, {
@@ -30,7 +30,7 @@ const AccountService = {
   },
 
   getAccountById: async (userId) => {
-    const response = await axios.get(`http://104.43.89.177/api/AccountApp/base/string/${userId}`, {
+    const response = await axios.get(`https://104.43.89.177/api/AccountApp/base/string/${userId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
