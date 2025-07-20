@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Always use the full URL
-const API_URL = "https://104.43.89.177/api/Subcription";
+const API_URL = "https://ticketo.store/api/Subcription";
 
 // Create axios instance with default config
 const apiClient = axios.create({
