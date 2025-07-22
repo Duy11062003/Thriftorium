@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://ticketo.store/api/UserVoucher";
+const API_URL = "https://104.43.89.177/api/UserVoucher";
 
 const UserVoucherService = {
   getAllUserVouchers: async () => {
