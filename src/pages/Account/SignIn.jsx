@@ -56,7 +56,7 @@ const SignIn = () => {
         // Handle error
         if (
           error.response &&
-          error.response.data === "Cần xác nhận email trước khi đăng nhập"
+          error.response.data === "You need to confirm email before login"
         ) {
           setIsEmailConfirmed(false);
         } else {
