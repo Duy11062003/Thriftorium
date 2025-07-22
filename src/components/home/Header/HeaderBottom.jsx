@@ -108,7 +108,7 @@ const HeaderBottom = () => {
         });
         setFilteredProducts(searchResults || []);
       } catch (error) {
-        console.error("Lỗi tìm sản phẩm:", error);
+        console.error("Error searching products:", error);
         setFilteredProducts([]);
       } finally {
         setSearchLoading(false);
@@ -152,7 +152,7 @@ const HeaderBottom = () => {
             className="flex h-14 cursor-pointer items-center gap-2 text-primeColor"
           >
             <HiOutlineMenuAlt4 className="w-5 h-5" />
-            <p className="text-[14px] font-normal">Danh mục</p>
+            <p className="text-[14px] font-normal">Category</p>
 
             {show && (
               <motion.ul
@@ -163,7 +163,7 @@ const HeaderBottom = () => {
               >
                 {loadingCategories ? (
                   <li className="text-gray-400 px-4 py-1 border-b border-gray-400">
-                    Đang tải danh mục...
+                    Loading categories...
                   </li>
                 ) : (
                   categories.map((cat) => (
@@ -191,7 +191,7 @@ const HeaderBottom = () => {
               value={searchQuery}
               onChange={handleSearch}
               onKeyDown={handleSearchSubmit}
-              placeholder="Tìm sản phẩm"
+              placeholder="Search your products here"
               className="flex-1 h-full outline-none placeholder:text-[#C4C4C4] placeholder:text-[14px]"
             />
             <FaSearch
@@ -202,7 +202,7 @@ const HeaderBottom = () => {
               <div className="absolute top-16 left-0 w-full max-h-96 bg-white overflow-y-auto shadow-2xl scrollbar-hide z-50 cursor-pointer">
                 {searchLoading ? (
                   <div className="p-4 text-center text-gray-500">
-                    Đang tìm...
+                    Searching...
                   </div>
                 ) : filteredProducts.length > 0 ? (
                   filteredProducts.map((item) => (
@@ -228,14 +228,14 @@ const HeaderBottom = () => {
                           {item.description}
                         </p>
                         <p className="text-sm">
-                          Giá:{" "}
+                          Price:{" "}
                           <span className="text-primeColor font-semibold">
-                            VNĐ{item.purchasePrice}
+                            ${item.purchasePrice}
                           </span>
                         </p>
                         {item.category && (
                           <p className="text-xs text-gray-500">
-                            Danh mục: {item.category.name}
+                            Category: {item.category.name}
                           </p>
                         )}
                       </div>
@@ -243,7 +243,7 @@ const HeaderBottom = () => {
                   ))
                 ) : (
                   <div className="p-4 text-center text-gray-500">
-                    Không có sản phẩn cho "{searchQuery}"
+                    No products found for "{searchQuery}"
                   </div>
                 )}
               </div>
@@ -270,12 +270,12 @@ const HeaderBottom = () => {
                   <>
                     <Link to="/signin" onClick={() => setShowUser(false)}>
                       <li className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:border-white hover:text-white duration-300">
-                        Đăng nhập
+                        Login
                       </li>
                     </Link>
                     <Link to="/signup" onClick={() => setShowUser(false)}>
                       <li className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:border-white hover:text-white duration-300">
-                        Đăng ký
+                        Sign Up
                       </li>
                     </Link>
                   </>
@@ -287,7 +287,7 @@ const HeaderBottom = () => {
                   onClick={() => setShowUser(false)}
                 >
                   <li className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:border-white hover:text-white duration-300">
-                    Trang cá nhân
+                    Profile
                   </li>
                 </Link>
                 {user &&

@@ -36,11 +36,11 @@ const SignIn = () => {
     e.preventDefault();
 
     if (!username) {
-      setErrUsername("Hãy nhập username!");
+      setErrUsername("Please input your username!");
     }
 
     if (!password) {
-      setErrPassword("Hãy nhập mật khẩu");
+      setErrPassword("Please input your password!");
     }
 
     if (username && password) {
@@ -60,7 +60,7 @@ const SignIn = () => {
         ) {
           setIsEmailConfirmed(false);
         } else {
-          setErrUsername(error.message || "Đăng nhập thất bại!");
+          setErrUsername(error.message || "Login failed!");
         }
       }
     }
@@ -70,12 +70,12 @@ const SignIn = () => {
     e.preventDefault();
     
     if (!email) {
-      setErrEmail("Hãy nhập email!");
+      setErrEmail("Please input your email!");
       return;
     }
 
     if (verificationCode.length !== 6) {
-      setErrVerificationCode("Mã xác nhận phải có 6 ký tự");
+      setErrVerificationCode("The verification code must be 6 digits.");
       return;
     }
 
@@ -84,28 +84,28 @@ const SignIn = () => {
       const response = await AuthService.confirmEmail(email, verificationCode);
 
       if (response) {
-        setSuccessMsg("Xác nhận email thành công!");
+        setSuccessMsg("Email successfully verified!");
         navigate("/");
       } else {
-        setErrVerificationCode("Mã xác nhận sai!");
+        setErrVerificationCode("Invalid verification code!");
       }
     } catch (error) {
-      setErrVerificationCode("Xác nhận thất bại!");
+      setErrVerificationCode("Verification failed!");
     }
   };
 
   const handleResendVerificationCode = async () => {
     if (!email) {
-      setErrEmail("Hãy nhập email để nhận lại mã xác nhận!");
+      setErrEmail("Please input your email to resend verification code!");
       return;
     }
 
     try {
       await AuthService.resendVerification(email); // Use email instead of username
-      setSuccessMsg("Mã đã được gửi tới email!");
+      setSuccessMsg("Verification code sent to your email!");
       setErrVerificationCode("");
     } catch (error) {
-      setErrVerificationCode("Gửi mã thất bại.");
+      setErrVerificationCode("Failed to resend verification code.");
     }
   };
 
@@ -129,7 +129,7 @@ const SignIn = () => {
                 value={email}
                 onChange={handleEmail}
                 className="p-2 border border-gray-300 rounded-md"
-                placeholder="Nhập email"
+                placeholder="Enter your email"
               />
               {errEmail && (
                 <p className="text-red-500 text-sm">{errEmail}</p>
@@ -151,7 +151,7 @@ const SignIn = () => {
                   setVerificationCode(e.target.value);
                 }}
                 className="p-2 border border-gray-300 rounded-md"
-                placeholder="Nhập mã xác nhận 6 số"
+                placeholder="Enter your 6-digit code"
               />
               {errVerificationCode && (
                 <p className="text-red-500 text-sm">{errVerificationCode}</p>
@@ -163,7 +163,7 @@ const SignIn = () => {
                     onClick={() => setSuccessMsg("")}
                     className="text-blue-500 border-none bg-transparent"
                   >
-                    Đăng nhập
+                    Go to login
                   </button>
                 </div>
               )}
@@ -172,7 +172,7 @@ const SignIn = () => {
               type="submit"
               className="w-full bg-blue-500 text-white p-2 rounded-lg"
             >
-              Xác nhận
+              Verify Code
             </button>
 
             {/* Resend Verification Code Button */}
@@ -181,12 +181,12 @@ const SignIn = () => {
               onClick={handleResendVerificationCode}
               className="w-full mt-4 bg-gray-500 text-white p-2 rounded-lg"
             >
-              Gửi lại mã xác nhận
+              Resend Verification Code
             </button>
           </form>
         ) : (
           <form onSubmit={handleSignIn}>
-            <h1 className="text-3xl font-semibold text-center mb-6">Đăng nhập</h1>
+            <h1 className="text-3xl font-semibold text-center mb-6">Login</h1>
 
             <div className="flex flex-col mb-6">
               <label htmlFor="username" className="font-semibold text-lg">
@@ -205,7 +205,7 @@ const SignIn = () => {
 
             <div className="flex flex-col mb-6">
               <label htmlFor="password" className="font-semibold text-lg">
-                <span className="text-red-500">*</span> Mật khẩu
+                <span className="text-red-500">*</span> Password
               </label>
               <input
                 type="password"
@@ -222,7 +222,7 @@ const SignIn = () => {
               {/* Forgot password link */}
               <div className="text-right mt-4">
                 <Link to="/reset-password" className="text-blue-600 text-sm">
-                  Quên mật khẩu?
+                  Forgot password?
                 </Link>
               </div>
             </div>
@@ -231,13 +231,13 @@ const SignIn = () => {
               type="submit"
               className="w-full bg-blue-500 text-white p-2 rounded-lg"
             >
-              Đăng nhập
+              Login
             </button>
 
             <p className="text-center mt-4">
-              Không có tài khoản?{" "}
+              Don't have an account?{" "}
               <Link to="/signup" className="text-blue-600">
-                Đăng ký
+                Register here
               </Link>
             </p>
           </form>

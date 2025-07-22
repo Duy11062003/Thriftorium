@@ -33,7 +33,7 @@ const BestSellers = () => {
   if (loading) {
     return (
       <div className="w-full pb-20">
-        <Heading heading="Sản Phẩm Bán Chạy" />
+        <Heading heading="Our Bestsellers" />
         <div className="w-full grid grid-cols-1 md:grid-cols-2 lgl:grid-cols-3 xl:grid-cols-4 gap-10">
           <div className="text-center">Đang tải...</div>
         </div>
@@ -42,7 +42,7 @@ const BestSellers = () => {
   }
   return (
     <div className="w-full pb-20">
-      <Heading heading="Sản Phẩm Bán Chạy" />
+      <Heading heading="Our Bestsellers" />
       <div className="w-full grid grid-cols-1 md:grid-cols-2 lgl:grid-cols-3 xl:grid-cols-4 gap-10">
         {bestSellers.length > 0 ? (
           bestSellers.map((product, index) => (

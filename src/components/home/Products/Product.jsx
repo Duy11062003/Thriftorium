@@ -100,7 +100,7 @@ const Product = (props) => {
                 isAddingToCart ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
-              {isAddingToCart ? "Đang thêm..." : "Thêm vào giỏ"}
+              {isAddingToCart ? "Đang thêm..." : "Add to Cart"}
               <span>
                 <FaShoppingCart />
               </span>
@@ -109,7 +109,7 @@ const Product = (props) => {
               onClick={handleProductDetails}
               className="text-[#767676] hover:text-primeColor text-sm font-normal border-b-[1px] border-b-gray-200 hover:border-b-primeColor flex items-center justify-end gap-2 hover:cursor-pointer pb-1 duration-300 w-full"
             >
-              Chi tiết
+              View Details
               <span className="text-lg">
                 <MdOutlineLabelImportant />
               </span>

@@ -49,14 +49,14 @@ const SignUp = () => {
   // ================= Email Validation start here =============
   const validateEmail = (email) => {
     if (!email) {
-      setErrEmail("Hãy nhập email!");
+      setErrEmail("Please input your email!");
       return false;
     } else if (
       !String(email)
         .toLowerCase()
         .match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
     ) {
-      setErrEmail("Hãy nhập email chính xác!");
+      setErrEmail("Enter a valid email address!");
       return false;
     }
     setErrEmail("");
@@ -65,29 +65,29 @@ const SignUp = () => {
   // ================= Email Validation End here ===============
   const validatePassword = (password) => {
     if (!password) {
-      setErrPassword("Hãy nhập mật khẩu!");
+      setErrPassword("Please input your password!");
       return false;
     }
 
     if (password.length < 12) {
-      setErrPassword("Mật khảu phải ít nhất 12 ký tự.");
+      setErrPassword("Passwords must be at least 12 characters.");
       return false;
     }
 
     if (!/[^\w\s]/.test(password)) {
       setErrPassword(
-        "Mật khẩu phải có ký tự chữ và số."
+        "Passwords must have at least one non alphanumeric character."
       );
       return false;
     }
 
     if (!/\d/.test(password)) {
-      setErrPassword("Mật khẩu phải có ít nhất 1 số ('0'-'9').");
+      setErrPassword("Passwords must have at least one digit ('0'-'9').");
       return false;
     }
 
     if (!/[A-Z]/.test(password)) {
-      setErrPassword("Mật khẩu phải có 1 ký tự in hoa ('A'-'Z').");
+      setErrPassword("Passwords must have at least one uppercase ('A'-'Z').");
       return false;
     }
 
@@ -100,15 +100,15 @@ const SignUp = () => {
     e.preventDefault();
 
     if (!clientName) {
-      setErrClientName("Hãy nhập username !");
+      setErrClientName("Please input your username!");
     }
     validateEmail(email);
     if (!phone) {
-      setErrPhone("Hãy nhập số đth!");
+      setErrPhone("Please input your phone number!");
     }
     validatePassword(password);
     if (!address) {
-      setErrAddress("Hãy nhập địa chỉ!");
+      setErrAddress("Please input your address!");
     }
 
     if (
@@ -131,7 +131,7 @@ const SignUp = () => {
         // Gọi API đăng ký
         await AuthService.signup(userData);
         setSuccessMsg(
-          `Xin chào ${clientName}, chào mừng tới Thriftorium! Chúng tôi đã nhận được yêu cầu đăng ký của bạn. Chúng tôi đang xử lý ngay bây giờ và sẽ thông báo cho bạn sớm tại ${email}. Đăng nhập để xác minh tài khoản của bạn.`
+          `Hello ${clientName}, welcome to OREBI! We have received your sign-up request. We are processing it now and will notify you soon at ${email}. Log in to verify your account.`
         );
 
         // Reset form fields
@@ -183,14 +183,14 @@ const SignUp = () => {
             <p className="text-green-500">{successMsg}</p>
             <Link to="/signin">
               <button className="mt-4 bg-blue-500 text-white p-2 rounded-lg w-full">
-                Đăng nhập
+                Log in
               </button>
             </Link>
           </div>
         ) : (
           <form onSubmit={handleSignUp}>
             <h1 className="text-3xl font-semibold text-center mb-6">
-              Tạo tài khoản
+              Create Account
             </h1>
 
             <div className="flex flex-col mb-4">
@@ -203,7 +203,7 @@ const SignUp = () => {
                 value={clientName}
                 onChange={handleName}
                 className="p-2 border border-gray-300 rounded-md"
-                placeholder="Nhập username"
+                placeholder="Enter your username"
               />
               {errClientName && (
                 <p className="text-red-500 text-sm">{errClientName}</p>
@@ -220,14 +220,14 @@ const SignUp = () => {
                 value={email}
                 onChange={handleEmail}
                 className="p-2 border border-gray-300 rounded-md"
-                placeholder="Nhập email"
+                placeholder="Enter your email"
               />
               {errEmail && <p className="text-red-500 text-sm">{errEmail}</p>}
             </div>
 
             <div className="flex flex-col mb-4">
               <label htmlFor="name" className="font-semibold text-lg">
-                <span className="text-red-500">*</span> Tên
+                <span className="text-red-500">*</span> Name
               </label>
               <input
                 type="text"
@@ -235,7 +235,7 @@ const SignUp = () => {
                 value={clientName}
                 onChange={handleName}
                 className="p-2 border border-gray-300 rounded-md"
-                placeholder="Nhập tên"
+                placeholder="Enter your name"
               />
               {errClientName && (
                 <p className="text-red-500 text-sm">{errClientName}</p>
@@ -244,7 +244,7 @@ const SignUp = () => {
 
             <div className="flex flex-col mb-4">
               <label htmlFor="phone" className="font-semibold text-lg">
-                <span className="text-red-500">*</span> Số điện thoại
+                <span className="text-red-500">*</span> Phone
               </label>
               <input
                 type="text"
@@ -252,14 +252,14 @@ const SignUp = () => {
                 value={phone}
                 onChange={handlePhone}
                 className="p-2 border border-gray-300 rounded-md"
-                placeholder="Nhập số điện thoại"
+                placeholder="Enter your phone number"
               />
               {errPhone && <p className="text-red-500 text-sm">{errPhone}</p>}
             </div>
 
             <div className="flex flex-col mb-4">
               <label htmlFor="password" className="font-semibold text-lg">
-                <span className="text-red-500">*</span> Mật khẩu
+                <span className="text-red-500">*</span> Password
               </label>
               <input
                 type="password"
@@ -267,7 +267,7 @@ const SignUp = () => {
                 value={password}
                 onChange={handlePassword}
                 className="p-2 border border-gray-300 rounded-md"
-                placeholder="Nhập mật khẩu"
+                placeholder="Create your password"
               />
               {errPassword && (
                 <p className="text-red-500 text-sm">{errPassword}</p>
@@ -276,7 +276,7 @@ const SignUp = () => {
 
             <div className="flex flex-col mb-4">
               <label htmlFor="address" className="font-semibold text-lg">
-                <span className="text-red-500">*</span> Địa chỉ
+                <span className="text-red-500">*</span> Address
               </label>
               <input
                 type="text"
@@ -284,7 +284,7 @@ const SignUp = () => {
                 value={address}
                 onChange={handleAddress}
                 className="p-2 border border-gray-300 rounded-md"
-                placeholder="Nhập địa chỉ"
+                placeholder="Enter your address"
               />
               {errAddress && (
                 <p className="text-red-500 text-sm">{errAddress}</p>
@@ -295,13 +295,13 @@ const SignUp = () => {
               type="submit"
               className="w-full bg-blue-500 text-white p-2 rounded-lg"
             >
-              Tạo tài khoản
+              Create Account
             </button>
 
             <p className="text-center mt-4">
-              Đã có tài khoản?{" "}
+              Already have an account?{" "}
               <Link to="/signin" className="text-blue-600">
-                Đăng nhập
+                Log in
               </Link>
             </p>
           </form>
