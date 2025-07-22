@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://104.43.89.177/api/Checkout";
+const API_URL = "https://ticketo.store/api/Checkout";
 
 const CheckoutService = {
   createOrder: async (accountId, totals, userVoucherId = -1, shippingDetails) => {
