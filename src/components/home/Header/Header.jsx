@@ -26,10 +26,10 @@ const Header = () => {
 
   // desktop links
   const desktopLinks = [
-    { title: "Home", to: "/" },
-    { title: "Shop", to: "/shop" },
+    { title: "Trang Chủ", to: "/" },
+    { title: "Cửa hàng", to: "/shop" },
     { title: "Blog", to: "/blog" },
-    { title: "About", to: "/about" },
+    { title: "Về Chúng Tôi", to: "/about" },
   ];
 
   return (
@@ -73,7 +73,7 @@ const Header = () => {
                 to="/subscription"
                 className="ml-6 px-6 py-2 bg-green-400 hover:bg-green-500 rounded-full text-black font-medium transition"
               >
-                Subscription
+                Đăng Ký Gói
               </Link>
             )}
 

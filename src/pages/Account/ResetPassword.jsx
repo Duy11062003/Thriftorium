@@ -38,7 +38,7 @@ const ResetPassword = () => {
             <input
               type="email"
               id="email"
-              placeholder="Enter your email"
+              placeholder="Nhập email"
               value={email}
               onChange={handleEmailChange}
               className="p-2 border border-gray-300 rounded-md"

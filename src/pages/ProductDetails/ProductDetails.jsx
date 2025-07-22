@@ -531,7 +531,7 @@ const ProductDetails = () => {
                 onClick={handleAddToCart}
                 className="flex-1 h-12 bg-red-600 text-white px-6 rounded-lg hover:bg-red-700 transition"
               >
-                Add to Cart
+                Thêm vào giỏ
               </button>
             </div>
 
@@ -540,7 +540,7 @@ const ProductDetails = () => {
               onClick={handleBuyNow}
               className="w-full h-12 bg-black text-white px-6 rounded-lg hover:bg-gray-800 transition"
             >
-              Buy Now
+              Mua ngay
             </button>
           </div>
         </div>
