@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
-const API_URL = "https://ticketo.store/api/account";
+const API_URL = "https://localhost:7208/api/account";
 const AuthService = {
   login: async (username, password) => {
     const response = await axios.post(`${API_URL}/login`, {
@@ -41,7 +41,10 @@ const AuthService = {
     return response.data;
   },
   resetPassword: async (data) => {
-    const response = await axios.post(`${API_URL}/reset-password-with-code`, data);
+    const response = await axios.post(
+      `${API_URL}/reset-password-with-code`,
+      data
+    );
     return response.data;
   },
   resendVerification: async (email) => {

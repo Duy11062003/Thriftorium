@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://ticketo.store/api/VoucherTemplate";
+const API_URL = "https://localhost:7208/api/VoucherTemplate";
 
 const VoucherTemplateService = {
   getAllVoucherTemplates: async () => {
@@ -31,22 +31,26 @@ const VoucherTemplateService = {
 
   createVoucherTemplate: async (templateData) => {
     try {
-      const response = await axios.post(`${API_URL}`, {
-        name: templateData.name,
-        milestoneAmount: templateData.milestoneAmount,
-        voucherTypes: templateData.voucherTypes,
-        description: templateData.description,
-        isMembership: templateData.isMembership,
-        discountPercentage: templateData.discountPercentage,
-        startedAt: templateData.startedAt,
-        expiredAt: templateData.expiredAt,
-        status: templateData.status
-      }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
+      const response = await axios.post(
+        `${API_URL}`,
+        {
+          name: templateData.name,
+          milestoneAmount: templateData.milestoneAmount,
+          voucherTypes: templateData.voucherTypes,
+          description: templateData.description,
+          isMembership: templateData.isMembership,
+          discountPercentage: templateData.discountPercentage,
+          startedAt: templateData.startedAt,
+          expiredAt: templateData.expiredAt,
+          status: templateData.status,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       return response.data.data;
     } catch (error) {
       throw error;
@@ -55,22 +59,26 @@ const VoucherTemplateService = {
 
   updateVoucherTemplate: async (templateData) => {
     try {
-      const response = await axios.put(`${API_URL}`, {
-        name: templateData.name,
-        milestoneAmount: templateData.milestoneAmount,
-        voucherTypes: templateData.voucherTypes,
-        description: templateData.description,
-        isMembership: templateData.isMembership,
-        discountPercentage: templateData.discountPercentage,
-        startedAt: templateData.startedAt,
-        expiredAt: templateData.expiredAt,
-        status: templateData.status
-      }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
+      const response = await axios.put(
+        `${API_URL}`,
+        {
+          name: templateData.name,
+          milestoneAmount: templateData.milestoneAmount,
+          voucherTypes: templateData.voucherTypes,
+          description: templateData.description,
+          isMembership: templateData.isMembership,
+          discountPercentage: templateData.discountPercentage,
+          startedAt: templateData.startedAt,
+          expiredAt: templateData.expiredAt,
+          status: templateData.status,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       return response.data.data;
     } catch (error) {
       throw error;

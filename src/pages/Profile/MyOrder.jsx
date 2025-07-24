@@ -88,7 +88,7 @@ export default function MyOrder() {
       case 0:
         return "Tiền mặt";
       case 1:
-        return "VNPay";
+        return "PayOS";
       case 2:
         return "Momo";
       default:
@@ -418,7 +418,11 @@ export default function MyOrder() {
                                 {detail.product?.name || "Unknown Product"}
                               </div>
                               <button
-                                onClick={() => navigate(`/product/${detail.product?.productID}`)}
+                                onClick={() =>
+                                  navigate(
+                                    `/product/${detail.product?.productID}`
+                                  )
+                                }
                                 className="px-4 py-2 text-sm bg-black text-white rounded hover:bg-gray-800"
                               >
                                 Xem chi tiết

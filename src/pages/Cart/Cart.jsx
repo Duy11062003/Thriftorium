@@ -58,7 +58,7 @@ const Cart = () => {
           user.userID
         );
         setAvailableVouchers(vouchers);
-    } catch (error) {
+      } catch (error) {
         console.error("Error fetching vouchers:", error);
         toast.error("Không thể tải danh sách voucher");
       } finally {
@@ -80,6 +80,7 @@ const Cart = () => {
 
   // Tính phí vận chuyển (đơn vị nghìn đồng)
   useEffect(() => {
+    setShippingCharge(0);
     if (totalAmt <= 200000) {
       setShippingCharge(30000);
     } else if (totalAmt <= 400000) {
@@ -94,13 +95,12 @@ const Cart = () => {
   // Handle update cart quantity
   const handleUpdateQuantity = async (productId, newQuantity) => {
     if (newQuantity <= 0) return;
-    
+
     try {
       await CartService.updateCart(user.userID, productId, newQuantity);
-      
+
       // Refresh from API to ensure data consistency
       await refreshCartData();
-      
     } catch (error) {
       console.error("Error updating cart:", error);
       toast.error("Có lỗi xảy ra khi cập nhật giỏ hàng");
@@ -111,10 +111,10 @@ const Cart = () => {
   const handleRemoveItem = async (productId) => {
     try {
       await CartService.deleteCart(user.userID, productId);
-      
+
       // Refresh from API to ensure data consistency
       await refreshCartData();
-      
+
       toast.success("Đã xóa sản phẩm khỏi giỏ hàng");
     } catch (error) {
       console.error("Error removing item:", error);
@@ -125,7 +125,7 @@ const Cart = () => {
   // Handle clear cart
   const handleClearCart = async () => {
     if (!window.confirm("Bạn có chắc chắn muốn xóa toàn bộ giỏ hàng?")) return;
-    
+
     try {
       await CartService.deleteUserCart(user.userID);
       setCartItems([]);
@@ -300,12 +300,16 @@ const Cart = () => {
               <div>
                 <p className="flex items-center justify-between border-[1px] border-gray-400 border-b-0 py-1.5 text-lg px-4 font-medium">
                   Subtotal
-                  <span className="font-semibold">{totalAmt.toLocaleString()} VND</span>
+                  <span className="font-semibold">
+                    {totalAmt.toLocaleString()} VND
+                  </span>
                 </p>
                 <p className="flex items-center justify-between border-[1px] border-gray-400 border-b-0 py-1.5 text-lg px-4 font-medium">
                   Giảm giá
                   <span className="font-semibold">
-                    {discount > 0 ? `-${discount.toLocaleString()} VND` : "0 VND"}
+                    {discount > 0
+                      ? `-${discount.toLocaleString()} VND`
+                      : "0 VND"}
                     {selectedVoucher && (
                       <span className="text-sm text-gray-500 ml-2">
                         ({selectedVoucher.voucherTemplate?.discountPercentage}%)
@@ -315,7 +319,9 @@ const Cart = () => {
                 </p>
                 <p className="flex items-center justify-between border-[1px] border-gray-400 border-b-0 py-1.5 text-lg px-4 font-medium">
                   Tổng cộng
-                  <span className="font-semibold">{(totalAmt - discount).toLocaleString()} VND</span>
+                  <span className="font-semibold">
+                    {(totalAmt - discount).toLocaleString()} VND
+                  </span>
                 </p>
                 <p className="flex items-center justify-between border-[1px] border-gray-400 border-b-0 py-1.5 text-lg px-4 font-medium">
                   Phí vận chuyển
@@ -332,12 +338,14 @@ const Cart = () => {
                 </p>
                 <p className="flex items-center justify-between border-[1px] border-gray-400 py-1.5 text-lg px-4 font-bold">
                   Tổng thanh toán
-                  <span className="font-bold">{finalTotal.toLocaleString()} VND</span>
+                  <span className="font-bold">
+                    {finalTotal.toLocaleString()} VND
+                  </span>
                 </p>
               </div>
-              <div className="flex flex-col gap-2 items-center"> 
+              <div className="flex flex-col gap-2 items-center">
                 {/* Nút Tiến hành thanh toán */}
-                <button 
+                <button
                   onClick={() => {
                     if (cartItems.length === 0) {
                       toast.error("Giỏ hàng của bạn đang trống");
@@ -351,15 +359,15 @@ const Cart = () => {
                           shippingCharge,
                           discount,
                           finalTotal,
-                          selectedVoucher
-                        }
-                      }
+                          selectedVoucher,
+                        },
+                      },
                     });
                   }}
                   className="w-full h-10 bg-primeColor text-white hover:bg-black duration-300"
                 >
-                    Tiến hành thanh toán
-                  </button>
+                  Tiến hành thanh toán
+                </button>
                 {/* --- Thêm nút Tiếp tục mua sắm bên dưới --- */}
                 <Link to="/shop" className="w-full">
                   <button className="w-full h-10 bg-gray-800 text-white hover:bg-gray-600 duration-300">
