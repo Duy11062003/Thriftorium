@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
-const API_URL = "https://ticketo.store/api/category";
+const API_URL = "https://localhost:7208/api/category";
 const CategoryService = {
   getAllCategory: async () => {
     const response = await axios.get(`${API_URL}/GetAllCategory`, {
@@ -30,12 +30,16 @@ const CategoryService = {
     return response.data;
   },
   updateCategory: async (id, category) => {
-    const response = await axios.put(`${API_URL}/UpdateCategory?id=${id}`, category, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await axios.put(
+      `${API_URL}/UpdateCategory?id=${id}`,
+      category,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
     return response.data;
   },
   deleteCategory: async (id) => {

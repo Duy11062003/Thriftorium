@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://ticketo.store/api/category";
+const API_URL = "https://localhost:7208/api/category";
 
 export const getAllSubscriptionPlans = async () => {
   try {
@@ -30,17 +30,21 @@ export const getSubscriptionPlanById = async (id) => {
 
 export const createSubscriptionPlan = async (planData) => {
   try {
-    const response = await axios.post(`${API_URL}/CreateSubcriptionPlan`, {
-      planName: planData.planName,
-      price: planData.price,
-      description: planData.description,
-      duration: planData.duration
-    }, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
+    const response = await axios.post(
+      `${API_URL}/CreateSubcriptionPlan`,
+      {
+        planName: planData.planName,
+        price: planData.price,
+        description: planData.description,
+        duration: planData.duration,
       },
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     throw error;
@@ -49,17 +53,21 @@ export const createSubscriptionPlan = async (planData) => {
 
 export const updateSubscriptionPlan = async (planData) => {
   try {
-    const response = await axios.put(`${API_URL}/UpdateSubscriptionPlan?id=${planData.planID}`, {
-      planName: planData.planName,
-      price: planData.price,
-      description: planData.description,
-      duration: planData.duration
-    }, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
+    const response = await axios.put(
+      `${API_URL}/UpdateSubscriptionPlan?id=${planData.planID}`,
+      {
+        planName: planData.planName,
+        price: planData.price,
+        description: planData.description,
+        duration: planData.duration,
       },
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
     return response.data.data;
   } catch (error) {
     throw error;
