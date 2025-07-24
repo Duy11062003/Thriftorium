@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
-const API_URL = "https://ticketo.store/api/Rating";
+const API_URL = "https://localhost:7208/api/Rating";
 const RatingService = {
   addRating: async (data) => {
     const response = await axios.post(`${API_URL}/addRating`, data, {
@@ -21,19 +21,25 @@ const RatingService = {
     return response.data.data;
   },
   deleteRating: async (id) => {
-    const response = await axios.delete(`${API_URL}/deleteRating?ratingId=${id}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+    const response = await axios.delete(
+      `${API_URL}/deleteRating?ratingId=${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
     return response.data;
   },
   getRatingByAccountId: async (accountId) => {
-    const response = await axios.get(`${API_URL}/getRatingByAccountId?accountId=${accountId}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+    const response = await axios.get(
+      `${API_URL}/getRatingByAccountId?accountId=${accountId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
     return response.data.data;
   },
 };

@@ -1,15 +1,15 @@
 import axios from "axios";
 
 // Always use the full URL
-const API_URL = "https://ticketo.store/api/Subcription";
+const API_URL = "https://localhost:7208/api/Subcription";
 
 // Create axios instance with default config
 const apiClient = axios.create({
   baseURL: API_URL,
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',
-  }
+    "Content-Type": "application/json",
+  },
 });
 
 // Add request interceptor to include token
@@ -29,7 +29,7 @@ apiClient.interceptors.request.use(
 // Get all subscriptions
 export const getAllSubscriptions = async () => {
   try {
-    const response = await apiClient.get('/get-all-Subscriptions');
+    const response = await apiClient.get("/get-all-Subscriptions");
     return response.data;
   } catch (error) {
     console.error("Error getting all subscriptions:", error);
@@ -44,12 +44,15 @@ export const getSubscriptionByAccountId = async (accountId) => {
     if (!token) {
       throw new Error("No authentication token found");
     }
-    
-    const response = await axios.get(`${API_URL}/get-all-Subcription-by-id/${accountId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+
+    const response = await axios.get(
+      `${API_URL}/get-all-Subcription-by-id/${accountId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Error getting subscription by account ID:", error);
@@ -70,11 +73,14 @@ export const getSubscriptionByAccountId = async (accountId) => {
 // Get subscriptions by plan ID
 export const getSubscriptionsByPlanId = async (planId) => {
   try {
-    const response = await axios.get(`${API_URL}/get-subcription-by-plan/${planId}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+    const response = await axios.get(
+      `${API_URL}/get-subcription-by-plan/${planId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Error getting subscriptions by plan ID:", error);
@@ -85,15 +91,19 @@ export const getSubscriptionsByPlanId = async (planId) => {
 // Update subscription status
 export const updateSubscriptionStatus = async (id, status) => {
   try {
-    const response = await axios.put(`${API_URL}/update-Subcription-status`, {
-      Id: id,
-      status: status
-    }, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
+    const response = await axios.put(
+      `${API_URL}/update-Subcription-status`,
+      {
+        Id: id,
+        status: status,
       },
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Error updating subscription status:", error);
@@ -104,18 +114,45 @@ export const updateSubscriptionStatus = async (id, status) => {
 // Create subscription
 export const createSubscription = async (accountId, planId) => {
   try {
-    const response = await axios.post(`${API_URL}/createSubcription`, {
-      accountId: accountId,
-      planID: planId // Keep as planID to match your backend expectation
-    }, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
+    const response = await axios.post(
+      `${API_URL}/createSubcription`,
+      {
+        accountId: accountId,
+        planID: planId, // Keep as planID to match your backend expectation
       },
-    });
-    return response.data; // VNPay URL
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data; // PayOS URL
   } catch (error) {
     console.error("Error creating subscription:", error);
+    throw error;
+  }
+};
+
+// Tạo đăng ký gói qua PayOS
+export const createSubscriptionPayOs = async (accountId, planId) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/createSubcriptionPayOs`,
+      {
+        accountId: accountId,
+        planID: planId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data; // PayOS URL
+  } catch (error) {
+    console.error("Error creating subscription via PayOS:", error);
     throw error;
   }
 };
