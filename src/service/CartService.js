@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
-const API_URL = "https://localhost:7208/api/Cart";
+const API_URL = "https://ticketo.store/api/Cart";
 const CartService = {
   addCart: async (data) => {
     const response = await axios.post(`${API_URL}`, data, {

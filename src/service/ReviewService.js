@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
-const API_URL = "https://localhost:7208/api/reviews";
+const API_URL = "https://ticketo.store/api/reviews";
 const ReviewService = {
   getReviews: async () => {
     const response = await axios.get(`${API_URL}/get-all`, {

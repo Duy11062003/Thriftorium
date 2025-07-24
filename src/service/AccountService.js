@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
-const API_URL = "https://localhost:7208/api/account";
+const API_URL = "https://ticketo.store/api/account";
 const AccountService = {
   updateAccount: async (userId, data) => {
     const response = await axios.put(`${API_URL}/Update-Account?userId=${userId}`, data, {

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://localhost:7208/api/Report";
+const API_URL = "https://ticketo.store/api/Report";
 
 const ReportService = {
   getAllReports: async () => {

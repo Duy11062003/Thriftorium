@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://localhost:7208/api/Checkout";
+const API_URL = "https://ticketo.store/api/Checkout";
 
 const CheckoutService = {
   // Tạo đơn hàng PayOS
