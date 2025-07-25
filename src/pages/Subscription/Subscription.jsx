@@ -103,10 +103,10 @@ const Subscription = () => {
           {/* Left Side - Form */}
           <div className="bg-white rounded-lg shadow-sm p-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              Register subscription
+              Đăng ký gói
             </h2>
             <p className="text-gray-600 mb-8">
-              Register subscription to use Thriftorium
+              Đăng ký gói để dùng trong Thriftorium
             </p>
 
             <div className="space-y-6">
@@ -130,7 +130,7 @@ const Subscription = () => {
                   onClick={() => navigate("/")}
                   className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
                 >
-                  Cancel
+                  Hủy
                 </button>
                 <button
                   onClick={handleSubscribe}
@@ -153,7 +153,7 @@ const Subscription = () => {
               </div>
 
               <p className="text-xs text-gray-500 mt-4">
-                By subscribing, you agree to our terms and conditions.
+                Bằng cách đăng ký, bạn đồng ý với các điều khoản và điều kiện của chúng tôi.
               </p>
             </div>
           </div>
@@ -161,7 +161,7 @@ const Subscription = () => {
           {/* Right Side - Subscription Plans */}
           <div className="bg-white rounded-lg shadow-sm p-6">
             <h3 className="text-xl font-bold text-gray-900 mb-6">
-              Choose your subscription plan
+              Chọn gói đăng ký
             </h3>
 
             <div className="space-y-4">
@@ -197,7 +197,7 @@ const Subscription = () => {
                         {plan.description}
                       </p>
                       <p className="text-sm font-semibold text-blue-600 mt-1">
-                        {plan.price}đ / {plan.duration} days
+                        {plan.price}VNĐ / {plan.duration} ngày
                       </p>
                     </div>
                   </div>
@@ -220,15 +220,8 @@ const Subscription = () => {
                     <div className="w-2 h-2 rounded-full bg-green-500"></div>
                   </div>
                   <span>
-                    Guaranteed to be safe & secure with PayOS payment gateway
+                    Đảm bảo an toàn và bảo mật với cổng thanh toán PayOS
                   </span>
-                </div>
-
-                <div className="flex items-start">
-                  <div className="w-4 h-4 rounded-full bg-blue-100 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
-                    <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                  </div>
-                  <span>Personalise your shop with your own info</span>
                 </div>
 
                 <div className="flex items-start">
@@ -236,7 +229,7 @@ const Subscription = () => {
                     <div className="w-2 h-2 rounded-full bg-orange-500"></div>
                   </div>
                   <span>
-                    Provide quality support in order & shipping management
+                    Cung cấp hỗ trợ chất lượng trong quản lý đơn hàng và vận chuyển
                   </span>
                 </div>
 
@@ -244,7 +237,7 @@ const Subscription = () => {
                   <div className="w-4 h-4 rounded-full bg-purple-100 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
                     <div className="w-2 h-2 rounded-full bg-purple-500"></div>
                   </div>
-                  <span>This plan has trial period for 7 days</span>
+                  <span>Gói này có thời gian dùng là 30 ngày</span>
                 </div>
               </div>
             </div>

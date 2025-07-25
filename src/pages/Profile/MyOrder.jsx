@@ -272,7 +272,7 @@ export default function MyOrder() {
     <div className="bg-gray-50 min-h-screen py-10">
       <div className="max-w-container mx-auto px-4">
         {/* Title */}
-        <h1 className="text-4xl font-bold">My Order</h1>
+        <h1 className="text-4xl font-bold">Đơn hàng</h1>
         <p className="text-sm text-gray-600 mt-1 mb-8">/profile/my order</p>
 
         <div className="flex flex-col md:flex-row gap-6">
@@ -298,7 +298,7 @@ export default function MyOrder() {
                     : "text-gray-700 hover:bg-gray-100")
                 }
               >
-                <FaUser className="mr-3" /> Account Information
+                <FaUser className="mr-3" /> Thông tin tài khoản
               </NavLink>
               <NavLink
                 to="/profile/my-order"
@@ -309,7 +309,7 @@ export default function MyOrder() {
                     : "text-gray-700 hover:bg-gray-100")
                 }
               >
-                <FaReceipt className="mr-3" /> My Order
+                <FaReceipt className="mr-3" /> Đơn hàng
               </NavLink>
               <NavLink
                 to="/profile/voucher"
@@ -321,13 +321,13 @@ export default function MyOrder() {
                 to="/profile/change-password"
                 className="flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100"
               >
-                <FaKey className="mr-3" /> Change Password
+                <FaKey className="mr-3" /> Đổi mật khẩu
               </NavLink>
               <button
                 onClick={() => logout()}
                 className="flex items-center w-full px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg"
               >
-                <FaSignOutAlt className="mr-3" /> Log Out
+                <FaSignOutAlt className="mr-3" /> Đăng xuất
               </button>
             </nav>
           </div>
@@ -430,11 +430,11 @@ export default function MyOrder() {
                             </div>
                             <div className="text-sm text-gray-600">
                               Số lượng: {detail.quantity} x{" "}
-                              {detail.purchasePrice?.toLocaleString()} VND
+                              {detail.purchasePrice?.toLocaleString()} VNĐ
                             </div>
                             <div className="text-sm font-medium text-gray-800">
                               Thành tiền: {detail.totalAmount?.toLocaleString()}{" "}
-                              VND
+                              VNĐ
                             </div>
                             <button
                               onClick={() =>
@@ -494,7 +494,7 @@ export default function MyOrder() {
                             <div>
                               <strong>Phí vận chuyển:</strong>{" "}
                               {order.shippingInfo.shippingCost?.toLocaleString()}{" "}
-                              VND
+                              VNĐ
                             </div>
                           </div>
                         </div>

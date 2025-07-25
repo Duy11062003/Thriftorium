@@ -10,10 +10,6 @@ const ShopSideNav = ({ filters, onFiltersChange }) => {
         selectedCategory={filters.category}
         onCategoryChange={(category) => onFiltersChange({ category })}
       />
-      <Price 
-        selectedPriceRange={{ lowPrice: filters.lowPrice, highPrice: filters.highPrice }}
-        onPriceChange={(lowPrice, highPrice) => onFiltersChange({ lowPrice, highPrice })}
-      />
     </div>
   );
 };

@@ -95,7 +95,7 @@ export default function ChangePassword() {
     <div className="bg-gray-50 min-h-screen py-10">
       <div className="max-w-container mx-auto px-4">
         {/* Header */}
-        <h1 className="text-4xl font-bold">Change Password</h1>
+        <h1 className="text-4xl font-bold">Đổi mật khẩu</h1>
         <p className="text-sm text-gray-600 mt-1 mb-8">
           /profile/change password
         </p>
@@ -109,7 +109,9 @@ export default function ChangePassword() {
                 alt="avatar"
                 className="w-16 h-16 rounded-full object-cover"
               />
-              <div className="font-semibold">Bùi Khánh Duy</div>
+              <div className="font-semibold">
+                {user?.fullName || user?.userName || "Người dùng"}
+              </div>
             </div>
             <nav className="space-y-2">
               <NavLink
@@ -121,7 +123,7 @@ export default function ChangePassword() {
                     : "text-gray-700 hover:bg-gray-100")
                 }
               >
-                <FaUser className="mr-3" /> Account Information
+                <FaUser className="mr-3" /> Thông tin tài khoản
               </NavLink>
               <NavLink
                 to="/profile/my-order"
@@ -132,7 +134,7 @@ export default function ChangePassword() {
                     : "text-gray-700 hover:bg-gray-100")
                 }
               >
-                <FaReceipt className="mr-3" /> My Order
+                <FaReceipt className="mr-3" /> Đơn hàng
               </NavLink>
               <NavLink
                 to="/profile/voucher"
@@ -154,25 +156,25 @@ export default function ChangePassword() {
                     : "text-gray-700 hover:bg-gray-100")
                 }
               >
-                <FaKey className="mr-3" /> Change Password
+                <FaKey className="mr-3" /> Đổi mật khẩu
               </NavLink>
               <button
                 onClick={() => logout()}
                 className="flex items-center w-full px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg"
               >
-                <FaSignOutAlt className="mr-3" /> Log Out
+                <FaSignOutAlt className="mr-3" /> Đăng xuất
               </button>
             </nav>
           </div>
 
           {/* Change Password Form */}
           <div className="w-full md:w-2/3 bg-white rounded-lg shadow p-6 border border-gray-200">
-            <h2 className="text-2xl font-semibold mb-6">Change Password</h2>
+            <h2 className="text-2xl font-semibold mb-6">Đổi mật khẩu</h2>
             <div className="space-y-4">
               {/* Current */}
               <div className="relative">
                 <label className="block text-sm font-medium mb-1">
-                  Current Password
+                  Mật khẩu hiện tại
                 </label>
                 <input
                   type={showCurrent ? "text" : "password"}
@@ -193,7 +195,7 @@ export default function ChangePassword() {
               {/* New */}
               <div className="relative">
                 <label className="block text-sm font-medium mb-1">
-                  New Password
+                  Mật khẩu mới
                 </label>
                 <input
                   type={showNew ? "text" : "password"}
@@ -218,7 +220,7 @@ export default function ChangePassword() {
               {/* Confirm */}
               <div className="relative">
                 <label className="block text-sm font-medium mb-1">
-                  Confirm New Password
+                  Xác nhận mật khẩu mới
                 </label>
                 <input
                   type={showConfirm ? "text" : "password"}
@@ -245,7 +247,7 @@ export default function ChangePassword() {
                 }}
                 className="bg-black text-white px-8 py-2 rounded-lg hover:bg-gray-800 transition"
               >
-                Change Password
+                Đổi mật khẩu
               </button>
             </div>
           </div>

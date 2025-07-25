@@ -37,7 +37,7 @@ const SpecialOffers = () => {
   if (loading) {
     return (
       <div className="w-full pb-20">
-        <Heading heading="Special Offers" />
+        <Heading heading="Ưu đãi đặc biệt" />
         <div className="text-center">Đang tải ưu đãi đặc biệt...</div>
       </div>
     );
@@ -45,7 +45,7 @@ const SpecialOffers = () => {
 
   return (
     <div className="w-full pb-20">
-      <Heading heading="Special Offers" />
+      <Heading heading="Ưu đãi đặc biệt" />
       {specialOffers.length > 0 ? (
         <div className="w-full grid grid-cols-1 md:grid-cols-2 lgl:grid-cols-3 xl:grid-cols-4 gap-10">
           {specialOffers.map((product, index) => (

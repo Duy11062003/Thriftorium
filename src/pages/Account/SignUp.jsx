@@ -183,14 +183,14 @@ const SignUp = () => {
             <p className="text-green-500">{successMsg}</p>
             <Link to="/signin">
               <button className="mt-4 bg-blue-500 text-white p-2 rounded-lg w-full">
-                Log in
+                Đăng nhập
               </button>
             </Link>
           </div>
         ) : (
           <form onSubmit={handleSignUp}>
             <h1 className="text-3xl font-semibold text-center mb-6">
-              Create Account
+              Đăng ký
             </h1>
 
             <div className="flex flex-col mb-4">
@@ -227,7 +227,7 @@ const SignUp = () => {
 
             <div className="flex flex-col mb-4">
               <label htmlFor="name" className="font-semibold text-lg">
-                <span className="text-red-500">*</span> Name
+                <span className="text-red-500">*</span> Tên
               </label>
               <input
                 type="text"
@@ -244,7 +244,7 @@ const SignUp = () => {
 
             <div className="flex flex-col mb-4">
               <label htmlFor="phone" className="font-semibold text-lg">
-                <span className="text-red-500">*</span> Phone
+                <span className="text-red-500">*</span> Số điện thoại
               </label>
               <input
                 type="text"
@@ -259,7 +259,7 @@ const SignUp = () => {
 
             <div className="flex flex-col mb-4">
               <label htmlFor="password" className="font-semibold text-lg">
-                <span className="text-red-500">*</span> Password
+                <span className="text-red-500">*</span> Mật khẩu
               </label>
               <input
                 type="password"
@@ -276,7 +276,7 @@ const SignUp = () => {
 
             <div className="flex flex-col mb-4">
               <label htmlFor="address" className="font-semibold text-lg">
-                <span className="text-red-500">*</span> Address
+                <span className="text-red-500">*</span> Địa chỉ
               </label>
               <input
                 type="text"
@@ -295,13 +295,13 @@ const SignUp = () => {
               type="submit"
               className="w-full bg-blue-500 text-white p-2 rounded-lg"
             >
-              Create Account
+              Tạo tài khoản
             </button>
 
             <p className="text-center mt-4">
-              Already have an account?{" "}
+              Đã có tài khoản?{" "}
               <Link to="/signin" className="text-blue-600">
-                Log in
+                Đăng nhập
               </Link>
             </p>
           </form>

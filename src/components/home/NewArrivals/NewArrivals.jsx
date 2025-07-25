@@ -72,7 +72,7 @@ const NewArrivals = () => {
   if (loading) {
     return (
       <div className="w-full pb-16">
-        <Heading heading="New Arrivals" />
+        <Heading heading="Sản phẩm mới" />
         <div className="text-center">Đang tải sản phẩm mới...</div>
       </div>
     );
@@ -80,7 +80,7 @@ const NewArrivals = () => {
 
   return (
     <div className="w-full pb-16">
-      <Heading heading="New Arrivals" />
+      <Heading heading="Sản phẩm mới" />
       {newArrivals.length > 0 ? (
         <Slider {...settings} infinite={newArrivals.length > 4}>
           {newArrivals.map((product, index) => (

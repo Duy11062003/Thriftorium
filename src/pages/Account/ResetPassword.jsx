@@ -52,7 +52,7 @@ const ResetPassword = () => {
               Gửi mã xác nhận
             </button>
             <Link to="/new-password" className="bg-blue-500 text-white px-6 py-2 rounded-lg text-sm w-full text-center">
-              Next →
+              Tiếp theo →
             </Link>
           </div>
         </form>

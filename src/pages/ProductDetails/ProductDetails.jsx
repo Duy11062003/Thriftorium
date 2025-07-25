@@ -463,7 +463,7 @@ const ProductDetails = () => {
     <div className="bg-white">
       <div className="max-w-container mx-auto px-4 pt-6">
         {/* Header */}
-        <h1 className="text-4xl italic font-bold">Product</h1>
+        <h1 className="text-4xl italic font-bold">Sản phẩm</h1>
         <p className="text-sm text-gray-600 mt-1 mb-2">
           /product listing/{title}
         </p>
@@ -531,7 +531,7 @@ const ProductDetails = () => {
                 onClick={handleAddToCart}
                 className="flex-1 h-12 bg-red-600 text-white px-6 rounded-lg hover:bg-red-700 transition"
               >
-                Add to Cart
+                Thêm vào giỏ
               </button>
             </div>
 
@@ -540,7 +540,7 @@ const ProductDetails = () => {
               onClick={handleBuyNow}
               className="w-full h-12 bg-black text-white px-6 rounded-lg hover:bg-gray-800 transition"
             >
-              Buy Now
+              Mua ngay
             </button>
           </div>
         </div>
@@ -722,7 +722,7 @@ const ProductDetails = () => {
 
         {/* Description | Reviews */}
         <div className="mt-10 mb-12">
-          <h3 className="text-xl font-semibold mb-4">Description | Reviews</h3>
+          <h3 className="text-xl font-semibold mb-4">Mô tả | Đánh giá</h3>
           <p className="mb-4 text-gray-700">
             {description || "Không có mô tả chi tiết"}
           </p>

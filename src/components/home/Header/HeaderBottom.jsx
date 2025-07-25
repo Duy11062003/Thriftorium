@@ -72,15 +72,6 @@ const HeaderBottom = () => {
         setCategories(categoryData || []);
       } catch (error) {
         console.error("Error fetching categories:", error);
-        // Fallback to static categories if API fails
-        setCategories([
-          { categoryID: 1, name: "Accessories" },
-          { categoryID: 2, name: "Furniture" },
-          { categoryID: 3, name: "Electronics" },
-          { categoryID: 4, name: "Clothes" },
-          { categoryID: 5, name: "Bags" },
-          { categoryID: 6, name: "Home appliances" },
-        ]);
       } finally {
         setLoadingCategories(false);
       }
@@ -152,7 +143,7 @@ const HeaderBottom = () => {
             className="flex h-14 cursor-pointer items-center gap-2 text-primeColor"
           >
             <HiOutlineMenuAlt4 className="w-5 h-5" />
-            <p className="text-[14px] font-normal">Category</p>
+            <p className="text-[14px] font-normal">Danh mục</p>
 
             {show && (
               <motion.ul
@@ -191,7 +182,7 @@ const HeaderBottom = () => {
               value={searchQuery}
               onChange={handleSearch}
               onKeyDown={handleSearchSubmit}
-              placeholder="Search your products here"
+              placeholder="Tìm kiếm sản phẩm..."
               className="flex-1 h-full outline-none placeholder:text-[#C4C4C4] placeholder:text-[14px]"
             />
             <FaSearch
@@ -228,14 +219,14 @@ const HeaderBottom = () => {
                           {item.description}
                         </p>
                         <p className="text-sm">
-                          Price:{" "}
+                          Giá:{" "}
                           <span className="text-primeColor font-semibold">
-                            ${item.purchasePrice}
+                            {item.purchasePrice}VNĐ
                           </span>
                         </p>
                         {item.category && (
                           <p className="text-xs text-gray-500">
-                            Category: {item.category.name}
+                            Danh mục: {item.category.name}
                           </p>
                         )}
                       </div>
@@ -243,7 +234,7 @@ const HeaderBottom = () => {
                   ))
                 ) : (
                   <div className="p-4 text-center text-gray-500">
-                    No products found for "{searchQuery}"
+                    Không có sản phẩm nào cho "{searchQuery}"
                   </div>
                 )}
               </div>
@@ -270,12 +261,12 @@ const HeaderBottom = () => {
                   <>
                     <Link to="/signin" onClick={() => setShowUser(false)}>
                       <li className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:border-white hover:text-white duration-300">
-                        Login
+                        Đăng nhập
                       </li>
                     </Link>
                     <Link to="/signup" onClick={() => setShowUser(false)}>
                       <li className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:border-white hover:text-white duration-300">
-                        Sign Up
+                        Đăng ký
                       </li>
                     </Link>
                   </>
@@ -287,7 +278,7 @@ const HeaderBottom = () => {
                   onClick={() => setShowUser(false)}
                 >
                   <li className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:border-white hover:text-white duration-300">
-                    Profile
+                    Tài khoản
                   </li>
                 </Link>
                 {user &&
@@ -299,7 +290,7 @@ const HeaderBottom = () => {
                       onClick={() => setShowUser(false)}
                     >
                       <li className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:border-white hover:text-white duration-300">
-                        Administration
+                        Quản lý
                       </li>
                     </Link>
                   )}

@@ -16,15 +16,6 @@ const Category = ({ selectedCategory, onCategoryChange }) => {
         setCategories(categoryData || []);
       } catch (error) {
         console.error("Error fetching categories:", error);
-        // Fallback to static categories if API fails
-        setCategories([
-          { categoryID: 1, name: "Accessories" },
-          { categoryID: 2, name: "Furniture" },
-          { categoryID: 3, name: "Electronics" },
-          { categoryID: 4, name: "Clothes" },
-          { categoryID: 5, name: "Bags" },
-          { categoryID: 6, name: "Home appliances" }
-        ]);
       } finally {
         setLoading(false);
       }
@@ -34,7 +25,7 @@ const Category = ({ selectedCategory, onCategoryChange }) => {
   }, []);
   return (
     <div className="w-full">
-      <NavTitle title="Shop by Category" icons={false} />
+      <NavTitle title="Danh mục" icons={false} />
       <div>
         {loading ? (
           <div className="text-sm text-gray-500 py-2">Loading categories...</div>
@@ -47,7 +38,7 @@ const Category = ({ selectedCategory, onCategoryChange }) => {
               }`}
               onClick={() => onCategoryChange('')}
             >
-              All Categories
+              Tất cả danh mục
             </li>
             {categories.map(({ categoryID, name }) => (
               <li

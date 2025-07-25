@@ -15,7 +15,7 @@ export default function About() {
   return (
     <div className="max-w-container mx-auto px-4 py-10">
       {/* Breadcrumb + Title */}
-      <Breadcrumbs title="About" prevLocation={prevLocation} />
+      <Breadcrumbs title="Về chúng tôi" prevLocation={prevLocation} />
 
       {/* Content Card */}
       <div className="bg-gray-100 rounded-lg p-8 space-y-8">

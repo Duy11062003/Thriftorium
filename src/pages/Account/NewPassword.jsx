@@ -47,7 +47,7 @@ const NewPassword = () => {
   return (
     <div className="w-full h-screen flex items-center justify-center bg-gradient-to-r from-[#a8edea] via-[#fed6e3] to-[#a8edea]">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg border-2 border-gray-200">
-        <h1 className="text-3xl font-semibold text-center mb-6">Enter New Password</h1>
+        <h1 className="text-3xl font-semibold text-center mb-6">Nhập mật khẩu mới</h1>
         
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col mb-6">
@@ -80,7 +80,7 @@ const NewPassword = () => {
           </div>
           <div className="flex flex-col mb-6">
             <label htmlFor="token" className="font-semibold text-lg">
-              <span className="text-red-500">*</span> Verification Code
+              <span className="text-red-500">*</span> Mã xác nhận
             </label>
             <input
               type="text"
@@ -94,7 +94,7 @@ const NewPassword = () => {
           </div>
           <div className="flex flex-col mb-6">
             <label htmlFor="password" className="font-semibold text-lg">
-              <span className="text-red-500">*</span> Password
+              <span className="text-red-500">*</span> Mật khẩu
             </label>
             <input
               type="password"
@@ -109,7 +109,7 @@ const NewPassword = () => {
 
           <div className="flex flex-col mb-6">
             <label htmlFor="confirmPassword" className="font-semibold text-lg">
-              <span className="text-red-500">*</span> Confirm Password
+              <span className="text-red-500">*</span> Xác nhận mật khẩu
             </label>
             <input
               type="password"
@@ -125,7 +125,7 @@ const NewPassword = () => {
           {/* Centering buttons and making them the same size */}
           <div className="flex justify-center space-x-4 mt-6">
             <Link to="/reset-password" className="bg-blue-500 text-white px-6 py-2 rounded-lg text-sm w-full text-center">
-              ← Back
+              ← Quay lại
             </Link>
             <button type="submit" className="bg-blue-500 text-white px-6 py-2 rounded-lg text-sm w-full text-center">
               Đặt lại mật khẩu

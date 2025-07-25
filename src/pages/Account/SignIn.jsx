@@ -115,7 +115,7 @@ const SignIn = () => {
         {!isEmailConfirmed ? (
           <form onSubmit={handleVerificationSubmit}>
             <h1 className="text-3xl font-semibold text-center mb-6">
-              Enter Verification Code
+              Nhập mã xác nhận
             </h1>
             
             {/* Email input field for verification */}
@@ -141,7 +141,7 @@ const SignIn = () => {
                 htmlFor="verificationCode"
                 className="font-semibold text-lg"
               >
-                <span className="text-red-500">*</span> Verification Code
+                <span className="text-red-500">*</span> Mã xác nhận
               </label>
               <input
                 type="text"
@@ -163,7 +163,7 @@ const SignIn = () => {
                     onClick={() => setSuccessMsg("")}
                     className="text-blue-500 border-none bg-transparent"
                   >
-                    Go to login
+                    Đi tới đăng nhập
                   </button>
                 </div>
               )}
@@ -172,7 +172,7 @@ const SignIn = () => {
               type="submit"
               className="w-full bg-blue-500 text-white p-2 rounded-lg"
             >
-              Verify Code
+              Mã xác nhận
             </button>
 
             {/* Resend Verification Code Button */}
@@ -181,12 +181,12 @@ const SignIn = () => {
               onClick={handleResendVerificationCode}
               className="w-full mt-4 bg-gray-500 text-white p-2 rounded-lg"
             >
-              Resend Verification Code
+              Gửi lại mã xác nhận
             </button>
           </form>
         ) : (
           <form onSubmit={handleSignIn}>
-            <h1 className="text-3xl font-semibold text-center mb-6">Login</h1>
+            <h1 className="text-3xl font-semibold text-center mb-6">Đăng nhập</h1>
 
             <div className="flex flex-col mb-6">
               <label htmlFor="username" className="font-semibold text-lg">
@@ -205,7 +205,7 @@ const SignIn = () => {
 
             <div className="flex flex-col mb-6">
               <label htmlFor="password" className="font-semibold text-lg">
-                <span className="text-red-500">*</span> Password
+                <span className="text-red-500">*</span> Mật khẩu
               </label>
               <input
                 type="password"
@@ -222,7 +222,7 @@ const SignIn = () => {
               {/* Forgot password link */}
               <div className="text-right mt-4">
                 <Link to="/reset-password" className="text-blue-600 text-sm">
-                  Forgot password?
+                  Quên mật khẩu?
                 </Link>
               </div>
             </div>
@@ -231,13 +231,13 @@ const SignIn = () => {
               type="submit"
               className="w-full bg-blue-500 text-white p-2 rounded-lg"
             >
-              Login
+              Đăng nhập
             </button>
 
             <p className="text-center mt-4">
-              Don't have an account?{" "}
+              Không có tài khoản?{" "}
               <Link to="/signup" className="text-blue-600">
-                Register here
+                Đăng ký
               </Link>
             </p>
           </form>

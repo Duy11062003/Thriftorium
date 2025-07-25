@@ -89,7 +89,7 @@ export default function Voucher() {
                     : "text-gray-700 hover:bg-gray-100")
                 }
               >
-                <FaUser className="mr-3" /> Account Information
+                <FaUser className="mr-3" /> Thông tin tài khoản
               </NavLink>
               <NavLink
                 to="/profile/my-order"
@@ -100,7 +100,7 @@ export default function Voucher() {
                     : "text-gray-700 hover:bg-gray-100")
                 }
               >
-                <FaReceipt className="mr-3" /> My Order
+                <FaReceipt className="mr-3" /> Đơn hàng
               </NavLink>
               <NavLink
                 to="/profile/voucher"
@@ -117,13 +117,13 @@ export default function Voucher() {
                 to="/profile/change-password"
                 className="flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100"
               >
-                <FaKey className="mr-3" /> Change Password
+                <FaKey className="mr-3" /> Đổi mật khẩu
               </NavLink>
               <button
                 onClick={() => logout()}
                 className="flex items-center w-full px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg"
               >
-                <FaSignOutAlt className="mr-3" /> Log Out
+                <FaSignOutAlt className="mr-3" /> Đăng xuất
               </button>
             </nav>
           </div>

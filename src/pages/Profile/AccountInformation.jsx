@@ -98,7 +98,7 @@ export default function AccountInformation() {
     <div className="bg-gray-50 min-h-screen py-10">
       <div className="max-w-container mx-auto px-4">
         {/* Header */}
-        <h1 className="text-4xl font-bold">Account Information</h1>
+        <h1 className="text-4xl font-bold">Thông tin tài khoản</h1>
         <p className="text-sm text-gray-600 mt-1 mb-8">
           /profile/account information
         </p>
@@ -124,13 +124,13 @@ export default function AccountInformation() {
                     : "text-gray-700 hover:bg-gray-100")
                 }
               >
-                <FaUser className="mr-3" /> Account Information
+                <FaUser className="mr-3" /> Thông tin tài khoản
               </NavLink>
               <NavLink
                 to="/profile/my-order"
                 className="flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100"
               >
-                <FaReceipt className="mr-3" /> My Order
+                <FaReceipt className="mr-3" /> Đơn hàng
               </NavLink>
               <NavLink
                 to="/profile/voucher"
@@ -142,25 +142,25 @@ export default function AccountInformation() {
                 to="/profile/change-password"
                 className="flex items-center px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100"
               >
-                <FaKey className="mr-3" /> Change Password
+                <FaKey className="mr-3" /> Đổi mật khẩu
               </NavLink>
               <button
                 onClick={() => logout()}
                 className="flex items-center w-full px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg"
               >
-                <FaSignOutAlt className="mr-3" /> Log Out
+                <FaSignOutAlt className="mr-3" /> Đăng xuất
               </button>
             </nav>
           </div>
 
           {/* Right form */}
           <div className="w-full md:w-2/3 bg-white rounded-lg shadow p-6 border border-gray-200">
-            <h2 className="text-2xl font-semibold mb-6">Account Information</h2>
+            <h2 className="text-2xl font-semibold mb-6">Thông tin tài khoản</h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Full name */}
               <div>
                 <label className="block text-sm font-bold mb-1">
-                  Full name *
+                  Tên *
                 </label>
                 <input
                   type="text"
@@ -186,7 +186,7 @@ export default function AccountInformation() {
               {/* Phone */}
               <div>
                 <label className="block text-sm font-bold mb-1">
-                  Phone Number *
+                  Số điện thoại *
                 </label>
                 <input
                   type="text"
@@ -199,7 +199,7 @@ export default function AccountInformation() {
               </div>
               {/* Address */}
               <div className="lg:col-span-2">
-                <label className="block text-sm font-bold mb-1">Address</label>
+                <label className="block text-sm font-bold mb-1">Địa chỉ</label>
                 <input
                   type="text"
                   value={address}
