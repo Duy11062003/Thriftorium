@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import {
-  FaShoppingBag,
   FaChartLine,
   FaBox,
   FaMoneyBillWave,
   FaChartBar,
   FaChartPie,
-  FaPercentage,
 } from "react-icons/fa";
 import DashboardService from "../../../service/DashboardService";
 import { toast } from "react-toastify";
@@ -111,42 +109,12 @@ export default function Dashboard() {
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Lợi nhuận tuần</p>
-                <div>
-                  <p className="text-2xl font-bold text-gray-800">
-                    {weeklyStats?.totalProfit?.toLocaleString()} VND
-                  </p>
-                  <p className={`text-sm ${weeklyStats?.profitPercentage >= 0 ? 'text-green-500' : 'text-red-500'} flex items-center`}>
-                    {weeklyStats?.profitPercentage >= 0 ? '+' : ''}{weeklyStats?.profitPercentage?.toFixed(2)}%
-                    <FaPercentage className="ml-1" />
-                  </p>
-                </div>
-              </div>
-              <FaChartLine className="text-blue-500 text-3xl" />
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between">
-              <div>
                 <p className="text-sm text-gray-600">Sản phẩm đã bán (tuần)</p>
                 <p className="text-2xl font-bold text-gray-800">
                   {weeklyStats?.totalProducts || 0}
                 </p>
               </div>
               <FaBox className="text-purple-500 text-3xl" />
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Tổng doanh thu</p>
-                <p className="text-2xl font-bold text-gray-800">
-                  {totalStats?.totalOrdersAmount?.toLocaleString()} VND
-                </p>
-              </div>
-              <FaChartLine className="text-red-500 text-3xl" />
             </div>
           </div>
         </div>
