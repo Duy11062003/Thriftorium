@@ -24,6 +24,21 @@ export default function Payment() {
     phone: "",
   });
 
+  // Calculate shipping charge based on province code
+  const calculateShippingCharge = (provinceCode) => {
+    return provinceCode === "79" ? 30000 : 50000;
+  };
+
+  // Get current shipping charge
+  const currentShippingCharge = calculateShippingCharge(formData.provinceCode);
+
+  // Calculate final total with dynamic shipping
+  const calculateFinalTotal = () => {
+    if (!orderData) return 0;
+    const subtotal = orderData.totalAmount - (orderData.discount || 0);
+    return subtotal + currentShippingCharge;
+  };
+
   // Get cart data from location state
   useEffect(() => {
     if (!location.state?.cartData) {
@@ -57,17 +72,24 @@ export default function Payment() {
         return;
       }
 
+      // Update order data with current shipping charge
+      const updatedOrderData = {
+        ...orderData,
+        shippingCharge: currentShippingCharge,
+        finalTotal: calculateFinalTotal()
+      };
+
       // Tạo đơn hàng - response là PayOS URL
       const payosUrl = await CheckoutService.createOrderPayOs(
         user.userID,
-        orderData.totalAmount,
-        orderData.selectedVoucher?.userVoucherID || -1,
+        updatedOrderData.totalAmount,
+        updatedOrderData.selectedVoucher?.userVoucherID || -1,
         formData
       );
 
       if (payosUrl) {
         // Store order info for later use
-        sessionStorage.setItem("orderData", JSON.stringify(orderData));
+        sessionStorage.setItem("orderData", JSON.stringify(updatedOrderData));
         sessionStorage.setItem("formData", JSON.stringify(formData));
         // Redirect to PayOS payment page
         window.location.href = payosUrl;
@@ -135,7 +157,7 @@ export default function Payment() {
                 name="provinceCode"
                 value={formData.provinceCode}
                 onChange={handleChange}
-                placeholder="Ví dụ: 700000"
+                placeholder="Ví dụ: 79 (TP.HCM) hoặc 01 (Hà Nội)"
                 className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
               />
             </div>
@@ -225,14 +247,21 @@ export default function Payment() {
                 </p>
                 <p className="flex justify-between">
                   <span>Phí vận chuyển:</span>
-                  <span>{orderData.shippingCharge.toLocaleString()} VND</span>
+                  <span className={currentShippingCharge === 30000 ? "text-green-600" : "text-orange-600"}>
+                    {currentShippingCharge.toLocaleString()} VND
+                  </span>
                 </p>
                 <p className="text-xs text-gray-500 ml-4">
-                  (Trong TP.HCM: 30,000 VND - Ngoài TP.HCM: 50,000 VND)
+                  {formData.provinceCode === "79" 
+                    ? "(Trong TP.HCM: 30,000 VND)" 
+                    : formData.provinceCode 
+                      ? "(Ngoài TP.HCM: 50,000 VND)"
+                      : "(Mã tỉnh 79 - TP.HCM: 30,000 VND | Khác: 50,000 VND)"
+                  }
                 </p>
                 <p className="flex justify-between font-bold pt-2 border-t">
                   <span>Tổng thanh toán:</span>
-                  <span>{orderData.finalTotal.toLocaleString()} VND</span>
+                  <span>{calculateFinalTotal().toLocaleString()} VND</span>
                 </p>
               </div>
             </div>
