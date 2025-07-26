@@ -33,13 +33,70 @@ const Shop = () => {
 
   const handleSortChange = (newSortBy) => {
     setSortBy(newSortBy);
+    // Update URL params
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('sortBy', newSortBy);
+    setSearchParams(newParams);
   };
 
   const handleFiltersChange = (newFilters) => {
-    if (newFilters.search !== undefined) setSearchFilter(newFilters.search);
-    if (newFilters.category !== undefined) setCategoryFilter(newFilters.category);
-    if (newFilters.lowPrice !== undefined) setLowPriceFilter(newFilters.lowPrice);
-    if (newFilters.highPrice !== undefined) setHighPriceFilter(newFilters.highPrice);
+    const newParams = new URLSearchParams(searchParams);
+    
+    if (newFilters.search !== undefined) {
+      setSearchFilter(newFilters.search);
+      if (newFilters.search) {
+        newParams.set('search', newFilters.search);
+      } else {
+        newParams.delete('search');
+      }
+    }
+    
+    if (newFilters.category !== undefined) {
+      setCategoryFilter(newFilters.category);
+      if (newFilters.category) {
+        newParams.set('category', newFilters.category);
+      } else {
+        newParams.delete('category');
+      }
+    }
+    
+    if (newFilters.lowPrice !== undefined) {
+      setLowPriceFilter(newFilters.lowPrice);
+      if (newFilters.lowPrice) {
+        newParams.set('lowPrice', newFilters.lowPrice);
+      } else {
+        newParams.delete('lowPrice');
+      }
+    }
+    
+    if (newFilters.highPrice !== undefined) {
+      setHighPriceFilter(newFilters.highPrice);
+      if (newFilters.highPrice) {
+        newParams.set('highPrice', newFilters.highPrice);
+      } else {
+        newParams.delete('highPrice');
+      }
+    }
+    
+    setSearchParams(newParams);
+  };
+
+  // Handle price range filter
+  const handlePriceRangeChange = (lowPrice, highPrice) => {
+    handleFiltersChange({ 
+      lowPrice: lowPrice || '', 
+      highPrice: highPrice || '' 
+    });
+  };
+
+  // Clear all filters
+  const clearAllFilters = () => {
+    setSearchFilter('');
+    setCategoryFilter('');
+    setLowPriceFilter('');
+    setHighPriceFilter('');
+    setSortBy('newest');
+    setSearchParams({});
   };
 
   // Fetch products from API
@@ -86,9 +143,77 @@ const Shop = () => {
     if (urlSortBy !== sortBy) setSortBy(urlSortBy);
   }, [searchParams, searchFilter, categoryFilter, lowPriceFilter, highPriceFilter, sortBy]);
 
+  // Check if any filters are active
+  const hasActiveFilters = searchFilter || categoryFilter || lowPriceFilter || highPriceFilter || sortBy !== 'newest';
+
   return (
     <div className="max-w-container mx-auto px-4">
       <Breadcrumbs title="Sản phẩm" />
+      
+      {/* Active Filters Display */}
+      {hasActiveFilters && (
+        <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <span className="text-sm font-medium text-gray-700">Bộ lọc đang áp dụng:</span>
+            
+            {searchFilter && (
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
+                Tìm kiếm: {searchFilter}
+                <button 
+                  onClick={() => handleFiltersChange({ search: '' })}
+                  className="ml-1 text-blue-600 hover:text-blue-800"
+                >
+                  ×
+                </button>
+              </span>
+            )}
+            
+            {categoryFilter && (
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
+                Danh mục: {categoryFilter}
+                <button 
+                  onClick={() => handleFiltersChange({ category: '' })}
+                  className="ml-1 text-green-600 hover:text-green-800"
+                >
+                  ×
+                </button>
+              </span>
+            )}
+            
+            {(lowPriceFilter || highPriceFilter) && (
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-purple-100 text-purple-800">
+                Giá: {lowPriceFilter ? `${parseInt(lowPriceFilter).toLocaleString()}đ` : '0đ'} - {highPriceFilter ? `${parseInt(highPriceFilter).toLocaleString()}đ` : '∞'}
+                <button 
+                  onClick={() => handlePriceRangeChange('', '')}
+                  className="ml-1 text-purple-600 hover:text-purple-800"
+                >
+                  ×
+                </button>
+              </span>
+            )}
+            
+            {sortBy !== 'newest' && (
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-orange-100 text-orange-800">
+                Sắp xếp: {sortBy}
+                <button 
+                  onClick={() => handleSortChange('newest')}
+                  className="ml-1 text-orange-600 hover:text-orange-800"
+                >
+                  ×
+                </button>
+              </span>
+            )}
+          </div>
+          
+          <button 
+            onClick={clearAllFilters}
+            className="text-sm text-red-600 hover:text-red-800 underline"
+          >
+            Xóa tất cả bộ lọc
+          </button>
+        </div>
+      )}
+
       {/* ================= Products Start here =================== */}
       <div className="w-full h-full flex pb-20 gap-10">
         <div className="w-[20%] lgl:w-[25%] hidden mdl:inline-flex h-full">
@@ -99,13 +224,30 @@ const Shop = () => {
               highPrice: highPriceFilter
             }}
             onFiltersChange={handleFiltersChange}
+            onPriceRangeChange={handlePriceRangeChange}
           />
         </div>
         <div className="w-full mdl:w-[80%] lgl:w-[75%] h-full flex flex-col gap-10">
           <ProductBanner 
             onSortChange={handleSortChange}
             currentSort={sortBy}
+            totalProducts={totalProducts}
+            searchTerm={searchFilter}
           />
+          
+          {/* Mobile Filter Button */}
+          <div className="mdl:hidden mb-4">
+            <button 
+              className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors"
+              onClick={() => {
+                // You can implement a mobile filter modal here
+                alert('Mobile filter modal - implement as needed');
+              }}
+            >
+              Bộ lọc & Sắp xếp
+            </button>
+          </div>
+          
           {loading ? (
             <div className="flex justify-center items-center py-20">
               <div className="text-lg">Đang tải sản phẩm...</div>
@@ -131,7 +273,20 @@ const Shop = () => {
                 ))
               ) : (
                 <div className="col-span-full text-center py-10">
-                  <p className="text-lg text-gray-500">Không tìm thấy sản phẩm nào</p>
+                  <p className="text-lg text-gray-500">
+                    {hasActiveFilters 
+                      ? "Không tìm thấy sản phẩm nào phù hợp với bộ lọc" 
+                      : "Không tìm thấy sản phẩm nào"
+                    }
+                  </p>
+                  {hasActiveFilters && (
+                    <button 
+                      onClick={clearAllFilters}
+                      className="mt-2 text-blue-600 hover:text-blue-800 underline"
+                    >
+                      Xóa bộ lọc và xem tất cả sản phẩm
+                    </button>
+                  )}
                 </div>
               )}
             </div>
