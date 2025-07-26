@@ -21,7 +21,7 @@ const HeaderBottom = () => {
   const [loadingCategories, setLoadingCategories] = useState(false);
   const navigate = useNavigate();
   const ref = useRef();
-  const { user } = useAuth();
+  const { user, logout } = useAuth(); // Added logout here
 
   useEffect(() => {
     document.body.addEventListener("click", (e) => {
@@ -272,28 +272,44 @@ const HeaderBottom = () => {
                   </>
                 )}
 
-                {/* Profile now links to /profile/account-information */}
-                <Link
-                  to="/profile/account-information"
-                  onClick={() => setShowUser(false)}
-                >
-                  <li className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:border-white hover:text-white duration-300">
-                    Tài khoản
-                  </li>
-                </Link>
-                {user &&
-                  (user?.roles?.includes("Admin") ||
-                    user?.roles?.includes("Manager") ||
-                    user?.roles?.includes("Staff")) && (
+                {user && (
+                  <>
+                    {/* Profile now links to /profile/account-information */}
                     <Link
-                      to="/admin/dashboard"
+                      to="/profile/account-information"
                       onClick={() => setShowUser(false)}
                     >
                       <li className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:border-white hover:text-white duration-300">
-                        Quản lý
+                        Tài khoản
                       </li>
                     </Link>
-                  )}
+                    
+                    {/* Admin/Manager/Staff dashboard link */}
+                    {(user?.roles?.includes("Admin") ||
+                      user?.roles?.includes("Manager") ||
+                      user?.roles?.includes("Staff")) && (
+                      <Link
+                        to="/admin/dashboard"
+                        onClick={() => setShowUser(false)}
+                      >
+                        <li className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:border-white hover:text-white duration-300">
+                          Quản lý
+                        </li>
+                      </Link>
+                    )}
+                    
+                    {/* Logout button */}
+                    <li 
+                      className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:border-white hover:text-white duration-300 cursor-pointer"
+                      onClick={() => {
+                        logout();
+                        setShowUser(false);
+                      }}
+                    >
+                      Đăng xuất
+                    </li>
+                  </>
+                )}
               </motion.ul>
             )}
             <Link to="/cart">
