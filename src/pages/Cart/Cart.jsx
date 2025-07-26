@@ -109,15 +109,24 @@ const Cart = () => {
 
   // Handle remove item from cart
   const handleRemoveItem = async (productId) => {
+    // Store original cart items
+    const originalCartItems = [...cartItems];
+    
     try {
+      // Optimistically update UI first
+      const updatedCartItems = cartItems.filter(item => 
+        item.product.productID !== productId
+      );
+      setCartItems(updatedCartItems);
+
+      // Then call API
       await CartService.deleteCart(user.userID, productId);
-
-      // Refresh from API to ensure data consistency
-      await refreshCartData();
-
+      
       toast.success("Đã xóa sản phẩm khỏi giỏ hàng");
     } catch (error) {
       console.error("Error removing item:", error);
+      // Revert to original state on error
+      setCartItems(originalCartItems);
       toast.error("Có lỗi xảy ra khi xóa sản phẩm");
     }
   };

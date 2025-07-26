@@ -31,6 +31,8 @@ const ItemCard = ({ item, onUpdateQuantity, onRemoveItem }) => {
   };
 
   const handleRemoveItem = () => {
+    console.log('Removing item with ID:', product.productID);
+    console.log('Current product:', product);
     onRemoveItem(product.productID);
   };
 
