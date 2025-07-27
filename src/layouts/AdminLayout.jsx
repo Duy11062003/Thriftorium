@@ -101,7 +101,7 @@ const AdminLayout = ({ children }) => {
             </button>
 
             <div className="flex items-center space-x-4">
-              <div className="text-sm text-gray-600">Xin chào, Admin</div>
+              <div className="text-sm text-gray-600">Chào mừng đến với dashboard của Thriftorium</div>
             </div>
           </div>
         </header>

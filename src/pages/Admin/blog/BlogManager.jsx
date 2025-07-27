@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaPlus, FaEdit, FaTrash, FaSearch, FaEye, FaImage } from "react-icons/fa";
+import { FaPlus, FaEdit, FaTrash, FaEye, FaImage } from "react-icons/fa";
 import BlogService from "../../../service/BlogService";
 import BlogModal from "./components/BlogModal";
 import { toast } from "react-toastify";
@@ -9,7 +9,6 @@ const BlogManager = () => {
   const { user } = useAuth();
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
@@ -19,38 +18,25 @@ const BlogManager = () => {
 
   useEffect(() => {
     fetchBlogs();
-  }, [currentPage, searchTerm]);
+  }, [currentPage]);
 
   const fetchBlogs = async () => {
     setLoading(true);
     try {
-      let data;
+      // Luôn dùng getAllBlogs vì không có search
+      const data = await BlogService.getAllBlogs();
+      setBlogs(data || []);
       
-      if (searchTerm && searchTerm.trim()) {
-        // Có search term -> dùng getBlogSearch
-        data = await BlogService.getBlogSearch(
-          searchTerm.trim(),
-          currentPage,
-          pageSize
-        );
-        setBlogs(data?.items || []);
-        setTotalPages(Math.ceil((data?.totalCount || 0) / pageSize));
-      } else {
-        // Không có search term -> dùng getAllBlogs
-        data = await BlogService.getAllBlogs();
-        setBlogs(data || []);
-        
-        // Tính pagination manually cho getAllBlogs
-        const totalItems = data?.length || 0;
-        const totalPagesCalculated = Math.ceil(totalItems / pageSize);
-        setTotalPages(totalPagesCalculated);
-        
-        // Apply pagination manually
-        const startIndex = (currentPage - 1) * pageSize;
-        const endIndex = startIndex + pageSize;
-        const paginatedBlogs = (data || []).slice(startIndex, endIndex);
-        setBlogs(paginatedBlogs);
-      }
+      // Tính pagination manually cho getAllBlogs
+      const totalItems = data?.length || 0;
+      const totalPagesCalculated = Math.ceil(totalItems / pageSize);
+      setTotalPages(totalPagesCalculated);
+      
+      // Apply pagination manually
+      const startIndex = (currentPage - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
+      const paginatedBlogs = (data || []).slice(startIndex, endIndex);
+      setBlogs(paginatedBlogs);
     } catch (error) {
       console.error("Error fetching blogs:", error);
       toast.error("Có lỗi xảy ra khi tải danh sách blog");
@@ -58,11 +44,6 @@ const BlogManager = () => {
       setTotalPages(0);
     }
     setLoading(false);
-  };
-
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to first page when searching
   };
 
   const handlePageChange = (page) => {
@@ -139,19 +120,7 @@ const BlogManager = () => {
         </div>
 
         {/* Actions Bar */}
-        <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          {/* Search */}
-          <div className="relative flex-1 max-w-md">
-            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={handleSearch}
-              placeholder="Tìm kiếm blog..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
+        <div className="mb-6 flex justify-end">
           {/* Create Button */}
           <button
             onClick={handleCreateBlog}
@@ -280,9 +249,7 @@ const BlogManager = () => {
                             <div className="text-4xl mb-2">📝</div>
                             <div>Không có blog nào</div>
                             <div className="text-sm mt-1">
-                              {searchTerm
-                                ? "Thử tìm kiếm với từ khóa khác"
-                                : "Hãy tạo blog đầu tiên của bạn"}
+                              Hãy tạo blog đầu tiên của bạn
                             </div>
                           </div>
                         </td>
@@ -352,4 +319,4 @@ const BlogManager = () => {
   );
 };
 
-export default BlogManager; 
+export default BlogManager;
